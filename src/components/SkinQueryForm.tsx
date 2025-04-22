@@ -2,8 +2,16 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
+import axios from "axios";
 
 interface ApiResponse {
   response?: string;
@@ -24,21 +32,20 @@ const SkinQueryForm: React.FC = () => {
     setApiResponse(null);
 
     try {
-      // Using fetch to send a POST request to the API
       const formData = new FormData();
       formData.append("question", question);
       formData.append("image", imageUrl);
 
-      const response = await fetch("https://monthly-vital-reptile.ngrok-free.app/chat", {
-        method: "POST",
-        body: formData,
+      const response = await axios.post("/api/chat", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
 
-      const data = await response.json();
-      setApiResponse(data);
-    } catch (err) {
+      setApiResponse(response.data);
+    } catch (err: any) {
       setError("Failed to get a response. Please try again.");
-      console.error("Error fetching data:", err);
+      console.error("Error fetching data:", err.message);
     } finally {
       setIsLoading(false);
     }
@@ -80,9 +87,9 @@ const SkinQueryForm: React.FC = () => {
               required
             />
           </div>
-          <Button 
-            type="submit" 
-            className="w-full bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white" 
+          <Button
+            type="submit"
+            className="w-full bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -104,7 +111,9 @@ const SkinQueryForm: React.FC = () => {
         )}
         {apiResponse && (
           <div className="w-full mt-4">
-            <h3 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Analysis Result:</h3>
+            <h3 className="font-medium text-gray-800 dark:text-gray-200 mb-2">
+              Analysis Result:
+            </h3>
             <pre className="bg-gray-50 dark:bg-gray-800/50 p-4 rounded-md overflow-auto text-sm">
               {JSON.stringify(apiResponse, null, 2)}
             </pre>
