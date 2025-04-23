@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { Eye, Mail, UserCheck } from "lucide-react";
-import FeatureCard from "@/components/FeatureCard";
 import Navbar from "@/components/Navbar";
 import MarqueeCompanies from "@/components/MarqueeCompanies";
 import ReviewCarousel from "@/components/ReviewCarousel";
@@ -153,7 +152,7 @@ const Index: React.FC = () => {
           <div className="flex gap-4">
             <button
               onClick={() => navigate("/signin")}
-              className="group flex items-center gap-2 px-8 py-3 font-semibold rounded-lg border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 animate-fade-in"
+              className="group flex items-center gap-2 px-8 py-3 font-semibold rounded-xl border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 animate-fade-in"
             >
               Get Started
               <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
@@ -175,15 +174,6 @@ const Index: React.FC = () => {
                 zIndex: 10,
               }}
             ></spline-viewer>
-            
-            {/* Image overlapping at bottom right of the Spline viewer
-            <img
-              src="/im dying pls help.jpeg"
-              alt="Help illustration"
-              className="absolute bottom-0 right-0 w-[120px] md:w-[180px] rounded-2xl shadow-xl border-[2px] border-primary/30 object-cover z-20 translate-x-[20%] translate-y-[20%]"
-              loading="lazy"
-              draggable={false}
-            /> */}
             <div className="absolute bottom-6 right-4 w-[120px] h-[40px] md:w-[180px] rounded-2xl  border-[2px] z-20 translate-x-[20%] translate-y-[20%] flex items-center justify-center bg-white dark:bg-card/80 backdrop-blur-lg">{
             }
               Cerebrum.ai
@@ -243,7 +233,7 @@ const Index: React.FC = () => {
       <MarqueeCompanies />
 
       {/* Animated overview section */}
-      <section className="relative z-10 py-14 px-2 md:px-0 bg-gradient-to-b from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background text-gray-700 dark:text-gray-200 animate-fade-in">
+      <section className="relative z-1 py-14 px-2 md:px-0 bg-gradient-to-t from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background text-gray-700 dark:text-gray-200 animate-fade-in">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-7 md:gap-10 text-center">
           <h3 className="font-semibold text-2xl md:text-3xl mb-2 dark:text-[#ffffff]">How CerebrumAI Modernizes Digital Triage</h3>
           <p className="text-lg md:text-xl max-w-3xl animate-fade-in">
@@ -252,26 +242,6 @@ const Index: React.FC = () => {
             it delivers context-aware assessments that go beyond conventional symptom checkers—enabling safer and more actionable care journeys.
           </p>
           <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=540&q=80" alt="Patient with digital triage screens" className="rounded-2xl shadow-xl border-2 border-primary/10 w-full max-w-md mx-auto animate-scale-in" loading="lazy" draggable={false}/>
-        </div>
-      </section>
-
-      {/* App Features */}
-      <section id="features" className="w-full mx-auto pt-10 pb-8 px-4 md:px-0 bg-gradient-to-t from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background">
-        <h2 className="text-2xl md:text-3xl font-semibold text-center mb-6 animate-fade-in">Why CerebrumAI?</h2>
-        <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch">
-          {features.map((feature, i) => (
-            <div
-              className={`flex-1 transition-all duration-500 delay-${i * 100} animate-scale-in`}
-              style={{ animationDelay: `${i * 170 + 100}ms` }}
-              key={feature.title}
-            >
-              <FeatureCard
-                icon={<div className="w-12 h-12 flex justify-center items-center bg-gradient-to-br from-[#62d5d0]/20 via-[#a2e6e2]/20 to-[#a7e9e6]/20 rounded-full shadow animate-scale-in">{feature.icon}</div>}
-                title={feature.title}
-                description={feature.description}
-              />
-            </div>
-          ))}
         </div>
       </section>
 
@@ -323,7 +293,7 @@ const Index: React.FC = () => {
           </span>
           <button
             onClick={() => navigate("/signin")}
-            className="group flex gap-2 items-center bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white font-semibold px-6 py-2 rounded-md shadow-md border border-[#62d5d0]/40 hover:scale-105 transition-all animate-fade-in"
+            className="group flex gap-2 items-center bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white font-semibold px-6 py-2 rounded-xl shadow-md border border-[#62d5d0]/40 hover:scale-105 transition-all animate-fade-in"
           >
             Sign In
           </button>

@@ -111,7 +111,7 @@ const SkinQueryForm: React.FC = () => {
       </CardContent>
       <CardFooter className="flex flex-col">
         {error && (
-          <div className="w-full p-3 mb-3 bg-red-100 border border-red-200 rounded-md text-red-800 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
+          <div className="w-full p-3 mb-3 bg-red-100 border border-red-200 rounded-xl text-red-800 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
             {error}
           </div>
         )}
