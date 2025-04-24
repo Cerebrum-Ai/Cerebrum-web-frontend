@@ -189,7 +189,7 @@ const FlowConditions = ({ apiResponse }) => {
   const contentWidth = Math.max(1000, matches.length * xOffset + 100);
 
   return (
-    <div style={{ height: `${contentHeight}px`, width: "100%" }} className="mt-4 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+    <div style={{ height: `${contentHeight}px`, width: "100%" }} className="mt-4 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-200">
       {nodes.length > 0 ? (
         <ReactFlow
           nodes={nodeState}
@@ -207,11 +207,11 @@ const FlowConditions = ({ apiResponse }) => {
             gap={12} 
             size={1} 
             color="#718096" 
-            style={{ backgroundColor: 'rgba(240, 240, 240, 0.5)' }}
+            className="bg-background "
           />
         </ReactFlow>
       ) : (
-        <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-center h-full bg-gray-50 dark:bg-gray-50 rounded-xl border border-gray-200 dark:border-gray-200">
           <p className="text-gray-500 dark:text-gray-400">No data available to visualize</p>
         </div>
       )}
