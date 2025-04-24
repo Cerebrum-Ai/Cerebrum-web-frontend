@@ -76,7 +76,7 @@ const OutputPage: React.FC = () => {
                         </TabsList>
                         
                         <TabsContent value="text">
-                            <Card className="w-full max-w-xl mx-auto bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
+                            <Card className="w-full max-w-6xl mx-auto bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
                                 <CardHeader>
                                     <CardTitle className="text-[#62d5d0]">Skin Analysis Result</CardTitle>
                                 </CardHeader>
@@ -209,7 +209,7 @@ const OutputPage: React.FC = () => {
                         </TabsContent>
                     </Tabs>
                 ) : (
-                    <Card className="w-full max-w-xl mx-auto bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
+                    <Card className="w-full max-w-3xl mx-auto bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
                         <CardContent className="p-6 text-center">
                             <p className="text-gray-600 dark:text-gray-300 mb-4">
                                 No analysis results available. Please submit a query from the input page.
