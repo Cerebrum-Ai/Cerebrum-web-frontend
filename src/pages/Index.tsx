@@ -7,6 +7,7 @@ import LatestDevelopments from "@/components/LatestDevelopments";
 import EnhancedFooter from "@/components/EnhancedFooter";
 import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import Spline from "@/components/spline";
 
 
 const features = [
@@ -29,25 +30,6 @@ const features = [
 
 const Index: React.FC = () => {
   const navigate = useNavigate();
-  const splineContainerRef = useRef<HTMLDivElement>(null);
-
-  // Load Spline script and initialize viewer
-  useEffect(() => {
-    // Check if script already exists to avoid duplicates
-    if (!document.querySelector('script[src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"]')) {
-      const script = document.createElement('script');
-      script.src = "https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js";
-      script.type = "module";
-      script.async = true;
-      script.onload = () => {
-        console.log("Spline viewer script loaded successfully");
-      };
-      script.onerror = (error) => {
-        console.error("Error loading Spline viewer script:", error);
-      };
-      document.head.appendChild(script);
-    }
-  }, []);
 
   // Add animation to floating elements
   useEffect(() => {
@@ -159,23 +141,9 @@ const Index: React.FC = () => {
             </button>
           </div>
         </div>
-        <div className="w-full md:w-1/2 flex justify-center items-center relative">
-          {/* Glow behind the Spline viewer */}
-          <div className="absolute -inset-12"></div>
-          
-          <div className="flex flex-col items-center relative transform -translate-y-10">
-            {/* Spline viewer with transparent background and hidden watermark */}
-            <spline-viewer 
-              url="https://prod.spline.design/1aZlGirw6GiTT9tQ/scene.splinecode"
-              style={{
-                width: '550px',
-                height: '550px',
-                position: 'relative',
-                zIndex: 10,
-                opacity: 1,
-                filter: 'contrast(1.25) brightness(1.3)',
-              }}
-            ></spline-viewer>
+        <div className="w-full md:w-1/2 flex justify-center items-center relative t">
+          <div className="flex flex-col items-center relative transform -translate-y-10 translate-x-10">
+            <Spline/>
             <div className="absolute bottom-6 right-4 w-[120px] h-[40px] md:w-[180px] rounded-2xl z-20 translate-x-[20%] translate-y-[20%] flex items-center justify-center bg-white dark:bg-card/80 backdrop-blur-lg">
               Cerebrum.ai
             </div>

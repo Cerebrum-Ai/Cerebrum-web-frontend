@@ -18,9 +18,9 @@ const TweetCard: React.FC<TweetCardProps> = ({
   content,
   link,
 }) => (
-  <div className="dark:bg-gray-800  rounded-xl p-4 shadow-md text-left min-w-[270px] max-w-xs animate-scale-in transition-all hover:scale-[1.023] border border-[#64d0d5]/20">
+  <div className="dark:bg-gray-800  rounded-xl p-4 shadow-md text-left min-w-[270px] max-w-xs animate-scale-in transition-all hover:scale-[1.023] border-4 border-[#64d0d5]/20">
     <div className="flex items-center gap-3 mb-2">
-      <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover border-[2px] border-[#64d0d5]/20"/>
+      <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover border-[4px] border-[#64d0d5]/20"/>
       <div className="flex-1">
         <div className="flex items-center gap-1">
           <span className="font-bold text-primary mr-1 text-white">cerebrum.ai</span>

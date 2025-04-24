@@ -57,7 +57,7 @@ const LatestDevelopments: React.FC = () => (
         {news.map((item, idx) => (
           <div
             key={item.title}
-            className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-[#64d0d5]/20 backdrop-blur-lg px-6 pt-7 pb-8 flex flex-col justify-between min-h-[316px] overflow-hidden transition-all hover:scale-[1.023] animate-scale-in"
+            className="group bg-white dark:bg-gray-800 rounded-2xl shadow-xl border-4 border-[#64d0d5]/20 backdrop-blur-lg px-6 pt-7 pb-8 flex flex-col justify-between min-h-[316px] overflow-hidden transition-all hover:scale-[1.023] animate-scale-in"
             style={{ animationDelay: `${100 * idx}ms` }}
           >
             <div>
