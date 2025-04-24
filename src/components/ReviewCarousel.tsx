@@ -107,7 +107,7 @@ const ReviewCarousel: React.FC = () => {
   };
 
   return (
-    <section className="relative z-10 py-20 px-4 md:px-8 bg-gradient-to-b from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background transition-colors">
+    <section className="relative z-10 py-20 px-4 md:px-8 backdrop-blur-2xl dark:backdrop-blur-2xl transition-colors">
       <div className="max-w-5xl mx-auto flex flex-col items-center text-center gap-8 animate-fade-in">
         <h3 className="mb-2 text-2xl md:text-3xl font-semibold text-gradient-primary">What People Are Saying</h3>
         
@@ -148,7 +148,7 @@ const ReviewCarousel: React.FC = () => {
                       src={review.image}
                       alt={review.author}
                       className={`h-12 w-12 rounded-full shadow-md object-cover transition-all duration-500 ${
-                        index === current ? "border-2 border-fuchsia-400" : "border border-fuchsia-300/30"
+                        index === current ? "border-2 border-[#64d0d5]" : "border border-fuchsia-300/30"
                       }`}
                     />
                     <div className="flex flex-col text-left">
@@ -176,7 +176,7 @@ const ReviewCarousel: React.FC = () => {
                 <span
                   key={i}
                   className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all duration-200 ${
-                    current % originalReviews.length === i ? "bg-fuchsia-500 scale-110" : "bg-fuchsia-200"
+                    current % originalReviews.length === i ? "bg-[#64d0d5] scale-110" : "bg-[#64d0d5]/50"
                   }`}
                   onClick={() => {
                     handleNavigation(i);

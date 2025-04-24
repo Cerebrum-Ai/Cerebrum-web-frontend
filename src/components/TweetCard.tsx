@@ -18,12 +18,12 @@ const TweetCard: React.FC<TweetCardProps> = ({
   content,
   link,
 }) => (
-  <div className="bg-white dark:bg-gradient-to-l dark:from-[#1b1b2b] dark:via-[#23243a] dark:to-[#312951] border border-fuchsia-200/30 rounded-xl p-4 shadow-md text-left min-w-[270px] max-w-xs animate-scale-in transition-all hover:scale-[1.023]">
+  <div className="dark:bg-gray-800  rounded-xl p-4 shadow-md text-left min-w-[270px] max-w-xs animate-scale-in transition-all hover:scale-[1.023] border border-[#64d0d5]/20">
     <div className="flex items-center gap-3 mb-2">
-      <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover border-[2px] border-fuchsia-200"/>
+      <img src={avatar} alt={name} className="w-9 h-9 rounded-full object-cover border-[2px] border-[#64d0d5]/20"/>
       <div className="flex-1">
         <div className="flex items-center gap-1">
-          <span className="font-bold text-primary mr-1">{name}</span>
+          <span className="font-bold text-primary mr-1 text-white">cerebrum.ai</span>
           <Twitter size={18} className="text-[#1DA1F2] ml-1" />
         </div>
         <span className="text-xs text-gray-400">{username} &bull; {time}</span>
