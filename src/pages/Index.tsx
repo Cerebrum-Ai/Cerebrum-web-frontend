@@ -79,7 +79,7 @@ const Index: React.FC = () => {
         <circle cx="120" cy="730" r="24" fill="#0284c7" fillOpacity="0.19" />
         <circle className="animate-pulse" cx="720" cy="100" r="41" fill="#0891b2" fillOpacity="0.18" />
       </svg>
-      
+    
       {/* Animated floating elements - Enhanced with more blue shades */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Blurred gradients - More blue-centric */}

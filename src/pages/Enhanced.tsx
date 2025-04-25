@@ -1,0 +1,181 @@
+import React, { useState } from 'react';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertTriangle, User, CheckCircle2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import Navbar from '@/components/Navbar';
+
+const Enhanced = () => {
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [consentToShare, setConsentToShare] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+
+  const doctors = [
+    {
+      id: "dr-smith",
+      name: "Dr. Sarah Smith",
+      specialty: "Dermatology",
+      education: "Stanford University School of Medicine, 2015",
+      image: "/placeholder.svg"
+    },
+    {
+      id: "dr-patel",
+      name: "Dr. Raj Patel",
+      specialty: "General Practice",
+      education: "Johns Hopkins University, 2012",
+      image: "/placeholder.svg"
+    },
+    {
+      id: "dr-johnson",
+      name: "Dr. Michael Johnson",
+      specialty: "Pediatric Dermatology",
+      education: "Harvard Medical School, 2010",
+      image: "/placeholder.svg"
+    },
+    {
+      id: "dr-chen",
+      name: "Dr. Lisa Chen",
+      specialty: "Cosmetic Dermatology",
+      education: "UCLA School of Medicine, 2014",
+      image: "/placeholder.svg"
+    }
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (selectedDoctor && consentToShare && agreeToTerms) {
+      // Handle form submission
+      console.log('Form submitted, user consented to share data with', selectedDoctor);
+    } else {
+      // Show error or alert that checkboxes must be checked
+      console.log('Please select a doctor and agree to all terms before submitting');
+    }
+  };
+
+  return (
+    <div>
+        <Navbar/>
+        <div className="min-h-screen bg-gradient-to-b from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background pt-20 pb-10">
+        <div className="max-w-7xl mx-auto px-4 pt-12">
+            <Card className="w-full bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700 mb-6">
+            <CardHeader>
+                <CardTitle className="text-xl text-[#62d5d0]">Our Doctor</CardTitle>
+                <CardDescription>Choose a doctor who will review your medical information</CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+                <RadioGroup 
+                value={selectedDoctor || ""}
+                onValueChange={setSelectedDoctor}
+                className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
+                >
+                {doctors.map((doctor) => (
+                    <Label
+                    key={doctor.id}
+                    htmlFor={doctor.id}
+                    className={`flex flex-col h-full border rounded-lg p-4 cursor-pointer transition-all hover:border-[#62d5d0]/50 ${
+                        selectedDoctor === doctor.id 
+                        ? "border-[#62d5d0] bg-[#62d5d0]/10" 
+                        : "border-gray-200 dark:border-gray-700"
+                    }`}
+                    >
+                    <RadioGroupItem 
+                        value={doctor.id} 
+                        id={doctor.id} 
+                        className="sr-only"
+                    />
+                    <div className="flex items-start gap-4">
+                        <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                        <AvatarImage src={doctor.image} alt={doctor.name} />
+                        <AvatarFallback>
+                            <User className="h-6 w-6 text-gray-400" />
+                        </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-medium">{doctor.name}</h3>
+                            {selectedDoctor === doctor.id && (
+                            <CheckCircle2 className="h-5 w-5 text-[#62d5d0]" />
+                            )}
+                        </div>
+                        <p className="text-sm font-medium text-[#62d5d0]">{doctor.specialty}</p>
+                        <p className="text-xs text-gray-500 mt-1">{doctor.education}</p>
+                        </div>
+                    </div>
+                    </Label>
+                ))}
+                </RadioGroup>
+            </CardContent>
+            </Card>
+            
+            <Card className="w-full bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-700">
+            <CardHeader>
+                <CardTitle className="text-xl text-[#62d5d0]">Medical Consultation Consent</CardTitle>
+            </CardHeader>
+            
+            <CardContent>
+                <Alert className="mb-6 border-amber-500 bg-amber-50 dark:bg-amber-900/20 text-amber-800 dark:text-amber-200">
+                <AlertTriangle className="h-4 w-4 mr-2" />
+                <AlertDescription className="text-sm">
+                    ⚠️ Please Note: By submitting your symptoms and personal health information, you consent to sharing this data with healthcare professionals. Ensure that you are comfortable disclosing this information. We prioritize your privacy and only use your data for medical consultation purposes.
+                </AlertDescription>
+                </Alert>
+                
+                <form onSubmit={handleSubmit}>
+                <div className="space-y-4">
+                    <div className="flex items-start space-x-3 pt-2">
+                    <Checkbox 
+                        id="consent" 
+                        checked={consentToShare} 
+                        onCheckedChange={(checked) => setConsentToShare(checked as boolean)}
+                    />
+                    <Label 
+                        htmlFor="consent" 
+                        className="text-sm leading-relaxed cursor-pointer"
+                    >
+                        I consent to share my health information with qualified healthcare professionals for consultation purposes
+                    </Label>
+                    </div>
+                    
+                    <div className="flex items-start space-x-3 pt-2">
+                    <Checkbox 
+                        id="terms" 
+                        checked={agreeToTerms}
+                        onCheckedChange={(checked) => setAgreeToTerms(checked as boolean)}
+                    />
+                    <Label 
+                        htmlFor="terms" 
+                        className="text-sm leading-relaxed cursor-pointer"
+                    >
+                        I have read and agree to the privacy policy and understand how my data will be used
+                    </Label>
+                    </div>
+                </div>
+                
+                <div className="mt-8">
+                    <Button 
+                    type="submit" 
+                    className="w-full bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                    disabled={!selectedDoctor || !consentToShare || !agreeToTerms}
+                    >
+                    Submit and Continue
+                    </Button>
+                </div>
+                </form>
+            </CardContent>
+            
+            <CardFooter className="flex justify-center text-xs text-gray-500 dark:text-gray-400">
+                <p>Your privacy is important to us. We adhere to strict data protection protocols.</p>
+            </CardFooter>
+            </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Enhanced;

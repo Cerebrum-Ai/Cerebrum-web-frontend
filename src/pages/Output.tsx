@@ -204,6 +204,13 @@ const OutputPage: React.FC = () => {
                                         <Download className="h-4 w-4" />
                                         Save Results
                                     </Button>
+                                    <Button
+                                        variant="default"
+                                        className="bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                                        onClick={()=>navigate('/enhanced')}
+                                    >
+                                        Enhanced Analysis
+                                    </Button>
                                 </CardFooter>
                             </Card>
                         </TabsContent>
@@ -221,6 +228,7 @@ const OutputPage: React.FC = () => {
                             >
                                 Go to Input Page
                             </Button>
+                            
                         </CardContent>
                     </Card>
                 )}
