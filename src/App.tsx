@@ -7,6 +7,7 @@ import { ThemeProvider } from "./components/theme/ThemeProvider";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import InputPage from "./pages/Input";
 import OutputPage from "./pages/Output";
 import Enhanced from "./pages/Enhanced";
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/input" element={<InputPage />} />
+            <Route path="/signup" element={<SignUp />} />
             <Route path="/output" element={<OutputPage />} />
             <Route path="/enhanced" element={<Enhanced />}/>
             <Route path="*" element={<NotFound />} />
