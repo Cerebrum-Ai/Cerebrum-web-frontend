@@ -1,21 +1,48 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-
-const navItems = [
-  { label: "Home", to: "/" },
-  { label: "Why CerebrumAI?", to: "#features" },
-  { label: "Skin Analysis", to: "/input" },
-  { label: "Sign In", to: "/signin" },
-];
+import { supabase } from "../../utils/supabase";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [show, setShow] = useState(true);
   const [lastY, setLastY] = useState(0);
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+
+  // Check for authentication status
+  useEffect(() => {
+    const checkUser = async () => {
+      setLoading(true);
+      const { data } = await supabase.auth.getSession();
+      setUser(data?.session?.user || null);
+      setLoading(false);
+
+      // Set up auth state listener
+      const { data: authListener } = supabase.auth.onAuthStateChange(
+        (event, session) => {
+          setUser(session?.user || null);
+        }
+      );
+
+      return () => {
+        authListener?.subscription.unsubscribe();
+      };
+    };
+
+    checkUser();
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +59,36 @@ const Navbar: React.FC = () => {
     // eslint-disable-next-line
   }, [lastY]);
 
+  // Generate user initials for avatar
+  const getUserInitials = () => {
+    if (!user || !user.email) return "U";
+    return user.email.charAt(0).toUpperCase();
+  };
+
+  // Handle user sign out
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate('/');
+  };
+
+  // Create navigation items dynamically based on auth state
+  const getNavItems = () => {
+    const baseItems = [
+      { label: "Home", to: "/" },
+      { label: "Why CerebrumAI?", to: "#features" },
+      { label: "Skin Analysis", to: "/input" },
+    ];
+
+    // Only show sign in when not authenticated
+    if (!user) {
+      baseItems.push({ label: "Sign In", to: "/signin" });
+    }
+
+    return baseItems;
+  };
+
+  const navItems = getNavItems();
+
   return (
     <nav
       className={`fixed top-0 left-0 w-full z-30 transition-all duration-300
@@ -41,11 +98,6 @@ const Navbar: React.FC = () => {
     >
       <div className="max-w-6xl mx-auto px-4 flex items-center justify-between h-24">
         <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
-          {/* <img
-            src="https://images.unsplash.com/photo-1649972904349-6e44c42644a7?w=52&q=80"
-            alt="CerebrumAI Logo"
-            className="h-12 w-12 rounded-full object-cover shadow-md border-2 border-primary/60"
-          /> */}
           <span className="font-semibold text-3xl font-['Varela Round'] flex items-center">
             <span className="text-[#354745] tracking-wider dark:text-[#d0caca]">Cerebrum</span><span className="text-[#62d5d0] tracking-wider">.ai</span>
           </span>
@@ -74,20 +126,77 @@ const Navbar: React.FC = () => {
               </a>
             )
           )}
+
+          {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full" aria-label="Profile">
+                  <Avatar className="h-9 w-9 bg-[#62d5d0] text-white hover:ring-2 hover:ring-[#62d5d0]/20">
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <div className="p-2">
+                  <p className="text-sm font-medium">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/account')}>
+                  My Account
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/history')}>
+                  Analysis History
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
+
           <div className="ml-2">
             <ThemeToggle />
           </div>
         </div>
-        {/* Mobile Sign In button */}
+        {/* Mobile buttons */}
         <div className="md:hidden flex items-center gap-3">
           <ThemeToggle />
-          <Button
-            onClick={() => navigate("/signin")}
-            className="bg-[#62d5d0]/80 hover:bg-[#62d5d0] text-white font-semibold px-4"
-            size="sm"
-          >
-            <ArrowRight size={18} />
-          </Button>
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full" aria-label="Profile">
+                  <Avatar className="h-8 w-8 bg-[#62d5d0] text-white">
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <div className="p-2">
+                  <p className="text-sm font-medium">{user.email}</p>
+                </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/account')}>
+                  My Account
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate('/history')}>
+                  Analysis History
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut}>
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button
+              onClick={() => navigate("/signin")}
+              className="bg-[#62d5d0]/80 hover:bg-[#62d5d0] text-white font-semibold px-4"
+              size="sm"
+            >
+              <ArrowRight size={18} />
+            </Button>
+          )}
         </div>
       </div>
     </nav>
