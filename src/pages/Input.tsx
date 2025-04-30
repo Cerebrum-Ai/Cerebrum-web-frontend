@@ -2,6 +2,14 @@ import React, { useEffect } from "react";
 import SkinQueryForm from "@/components/SkinQueryForm";
 import Navbar from "@/components/Navbar";
 import EnhancedFooter from "@/components/EnhancedFooter";
+import "./typingdna.js"; // Import the TypingDNA script
+
+// Declare TypingDNA on the window object
+declare global {
+  interface Window {
+    TypingDNA: any;
+  }
+}
 
 const InputPage: React.FC = () => {
   // Add animation to floating elements
@@ -33,6 +41,21 @@ const InputPage: React.FC = () => {
     };
     
     animateFloatingElements();
+  }, []);
+
+  // Initialize TypingDNA once at page load
+  useEffect(() => {
+    // Check if TypingDNA library exists and initialize it
+    if (typeof window !== "undefined" && window.TypingDNA) {
+      try {
+        console.log("Initializing TypingDNA in Input.tsx");
+        // We'll let SkinQueryForm handle the specific targeting and pattern collection
+      } catch (error) {
+        console.error("Error initializing TypingDNA:", error);
+      }
+    } else {
+      console.warn("TypingDNA library not found");
+    }
   }, []);
 
   return (
@@ -103,36 +126,33 @@ const InputPage: React.FC = () => {
         @keyframes float2 {
           0% { transform: translate(0, 0) rotate(0deg); }
           25% { transform: translate(-14px, 7px) rotate(-2deg); }
-          75% { transform: translate(7px, 14px) rotate(0.5deg); }
-          100% { transform: translate(10px, -10px) rotate(1.5deg); }
+          50% { transform: translate(-5px, -5px) rotate(1deg); }
+          75% { transform: translate(10px, -8px) rotate(-1.5deg); }
+          100% { transform: translate(7px, 10px) rotate(0.5deg); }
         }
         
         @keyframes float3 {
           0% { transform: translate(0, 0) rotate(0deg); }
-          20% { transform: translate(10px, 10px) rotate(3deg); }
-          40% { transform: translate(-15px, 7px) rotate(-1.5deg); }
-          60% { transform: translate(0px, -18px) rotate(0deg); }
-          80% { transform: translate(12px, -7px) rotate(2deg); }
-          100% { transform: translate(-7px, 0px) rotate(-2deg); }
+          20% { transform: translate(12px, 5px) rotate(1.5deg); }
+          40% { transform: translate(8px, -12px) rotate(-1deg); }
+          60% { transform: translate(-10px, -8px) rotate(-2deg); }
+          80% { transform: translate(-8px, 10px) rotate(1deg); }
+          100% { transform: translate(10px, 6px) rotate(0deg); }
         }
         
         @keyframes float4 {
-          0% { transform: translate(0, 0) rotate(0deg) scale(1); }
-          30% { transform: translate(7px, -16px) rotate(3deg) scale(1.02); }
-          70% { transform: translate(-14px, -7px) rotate(-3deg) scale(0.99); }
-          100% { transform: translate(10px, 10px) rotate(1.5deg) scale(1.01); }
+          0% { transform: translate(0, 0) rotate(0deg); }
+          30% { transform: translate(-12px, -7px) rotate(-1.5deg); }
+          60% { transform: translate(8px, 10px) rotate(2deg); }
+          100% { transform: translate(4px, -5px) rotate(-0.5deg); }
         }
         
         @keyframes float5 {
           0% { transform: translate(0, 0) rotate(0deg); }
-          33% { transform: translate(-10px, -13px) rotate(-3.5deg); }
-          67% { transform: translate(18px, -3px) rotate(2deg); }
-          100% { transform: translate(-5px, 12px) rotate(-1.5deg); }
-        }
-        
-        .floating {
-          will-change: transform;
-          transition: transform 0.4s ease-out; /* Increased from 0.2s for smoother transitions */
+          25% { transform: translate(7px, 8px) rotate(1deg); }
+          50% { transform: translate(-6px, 11px) rotate(-1deg); }
+          75% { transform: translate(-12px, -4px) rotate(-2deg); }
+          100% { transform: translate(10px, -8px) rotate(1.5deg); }
         }
       `}</style>
 

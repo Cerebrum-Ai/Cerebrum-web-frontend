@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+// Note: No need to import typingdna.js here, it's already imported in Input.tsx
+
 import {
   Card,
   CardContent,
@@ -25,12 +27,73 @@ interface ApiResponse {
   status?: string;
 }
 
+declare global {
+  interface Window {
+    TypingDNA: any;
+  }
+}
+
 const SkinQueryForm: React.FC = () => {
   const navigate = useNavigate();
   const [question, setQuestion] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [typingPattern, setTypingPattern] = useState(null);
+  const [typingDnaInstance, setTypingDnaInstance] = useState<any>(null);
+  
+  // Update to track keystrokes in the requested format
+  interface KeyStroke {
+    key: string;
+    timeDown: number;
+    timeUp: number | null;
+  }
+  
+  const [keystrokes, setKeystrokes] = useState<KeyStroke[]>([]);
+  const currentKeyRef = useRef<KeyStroke | null>(null);
+
+  useEffect(() => {
+    // Initialize TypingDNA only if it's not already initialized in Input.tsx
+    if (typeof window !== "undefined" && window.TypingDNA) {
+      try {
+        const tdna = new window.TypingDNA();
+        tdna.addTarget("symptoms"); // ID of textarea
+        setTypingDnaInstance(tdna);
+        console.log("TypingDNA initialized in SkinQueryForm");
+      } catch (err) {
+        console.error("Error initializing TypingDNA:", err);
+      }
+    }
+  }, []);
+
+  // Track key down events
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const currentTime = Date.now();
+    
+    // Save the current key press with timeDown
+    currentKeyRef.current = {
+      key: e.key,
+      timeDown: currentTime,
+      timeUp: null
+    };
+  };
+
+  // Track key up events
+  const handleKeyUp = (e: React.KeyboardEvent) => {
+    const currentTime = Date.now();
+    
+    // Only process if we have a corresponding keyDown event
+    if (currentKeyRef.current && currentKeyRef.current.key === e.key) {
+      const completeKeystroke: KeyStroke = {
+        ...currentKeyRef.current,
+        timeUp: currentTime
+      };
+      
+      // Add to our keystrokes array
+      setKeystrokes(prev => [...prev, completeKeystroke]);
+      currentKeyRef.current = null;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +101,30 @@ const SkinQueryForm: React.FC = () => {
     setError(null);
 
     try {
+      // Get typing pattern if TypingDNA is available
+      let pattern = null;
+      if (typingDnaInstance && question.length > 0) {
+        try {
+          pattern = typingDnaInstance.getTypingPattern({
+            type: 1,
+            text: question
+          });
+          console.log("Typing pattern:", pattern);
+          
+          // Log the keystrokes in the requested format
+          console.log("Keystrokes data:", JSON.stringify({ keystrokes }, null, 2));
+        } catch (err) {
+          console.error("Error getting typing pattern:", err);
+        }
+      }
+
       const formData = new FormData();
       formData.append("question", question);
       formData.append("image", imageUrl);
+      if (pattern) {
+        formData.append("typingPattern", pattern);
+        // Not appending keystrokes to FormData yet
+      }
 
       const response = await axios.post("/api/chat", formData, {
         headers: {
@@ -76,6 +160,8 @@ const SkinQueryForm: React.FC = () => {
               placeholder="E.g., 'I have red itchy patches on my arm'"
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onKeyUp={handleKeyUp}
               className="min-h-24"
               required
             />
