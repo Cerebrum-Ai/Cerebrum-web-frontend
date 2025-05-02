@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import AccountInfo from "./signin/AccountInfo";
 import PersonalInfo from "./signin/PersonalInfo";
 import MedicalHistory from "./signin/MedicalHistory";
 import LifestyleInfo from "./signin/LifestyleInfo";
@@ -54,8 +55,42 @@ const SignIn: React.FC = () => {
     }));
   };
 
-  const nextStep = () => {
-    setStep((prev) => prev + 1);
+  const nextStep = async () => {
+    if (step === 1) {
+      try {
+        // Sign up the user when moving from account info to personal info
+        const { email, password } = formData;
+        console.log("Attempting signup with email:", email);
+
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+          },
+        });
+
+        if (error) {
+          console.error("Signup error:", error);
+          alert("Sign up error: " + error.message);
+          return;
+        }
+
+        if (data?.user) {
+          console.log("Signup successful:", data.user);
+          setStep((prev) => prev + 1);
+        } else {
+          console.error("No user data returned from signup");
+          alert("Sign up failed: No user data returned");
+        }
+      } catch (err) {
+        console.error("Unexpected error during signup:", err);
+        alert("An unexpected error occurred during sign up");
+        return;
+      }
+    } else {
+      setStep((prev) => prev + 1);
+    }
   };
 
   const prevStep = () => {
@@ -63,25 +98,46 @@ const SignIn: React.FC = () => {
   };
 
   const handleSubmit = async () => {
-    // 1. Sign up the user
+    // Insert profile data
     const { email, password, ...profileData } = formData;
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
-    if (error) {
-      alert("Sign up error: " + error.message);
-      return;
-    }
-
-    // 2. Insert profile data (after sign up)
-    const user = data.user;
     if (user) {
+      // Transform the data to match the database schema
+      const profileInsert = {
+        user_id: user.id, // assuming the column is named 'id' instead of 'user_id'
+        email: email,
+        first_name: profileData.firstName, // assuming snake_case in database
+        last_name: profileData.lastName,
+        date_of_birth: profileData.dateOfBirth,
+        phone: profileData.phone,
+        gender: profileData.gender,
+        height: profileData.height,
+        weight: profileData.weight,
+        blood_type: profileData.bloodType,
+        chronic_conditions: profileData.chronicConditions,
+        conditions: profileData.conditions,
+        medications: profileData.medications,
+        allergies: profileData.allergies,
+        family_history: profileData.familyHistory,
+        smoking_status: profileData.smokingStatus,
+        alcohol_consumption: profileData.alcoholConsumption,
+        physical_activity: profileData.physicalActivity,
+        sleep_hours: profileData.sleepHours,
+        diet: profileData.diet,
+        occupation: profileData.occupation,
+        stress_level: profileData.stressLevel,
+        hobbies: profileData.hobbies,
+      };
+
       const { error: insertError } = await supabase
-        .from("user_profiles")
-        .insert([{ user_id: user.id, email, ...profileData }]);
+        .from("user_profiles") // assuming the table is named 'profiles'
+        .insert([profileInsert]);
+
       if (insertError) {
+        console.error("Profile insert error:", insertError);
         alert("Profile insert error: " + insertError.message);
         return;
       }
@@ -208,9 +264,14 @@ const SignIn: React.FC = () => {
             `}</style>
       <StyledWrapper>
         <div className="form-container">
+          <div className="form-header">
+            <h1>Sign Up</h1>
+            <p>Create your account to get started</p>
+          </div>
+
           {/* Progress indicator */}
           <div className="progress-indicator">
-            {[1, 2, 3, 4].map((stepNumber) => (
+            {[1, 2, 3, 4, 5].map((stepNumber) => (
               <div
                 key={stepNumber}
                 className={`progress-dot ${stepNumber <= step ? "active" : ""}`}
@@ -220,6 +281,13 @@ const SignIn: React.FC = () => {
 
           {/* Render current step */}
           {step === 1 && (
+            <AccountInfo
+              formData={formData}
+              handleChange={handleChange}
+              nextStep={nextStep}
+            />
+          )}
+          {step === 2 && (
             <PersonalInfo
               formData={formData}
               handleChange={handleChange}
@@ -227,7 +295,7 @@ const SignIn: React.FC = () => {
               prevStep={prevStep}
             />
           )}
-          {step === 2 && (
+          {step === 3 && (
             <MedicalHistory
               formData={formData}
               handleChange={handleChange}
@@ -235,7 +303,7 @@ const SignIn: React.FC = () => {
               prevStep={prevStep}
             />
           )}
-          {step === 3 && (
+          {step === 4 && (
             <LifestyleInfo
               formData={formData}
               handleChange={handleChange}
@@ -243,7 +311,7 @@ const SignIn: React.FC = () => {
               prevStep={prevStep}
             />
           )}
-          {step === 4 && (
+          {step === 5 && (
             <ReviewSubmit
               formData={formData}
               handleSubmit={handleSubmit}
@@ -279,6 +347,26 @@ const StyledWrapper = styled.div`
     gap: 20px;
     box-sizing: border-box;
     border-radius: 16px;
+  }
+
+  .form-header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .form-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(145deg, #e81cff, #40c9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+  }
+
+  .form-header p {
+    color: #717171;
+    margin-top: 8px;
+    font-size: 1rem;
   }
 
   .progress-indicator {
