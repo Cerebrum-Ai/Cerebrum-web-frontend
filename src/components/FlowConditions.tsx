@@ -166,7 +166,7 @@ const FlowConditions = ({ apiResponse }) => {
         label: "Synthesized",
         style: { stroke: '#ffa000' }
       });
-    } else {
+    } else{
       // If neither, connect user input directly to final analysis
       edges.push({
         id: `e-final-${id++}`,
