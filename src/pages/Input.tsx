@@ -160,11 +160,11 @@ const InputPage: React.FC = () => {
       <div className="max-w-6xl mx-auto px-4 pt-32 pb-20">
         <div className="mb-8 text-center">
           <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-            Skin Analysis
+            Medical Analysis
           </h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Get an AI-powered analysis of your skin condition. Simply enter your symptoms 
-            and provide an image URL for a personalized assessment.
+            Get an AI-powered analysis of your medical condition. Simply enter your symptoms 
+            and provide data for a personalized assessment.
           </p>
         </div>
         

@@ -1,82 +1,68 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, AlertCircle, User, ArrowLeft } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-
-import { supabase } from '@/lib/supabase';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 
-const SignUp = () => {
-    const navigate = useNavigate();
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [fullName, setFullName] = useState('')
-    const [message, setMessage] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
-    const [isError, setIsError] = useState(false)
+const SignUp: React.FC = () => {
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        setMessage('');
-        setIsError(false);
-        setIsLoading(true);
-        
-        try {
-            const { data, error } = await supabase.auth.signUp({
-                email: email,
-                password: password,
-                options: {
-                    data: {
-                        full_name: fullName,
-                    }
-                }
-            });
-            
-            if (error) {
-                setIsError(true);
-                setMessage(error.message);
-            } else {
-                setMessage('Account created successfully! Please check your email to confirm your account.');
-                setTimeout(() => navigate('/signin'), 3000);
-            }
-        } catch (err) {
-            setIsError(true);
-            setMessage('An unexpected error occurred. Please try again.');
-        } finally {
-            setIsLoading(false);
-        }
-    }
-
-    // Add animation to floating elements
     useEffect(() => {
         const animateFloatingElements = () => {
-            const elements = document.querySelectorAll('.floating');
+          const elements = document.querySelectorAll('.floating');
+          
+          elements.forEach((el) => {
+            const element = el as HTMLElement;
             
-            elements.forEach((el) => {
-                const element = el as HTMLElement;
-                
-                // Random parameters for varied animations
-                const randomRotate = Math.random() * 12 - 6;
-                const randomScale = 0.97 + Math.random() * 0.06;
-                const randomDelay = Math.random() * 2;
-                const randomDuration = 3 + Math.random() * 4;
-                const animationIndex = Math.floor(Math.random() * 5) + 1;
-                
-                element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`;
-                element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
-            });
+            // Generate more varied motion patterns with slower animation
+            // Create random rotation for more dimension
+            const randomRotate = Math.random() * 12 - 6; // -6 to 6 degrees rotation (reduced from -7.5 to 7.5)
+            
+            // Random scale variation (subtle)
+            const randomScale = 0.97 + Math.random() * 0.06; // Scale between 0.97 and 1.03 (reduced range)
+            
+            // Random delay and increased duration for slower animations
+            const randomDelay = Math.random() * 2; // Increased from 1.5
+            const randomDuration = 3 + Math.random() * 4; // Increased from 1.5 + Math.random() * 2.5
+            
+            // Create unique animation name for each element to have different motion paths
+            const animationIndex = Math.floor(Math.random() * 5) + 1; // 5 different animations
+            
+            // Apply animations with varied transforms
+            element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`;
+            element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
+          });
         };
         
         animateFloatingElements();
-    }, []);
+      }, []);
 
-    return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            {/* Background decoration */}
-            <svg 
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      console.log('Form submitted:', formData);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
+  };
+
+
+  return (
+    <div>
+        <svg 
                 className="pointer-events-none fixed w-[135vw] h-[135vw] md:w-[98vw] md:h-[98vw] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-55 select-none dark:opacity-20"
                 viewBox="0 0 1200 900" 
                 fill="none"
@@ -147,108 +133,137 @@ const SignUp = () => {
                     transition: transform 0.4s ease-out;
                 }
             `}</style>
-
-            {/* Card container */}
-            <div className="w-full max-w-md bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-gray-100 dark:border-gray-800 relative z-10">
-                <h2 className="text-3xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 dark:from-blue-300 dark:via-blue-400 dark:to-cyan-300">
-                    Create Account
-                </h2>
-                
-                {message && (
-                    <Alert variant={isError ? "destructive" : "default"} className="mb-6">
-                        {isError && <AlertCircle className="h-4 w-4 mr-2" />}
-                        <AlertDescription>{message}</AlertDescription>
-                    </Alert>
-                )}
-                
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Full Name</label>
-                        <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <Input
-                                type="text"
-                                placeholder="Jane Doe"
-                                className="pl-10 pr-3 py-2 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <Input
-                                type="email"
-                                placeholder="you@example.com"
-                                className="pl-10 pr-3 py-2 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Password</label>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Create password"
-                                className="pl-10 pr-10 py-2 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                            <button 
-                                type="button"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4"
-                        disabled={isLoading}
-                    >
-                        {isLoading ? "Creating Account..." : "Create Account"}
-                    </Button>
-                
-                    <div className="flex justify-between items-center text-sm mt-6">
-                        <button
-                            className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                            onClick={() => navigate("/")}
-                            type="button"
-                            disabled={isLoading}
-                        >
-                            <ArrowLeft size={16} className="mr-1" />
-                            Back to Home
-                        </button>
-                        <div className="text-gray-600 dark:text-gray-300">
-                            Already have an account?{" "}
-                            <Link 
-                                to="/signin" 
-                                className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                            >
-                                Sign In
-                            </Link>
-                        </div>
-                    </div>
-                </form>
+    <StyledWrapper>
+      <div className="form-container">
+        <h2 className="form-title">Sign Up</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </div>
-        </div>
-    )
-}
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-export default SignUp
+          <button type="submit" className="form-submit-btn">
+            Sign Up
+          </button>
+        </form>
+      </div>
+    </StyledWrapper>
+    </div>
+  );
+};
+
+const StyledWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #212121;
+  padding: 20px;
+
+  .form-container {
+    width: 400px;
+    max-width: 90vw;
+    background: #1a1a1a;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+    background: linear-gradient(to right, #e81cff, #40c9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #717171;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    background-color: transparent;
+    border: 1px solid #414141;
+  }
+
+  .form-group input::placeholder {
+    opacity: 0.5;
+  }
+
+  .form-group input:focus {
+    outline: none;
+    border-color: #e81cff;
+  }
+
+  .form-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    color: #717171;
+    font-weight: 600;
+    width: 100%;
+    background: #313131;
+    border: 1px solid #414141;
+    padding: 12px 16px;
+    font-size: inherit;
+    margin-top: 24px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .form-submit-btn:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #212121;
+  }
+
+  .form-submit-btn:active {
+    scale: 0.95;
+  }
+`;
+
+export default SignUp;

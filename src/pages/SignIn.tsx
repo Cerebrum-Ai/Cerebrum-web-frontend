@@ -1,74 +1,92 @@
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Mail, Lock, Eye, EyeOff, AlertCircle, ArrowLeft } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import React, { useEffect, useState } from "react";
+import styled from 'styled-components';
+import PersonalInfo from './signin/PersonalInfo';
+import MedicalHistory from './signin/MedicalHistory';
+import LifestyleInfo from './signin/LifestyleInfo';
+import ReviewSubmit from './signin/ReviewSubmit';
 
-import { supabase } from '@/lib/supabase';
+const SignIn: React.FC = () => {
+  const [step, setStep] = useState(1);
+  const [formData, setFormData] = useState({
+    // Account Info
+    email: "",
+    password: "",
+    
+    // Personal Info
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    phone: "",
+    gender: "",
+    
+    // Medical Info
+    height: "",
+    weight: "",
+    bloodType: "",
+    chronicConditions: "",
+    conditions: "",
+    medications: "",
+    allergies: "",
+    familyHistory: "",
+    
+    // Lifestyle Info
+    smokingStatus: "",
+    alcoholConsumption: "",
+    physicalActivity: "",
+    sleepHours: "",
+    diet: "",
+    occupation: "",
+    stressLevel: "",
+    hobbies: ""
+  });
 
-const SignIn = () => {
-    const navigate = useNavigate()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [message, setMessage] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
-    const [showPassword, setShowPassword] = useState(false)
-    const [isError, setIsError] = useState(false)
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault()
-        setMessage('')
-        setIsError(false)
-        setIsLoading(true)
+  const nextStep = () => {
+    setStep((prev) => prev + 1);
+  };
+
+  const prevStep = () => {
+    setStep((prev) => prev - 1);
+  };
+
+  const handleSubmit = () => {
+    // Handle form submission here
+    console.log("Form Submitted", formData);
+  };
+
+  // Add animation to floating elements
+  useEffect(() => {
+    const animateFloatingElements = () => {
+      const elements = document.querySelectorAll('.floating');
+      
+      elements.forEach((el) => {
+        const element = el as HTMLElement;
         
-        try {
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password,
-            })
-            
-            if (error) {
-                setIsError(true)
-                setMessage(error.message)
-            } else {
-                navigate('/input')
-            }
-        } catch (err) {
-            setIsError(true)
-            setMessage('An unexpected error occurred. Please try again.')
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    // Add animation to floating elements
-    useEffect(() => {
-        const animateFloatingElements = () => {
-            const elements = document.querySelectorAll('.floating')
-            
-            elements.forEach((el) => {
-                const element = el as HTMLElement
-                
-                // Random parameters for varied animations
-                const randomRotate = Math.random() * 12 - 6
-                const randomScale = 0.97 + Math.random() * 0.06
-                const randomDelay = Math.random() * 2
-                const randomDuration = 3 + Math.random() * 4
-                const animationIndex = Math.floor(Math.random() * 5) + 1
-                
-                element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`
-                element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`
-            })
-        }
+        // Random parameters for varied animations
+        const randomRotate = Math.random() * 12 - 6;
+        const randomScale = 0.97 + Math.random() * 0.06;
+        const randomDelay = Math.random() * 2;
+        const randomDuration = 3 + Math.random() * 4;
+        const animationIndex = Math.floor(Math.random() * 5) + 1;
         
-        animateFloatingElements()
-    }, [])
+        element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`;
+        element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
+      });
+    };
+    
+    animateFloatingElements();
+  }, []);
 
-    return (
-        <div className="min-h-screen flex items-center justify-center p-4">
-            {/* Background decoration */}
-            <svg 
+  return (
+    <div>
+    <svg 
                 className="pointer-events-none fixed w-[135vw] h-[135vw] md:w-[98vw] md:h-[98vw] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-55 select-none dark:opacity-20"
                 viewBox="0 0 1200 900" 
                 fill="none"
@@ -95,8 +113,7 @@ const SignIn = () => {
                 <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-cyan-400/35"></div>
             </div>
             
-            <style>
-                {`
+            <style>{`
                 /* Animation patterns for floating elements */
                 @keyframes float1 {
                     0% { transform: translate(0, 0) rotate(0deg); }
@@ -139,106 +156,211 @@ const SignIn = () => {
                     will-change: transform;
                     transition: transform 0.4s ease-out;
                 }
-                `}
-            </style>
-            
-            {/* Card container */}
-            <div className="w-full max-w-md bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-2xl rounded-2xl p-8 border border-gray-100 dark:border-gray-800 relative z-10">
-                <h2 className="text-3xl font-bold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-700 via-blue-500 to-cyan-500 dark:from-blue-300 dark:via-blue-400 dark:to-cyan-300">
-                    Welcome Back
-                </h2>
-                
-                {message && (
-                    <Alert variant={isError ? "destructive" : "default"} className="mb-6">
-                        {isError && <AlertCircle className="h-4 w-4 mr-2" />}
-                        <AlertDescription>{message}</AlertDescription>
-                    </Alert>
-                )}
-                
-                <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="space-y-2">
-                        <label className="text-sm font-medium">Email</label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <Input
-                                type="email"
-                                placeholder="you@example.com"
-                                className="pl-10 pr-3 py-2 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                        </div>
-                    </div>
-                    
-                    <div className="space-y-2">
-                        <div className="flex justify-between items-center">
-                            <label className="text-sm font-medium">Password</label>
-                            <a
-                                href="#"
-                                className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
-                                onClick={(e) => {
-                                    e.preventDefault()
-                                    alert('Password reset functionality coming soon!')
-                                }}
-                            >
-                                Forgot Password?
-                            </a>
-                        </div>
-                        <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                            <Input
-                                type={showPassword ? "text" : "password"}
-                                placeholder="Enter your password"
-                                className="pl-10 pr-10 py-2 bg-white/50 dark:bg-gray-800/50 border-gray-200 dark:border-gray-700"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                required
-                                disabled={isLoading}
-                            />
-                            <button
-                                type="button"
-                                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                                onClick={() => setShowPassword(!showPassword)}
-                            >
-                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <Button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-2 rounded-md transition-all duration-200 shadow-md hover:shadow-lg mt-4"
-                        disabled={isLoading}             >
-                        {isLoading ? "Signing In..." : "Sign In"}
-                    </Button>
-                
-                    <div className="flex justify-between items-center text-sm mt-6">
-                        <button
-                            className="flex items-center text-blue-600 dark:text-blue-400 hover:underline"
-                            onClick={() => navigate("/")}
-                            type="button"
-                            disabled={isLoading}
-                        >
-                            <ArrowLeft size={16} className="mr-1" />
-                            Back to Home
-                        </button>
-                        
-                        <div className="text-gray-600 dark:text-gray-300">
-                            Don't have an account?{" "}
-                            <Link 
-                                to="/signup" 
-                                className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
-                            >
-                                Sign Up
-                            </Link>
-                        </div>
-                    </div>
-                </form>
-            </div>
+            `}</style>
+    <StyledWrapper>
+      <div className="form-container">
+        {/* Progress indicator */}
+        <div className="progress-indicator">
+          {[1, 2, 3, 4].map((stepNumber) => (
+            <div
+              key={stepNumber}
+              className={`progress-dot ${stepNumber <= step ? 'active' : ''}`}
+            />
+          ))}
         </div>
-    )
-}
 
-export default SignIn
+        {/* Render current step */}
+        {step === 1 && (
+          <PersonalInfo
+            formData={formData}
+            handleChange={handleChange}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        )}
+        {step === 2 && (
+          <MedicalHistory
+            formData={formData}
+            handleChange={handleChange}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        )}
+        {step === 3 && (
+          <LifestyleInfo
+            formData={formData}
+            handleChange={handleChange}
+            nextStep={nextStep}
+            prevStep={prevStep}
+          />
+        )}
+        {step === 4 && (
+          <ReviewSubmit
+            formData={formData}
+            handleSubmit={handleSubmit}
+            prevStep={prevStep}
+          />
+        )}
+      </div>
+    </StyledWrapper>
+    </div>
+  );
+};
+
+const StyledWrapper = styled.div`
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: #121212;
+
+  .form-container {
+    width: 800px;
+    max-width: 90vw;
+    background: linear-gradient(#212121, #212121) padding-box,
+                linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
+    border: 2px solid transparent;
+    padding: 32px 24px;
+    font-size: 14px;
+    font-family: inherit;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    border-radius: 16px;
+  }
+
+  .progress-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .progress-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #414141;
+    transition: all 0.3s ease;
+  }
+
+  .progress-dot.active {
+    background-color: #e81cff;
+    transform: scale(1.2);
+  }
+
+  .form-container button:active {
+    scale: 0.95;
+  }
+
+  .form-container .form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .form-container .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .form-container .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #717171;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .form-container .form-group input,
+  .form-container .form-group select,
+  .form-container .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-family: inherit;
+    background-color: transparent;
+    border: 1px solid #414141;
+  }
+
+  .form-container .form-group textarea {
+    resize: none;
+    height: 96px;
+  }
+
+  .form-container .form-group input::placeholder {
+    opacity: 0.5;
+  }
+
+  .form-container .form-group input:focus,
+  .form-container .form-group select:focus,
+  .form-container .form-group textarea:focus {
+    outline: none;
+    border-color: #e81cff;
+  }
+
+  .form-container .form-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+    color: #717171;
+    font-weight: 600;
+    width: 40%;
+    background: #313131;
+    border: 1px solid #414141;
+    padding: 12px 16px;
+    font-size: inherit;
+    gap: 8px;
+    margin-top: 8px;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+
+  .form-container .form-submit-btn:hover {
+    background-color: #fff;
+    border-color: #fff;
+    color: #212121;
+  }
+
+  .form-container .form-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .form-container .form-submit-btn:disabled:hover {
+    background-color: #313131;
+    border-color: #414141;
+    color: #717171;
+  }
+
+  .form-container .form-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+  }
+
+  .form-container .form-navigation button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #717171;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .form-container .form-navigation button:hover {
+    color: #e81cff;
+  }
+`;
+
+export default SignIn;
