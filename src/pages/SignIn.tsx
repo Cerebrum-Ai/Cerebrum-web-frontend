@@ -1,92 +1,68 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import PersonalInfo from './signin/PersonalInfo';
-import MedicalHistory from './signin/MedicalHistory';
-import LifestyleInfo from './signin/LifestyleInfo';
-import ReviewSubmit from './signin/ReviewSubmit';
 
-const SignIn: React.FC = () => {
-  const [step, setStep] = useState(1);
+
+const SignUp: React.FC = () => {
+
+    useEffect(() => {
+        const animateFloatingElements = () => {
+          const elements = document.querySelectorAll('.floating');
+          
+          elements.forEach((el) => {
+            const element = el as HTMLElement;
+            
+            // Generate more varied motion patterns with slower animation
+            // Create random rotation for more dimension
+            const randomRotate = Math.random() * 12 - 6; // -6 to 6 degrees rotation (reduced from -7.5 to 7.5)
+            
+            // Random scale variation (subtle)
+            const randomScale = 0.97 + Math.random() * 0.06; // Scale between 0.97 and 1.03 (reduced range)
+            
+            // Random delay and increased duration for slower animations
+            const randomDelay = Math.random() * 2; // Increased from 1.5
+            const randomDuration = 3 + Math.random() * 4; // Increased from 1.5 + Math.random() * 2.5
+            
+            // Create unique animation name for each element to have different motion paths
+            const animationIndex = Math.floor(Math.random() * 5) + 1; // 5 different animations
+            
+            // Apply animations with varied transforms
+            element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`;
+            element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
+          });
+        };
+        
+        animateFloatingElements();
+      }, []);
+
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    // Account Info
-    email: "",
-    password: "",
-    
-    // Personal Info
-    firstName: "",
-    lastName: "",
-    dateOfBirth: "",
-    phone: "",
-    gender: "",
-    
-    // Medical Info
-    height: "",
-    weight: "",
-    bloodType: "",
-    chronicConditions: "",
-    conditions: "",
-    medications: "",
-    allergies: "",
-    familyHistory: "",
-    
-    // Lifestyle Info
-    smokingStatus: "",
-    alcoholConsumption: "",
-    physicalActivity: "",
-    sleepHours: "",
-    diet: "",
-    occupation: "",
-    stressLevel: "",
-    hobbies: ""
+    email: '',
+    password: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
-      [name]: value,
+      [name]: value
     }));
   };
 
-  const nextStep = () => {
-    setStep((prev) => prev + 1);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      console.log('Form submitted:', formData);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   };
 
-  const prevStep = () => {
-    setStep((prev) => prev - 1);
-  };
-
-  const handleSubmit = () => {
-    // Handle form submission here
-    console.log("Form Submitted", formData);
-  };
-
-  // Add animation to floating elements
-  useEffect(() => {
-    const animateFloatingElements = () => {
-      const elements = document.querySelectorAll('.floating');
-      
-      elements.forEach((el) => {
-        const element = el as HTMLElement;
-        
-        // Random parameters for varied animations
-        const randomRotate = Math.random() * 12 - 6;
-        const randomScale = 0.97 + Math.random() * 0.06;
-        const randomDelay = Math.random() * 2;
-        const randomDuration = 3 + Math.random() * 4;
-        const animationIndex = Math.floor(Math.random() * 5) + 1;
-        
-        element.style.animation = `float${animationIndex} ${randomDuration}s ease-in-out ${randomDelay}s infinite alternate`;
-        element.style.transform = `rotate(${randomRotate}deg) scale(${randomScale})`;
-      });
-    };
-    
-    animateFloatingElements();
-  }, []);
 
   return (
     <div>
-    <svg 
+        <svg 
                 className="pointer-events-none fixed w-[135vw] h-[135vw] md:w-[98vw] md:h-[98vw] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-55 select-none dark:opacity-20"
                 viewBox="0 0 1200 900" 
                 fill="none"
@@ -159,48 +135,37 @@ const SignIn: React.FC = () => {
             `}</style>
     <StyledWrapper>
       <div className="form-container">
-        {/* Progress indicator */}
-        <div className="progress-indicator">
-          {[1, 2, 3, 4].map((stepNumber) => (
-            <div
-              key={stepNumber}
-              className={`progress-dot ${stepNumber <= step ? 'active' : ''}`}
-            />
-          ))}
-        </div>
+        <h2 className="form-title">Sign Up</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-grid">
+            <div className="form-group">
+              <label htmlFor="email">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label htmlFor="password">Password</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-        {/* Render current step */}
-        {step === 1 && (
-          <PersonalInfo
-            formData={formData}
-            handleChange={handleChange}
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        )}
-        {step === 2 && (
-          <MedicalHistory
-            formData={formData}
-            handleChange={handleChange}
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        )}
-        {step === 3 && (
-          <LifestyleInfo
-            formData={formData}
-            handleChange={handleChange}
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        )}
-        {step === 4 && (
-          <ReviewSubmit
-            formData={formData}
-            handleSubmit={handleSubmit}
-            prevStep={prevStep}
-          />
-        )}
+          <button type="submit" className="form-submit-btn">
+            Sign Up
+          </button>
+        </form>
       </div>
     </StyledWrapper>
     </div>
@@ -208,67 +173,45 @@ const SignIn: React.FC = () => {
 };
 
 const StyledWrapper = styled.div`
-  min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #212121;
   padding: 20px;
-  background: #121212;
 
   .form-container {
-    width: 800px;
+    width: 400px;
     max-width: 90vw;
-    background: linear-gradient(#212121, #212121) padding-box,
-                linear-gradient(145deg, transparent 35%,#e81cff, #40c9ff) border-box;
-    border: 2px solid transparent;
-    padding: 32px 24px;
-    font-size: 14px;
-    font-family: inherit;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    box-sizing: border-box;
+    background: #1a1a1a;
     border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .progress-indicator {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 20px;
+  .form-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+    text-align: center;
+    background: linear-gradient(to right, #e81cff, #40c9ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 
-  .progress-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #414141;
-    transition: all 0.3s ease;
-  }
-
-  .progress-dot.active {
-    background-color: #e81cff;
-    transform: scale(1.2);
-  }
-
-  .form-container button:active {
-    scale: 0.95;
-  }
-
-  .form-container .form {
+  .form-grid {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
   }
 
-  .form-container .form-group {
+  .form-group {
     display: flex;
     flex-direction: column;
     gap: 2px;
   }
 
-  .form-container .form-group label {
+  .form-group label {
     display: block;
     margin-bottom: 5px;
     color: #717171;
@@ -276,11 +219,9 @@ const StyledWrapper = styled.div`
     font-size: 12px;
   }
 
-  .form-container .form-group input,
-  .form-container .form-group select,
-  .form-container .form-group textarea {
+  .form-group input {
     width: 100%;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-radius: 8px;
     color: #fff;
     font-family: inherit;
@@ -288,79 +229,41 @@ const StyledWrapper = styled.div`
     border: 1px solid #414141;
   }
 
-  .form-container .form-group textarea {
-    resize: none;
-    height: 96px;
-  }
-
-  .form-container .form-group input::placeholder {
+  .form-group input::placeholder {
     opacity: 0.5;
   }
 
-  .form-container .form-group input:focus,
-  .form-container .form-group select:focus,
-  .form-container .form-group textarea:focus {
+  .form-group input:focus {
     outline: none;
     border-color: #e81cff;
   }
 
-  .form-container .form-submit-btn {
+  .form-submit-btn {
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: inherit;
     color: #717171;
     font-weight: 600;
-    width: 40%;
+    width: 100%;
     background: #313131;
     border: 1px solid #414141;
     padding: 12px 16px;
     font-size: inherit;
-    gap: 8px;
-    margin-top: 8px;
+    margin-top: 24px;
     cursor: pointer;
     border-radius: 6px;
   }
 
-  .form-container .form-submit-btn:hover {
+  .form-submit-btn:hover {
     background-color: #fff;
     border-color: #fff;
     color: #212121;
   }
 
-  .form-container .form-submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .form-container .form-submit-btn:disabled:hover {
-    background-color: #313131;
-    border-color: #414141;
-    color: #717171;
-  }
-
-  .form-container .form-navigation {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 20px;
-  }
-
-  .form-container .form-navigation button {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    color: #717171;
-    font-weight: 600;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .form-container .form-navigation button:hover {
-    color: #e81cff;
+  .form-submit-btn:active {
+    scale: 0.95;
   }
 `;
 
-export default SignIn;
+export default SignUp;
