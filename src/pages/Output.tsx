@@ -24,7 +24,7 @@ const OutputPage: React.FC = () => {
     const navigate = useNavigate();
     //extracting the API response from the location state
     const apiResponse = location.state?.apiResponse as ApiResponse | undefined;
-    
+
     const downloadResponse = () => {
         if (!apiResponse) return;
 
@@ -169,7 +169,7 @@ const OutputPage: React.FC = () => {
                                         <Download className="h-4 w-4" />
                                         Save Results
                                     </Button>
-                                                                    </CardFooter>
+                                </CardFooter>
                             </Card>
                         </TabsContent>
                         
@@ -228,9 +228,9 @@ const OutputPage: React.FC = () => {
                             >
                                 Go to Input Page
                             </Button>
-
-
-                        </CardContent>
+                            
+            
+            </CardContent>
                     </Card>
                 )}
 
