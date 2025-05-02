@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, User } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
-import { supabase } from "../../utils/supabase";
+import { supabase } from '@/lib/supabase';
 import {
   DropdownMenu,
   DropdownMenuContent,
