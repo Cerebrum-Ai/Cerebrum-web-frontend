@@ -13,6 +13,7 @@ import SignUp from "./pages/SignIn";
 import InputPage from "./pages/Input";
 import OutputPage from "./pages/Output";
 import Enhanced from "./pages/Enhanced";
+import Doctor from "./pages/Doctor";
 
 const queryClient = new QueryClient();
 
@@ -45,6 +46,7 @@ const App = () => (
                 } 
               />
               <Route path="/enhanced" element={<Enhanced />}/>
+              <Route path="/doctor" element={<Doctor/>}/>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
