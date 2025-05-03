@@ -8,9 +8,9 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
-import SignIn from "./pages/SignUp";
-import SignUp from "./pages/SignIn";
-import InputPage from "./pages/Input";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import InputPage from "./pages/Dashboard";
 import OutputPage from "./pages/Output";
 import Enhanced from "./pages/Enhanced";
 import Doctor from "./pages/Doctor";
@@ -29,7 +29,7 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
               <Route 
-                path="/input" 
+                path="/dashboard" 
                 element={
                   <ProtectedRoute>
                     <InputPage />

@@ -1,19 +1,19 @@
-import React from 'react';
+import React, { useState } from "react";
 import { ArrowLeft } from "lucide-react";
-import styled from 'styled-components';
+import styled from "styled-components";
 
 interface ReviewSubmitProps {
   formData: {
     // Account Info
     email: string;
     password: string;
-    
+
     // Personal Info
     firstName: string;
     lastName: string;
     dateOfBirth: string;
     gender: string;
-    
+
     // Medical Info
     height: string;
     weight: string;
@@ -22,7 +22,7 @@ interface ReviewSubmitProps {
     medications: string;
     conditions: string;
     familyHistory: string;
-    
+
     // Lifestyle Info
     smokingStatus: string;
     alcoholConsumption: string;
@@ -37,11 +37,16 @@ interface ReviewSubmitProps {
   handleSubmit: () => void;
 }
 
-const ReviewSubmit: React.FC<ReviewSubmitProps> = ({ formData, prevStep, handleSubmit }) => {
+const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
+  formData,
+  prevStep,
+  handleSubmit,
+}) => {
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   return (
     <StyledForm>
       <h2 className="form-title">Review Your Information</h2>
-      
+
       <div className="review-sections">
         <div className="review-section">
           <h3 className="section-title">Account Information</h3>
@@ -92,19 +97,25 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({ formData, prevStep, handleS
             </div>
             <div className="form-group full-width">
               <label>Allergies</label>
-              <div className="review-value">{formData.allergies || 'None'}</div>
+              <div className="review-value">{formData.allergies || "None"}</div>
             </div>
             <div className="form-group full-width">
               <label>Medications</label>
-              <div className="review-value">{formData.medications || 'None'}</div>
+              <div className="review-value">
+                {formData.medications || "None"}
+              </div>
             </div>
             <div className="form-group full-width">
               <label>Medical Conditions</label>
-              <div className="review-value">{formData.conditions || 'None'}</div>
+              <div className="review-value">
+                {formData.conditions || "None"}
+              </div>
             </div>
             <div className="form-group full-width">
               <label>Family History</label>
-              <div className="review-value">{formData.familyHistory || 'None'}</div>
+              <div className="review-value">
+                {formData.familyHistory || "None"}
+              </div>
             </div>
           </div>
         </div>
@@ -142,24 +153,34 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({ formData, prevStep, handleS
             </div>
             <div className="form-group full-width">
               <label>Hobbies/Interests</label>
-              <div className="review-value">{formData.hobbies || 'None'}</div>
+              <div className="review-value">{formData.hobbies || "None"}</div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="form-navigation">
-        <button
-          type="button"
-          onClick={prevStep}
-        >
+        <button type="button" onClick={prevStep}>
           <ArrowLeft size={16} />
           Previous Step
         </button>
-        <button 
+        <div className="terms-checkbox">
+          <input
+            type="checkbox"
+            id="terms"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+          />
+          <label htmlFor="terms">
+            I understand that my data will be collected to help provide
+            personalized recommendations.
+          </label>
+        </div>
+        <button
           type="button"
           className="form-submit-btn"
           onClick={handleSubmit}
+          disabled={!acceptedTerms}
         >
           Submit
         </button>
@@ -254,33 +275,27 @@ const StyledForm = styled.form`
     color: #e81cff;
   }
 
-  .form-submit-btn {
+  .terms-checkbox {
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-family: inherit;
-    color: #717171;
-    font-weight: 600;
-    width: 40%;
-    background: #313131;
-    border: 1px solid #414141;
-    padding: 12px 16px;
-    font-size: inherit;
     gap: 8px;
-    margin-top: 8px;
+    margin: 16px 0 0 0;
+    font-size: 14px;
+    color: #e0e0e0;
+  }
+  .terms-checkbox input[type="checkbox"] {
+    accent-color: #40c9ff;
+    width: 18px;
+    height: 18px;
+  }
+  .terms-checkbox label {
     cursor: pointer;
-    border-radius: 6px;
+    user-select: none;
   }
-
-  .form-submit-btn:hover {
-    background-color: #fff;
-    border-color: #fff;
-    color: #212121;
-  }
-
-  .form-submit-btn:active {
-    scale: 0.95;
+  .form-submit-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 `;
 
-export default ReviewSubmit; 
+export default ReviewSubmit;

@@ -125,7 +125,7 @@ const Input: React.FC<CustomInputProps> = ({
     <StyledWrapper>
       <div className="flex flex-col items-center w-full gap-4">
         <div className="container flex justify-center w-full">
-          <div className="messageBox">
+          <div className="inputGroup">
             <div className="fileUploadWrapper">
               <label htmlFor="file">
                 <svg
@@ -225,30 +225,42 @@ const StyledWrapper = styled.div`
     gap: 10px;
   }
 
-  .messageBox {
-    width: fit-content;
-    height: 40px;
+  .inputGroup {
     display: flex;
     align-items: center;
-    justify-content: center;
-    background-color: #2d2d2d;
-    padding: 0 15px;
+    width: fit-content;
+    height: 40px;
+    background-color: #e0f7fa;
+    border: 1px solid #3f3f3f;
     border-radius: 10px;
-    border: 1px solid rgb(63, 63, 63);
-    transition: all 0.3s ease;
+    transition: background-color 0.3s, border-color 0.3s;
+    padding: 0 0 0 8px;
   }
 
-  :global(.light) .messageBox {
-    background-color: #f5f5f5;
-    border: 1px solid #e0e0e0;
+  :global(.light) .inputGroup {
+    background-color: #e0f7fa;
+    border: 1px solid #b6e6ef;
   }
 
-  .messageBox:focus-within {
-    border: 1px solid rgb(110, 110, 110);
+  .inputGroup:focus-within {
+    border: 1px solid #e81cff;
+    background: #232323;
   }
 
-  :global(.light) .messageBox:focus-within {
-    border: 1px solid #9ca3af;
+  :global(.light) .inputGroup:focus-within {
+    border: 1px solid #62d5d0;
+    background: #fff;
+  }
+
+  .inputGroup.has-text {
+    background-color: #e0f7fa;
+    border: 1px solid #3f3f3f;
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  :global(.light) .inputGroup.has-text {
+    background-color: #e0f7fa;
+    border: 1.5px solid #62d5d0;
   }
 
   .fileUploadWrapper {
@@ -296,7 +308,7 @@ const StyledWrapper = styled.div`
 
   :global(.light) .fileUploadWrapper label:hover svg path,
   :global(.light) .fileUploadWrapper label:hover svg circle {
-    stroke: #1f2937;
+    stroke: #e0f7fa;
   }
 
   .fileUploadWrapper label:hover svg circle {
@@ -338,15 +350,31 @@ const StyledWrapper = styled.div`
   #messageInput {
     width: 400px;
     height: 100%;
-    background-color: transparent;
+    background: none;
     outline: none;
     border: none;
     padding-left: 10px;
     color: white;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s, border 0.2s;
   }
 
   :global(.light) #messageInput {
+    background: none;
     color: #1f2937;
+    border: none;
+    box-shadow: none;
+    padding-left: 10px;
+  }
+
+  #messageInput:focus {
+    outline: none;
+    border: none;
+    background: none;
+  }
+  :global(.light) #messageInput:focus {
+    border: none;
+    background: none;
   }
 
   #messageInput::placeholder {
@@ -373,8 +401,8 @@ const StyledWrapper = styled.div`
   }
 
   :global(.light) .sendButton {
-    background-color: #f5f5f5;
-    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
   }
 
   .sendButton:hover {
@@ -382,7 +410,8 @@ const StyledWrapper = styled.div`
   }
 
   :global(.light) .sendButton:hover {
-    border-color: #9ca3af;
+    border-color: #d1d5db;
+    background-color: #f3f4f6;
   }
 
   .sendButton svg {
@@ -399,9 +428,13 @@ const StyledWrapper = styled.div`
     stroke: white;
   }
 
-  :global(.light) .sendButton:hover svg path {
-    fill: #f5f5f5;
+  :global(.light) .sendButton svg path {
     stroke: #1f2937;
+  }
+
+  :global(.light) .sendButton:hover svg path {
+    fill: #fff;
+    stroke: #111827;
   }
 
   .sendButton:disabled {

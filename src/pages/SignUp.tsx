@@ -8,7 +8,8 @@ import ReviewSubmit from "./signin/ReviewSubmit";
 
 import { supabase } from "../lib/supabase";
 
-const SignIn: React.FC = () => {
+
+const SignUp: React.FC = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     // Account Info
@@ -330,12 +331,12 @@ const StyledWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: #121212;
+  background: rgb(215, 231, 255);
 
   .form-container {
     width: 800px;
     max-width: 90vw;
-    background: linear-gradient(#212121, #212121) padding-box,
+    background: linear-gradient(rgb(215, 231, 255), rgb(215, 231, 255)) padding-box,
       linear-gradient(145deg, transparent 35%, #e81cff, #40c9ff) border-box;
     border: 2px solid transparent;
     padding: 32px 24px;
@@ -442,15 +443,16 @@ const StyledWrapper = styled.div`
   }
 
   .form-container .form-submit-btn {
-    display: flex;
+    display: block;
+    margin: 22px auto 0 auto;
     align-items: center;
     justify-content: center;
     font-family: inherit;
-    color: #717171;
+    color:rgb(0, 0, 0);
     font-weight: 600;
     width: 40%;
-    background: #313131;
-    border: 1px solid #414141;
+    background:  linear-gradient(90deg, #e81cff 0%, #40c9ff 100%);
+    border: 1px solid rgb(85, 102, 106);
     padding: 12px 16px;
     font-size: inherit;
     gap: 8px;
@@ -500,4 +502,4 @@ const StyledWrapper = styled.div`
   }
 `;
 
-export default SignIn;
+export default SignUp;
