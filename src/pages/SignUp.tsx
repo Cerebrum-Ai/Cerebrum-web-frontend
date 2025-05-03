@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import AccountInfo from "./signin/AccountInfo";
 import PersonalInfo from "./signin/PersonalInfo";
 import MedicalHistory from "./signin/MedicalHistory";
 import LifestyleInfo from "./signin/LifestyleInfo";
 import ReviewSubmit from "./signin/ReviewSubmit";
+import { useToast } from "@/hooks/use-toast";
 
 import { supabase } from "../lib/supabase";
 
 const SignUp: React.FC = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     // Account Info
@@ -72,7 +76,11 @@ const SignUp: React.FC = () => {
 
         if (error) {
           console.error("Signup error:", error);
-          alert("Sign up error: " + error.message);
+          toast({
+            variant: "destructive",
+            title: "Sign up error",
+            description: error.message,
+          });
           return;
         }
 
@@ -81,11 +89,19 @@ const SignUp: React.FC = () => {
           setStep((prev) => prev + 1);
         } else {
           console.error("No user data returned from signup");
-          alert("Sign up failed: No user data returned");
+          toast({
+            variant: "destructive",
+            title: "Sign up failed",
+            description: "No user data returned",
+          });
         }
       } catch (err) {
         console.error("Unexpected error during signup:", err);
-        alert("An unexpected error occurred during sign up");
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "An unexpected error occurred during sign up",
+        });
         return;
       }
     } else {
@@ -138,10 +154,17 @@ const SignUp: React.FC = () => {
 
       if (insertError) {
         console.error("Profile insert error:", insertError);
-        alert("Profile insert error: " + insertError.message);
+        toast({
+          variant: "destructive",
+          title: "Profile insert error",
+          description: insertError.message,
+        });
         return;
       }
-      alert("Sign up successful!");
+      toast({
+        title: "Success",
+        description: "Sign up successful!",
+      });
     }
   };
 
@@ -318,6 +341,13 @@ const SignUp: React.FC = () => {
               prevStep={prevStep}
             />
           )}
+
+          <div className="sign-in-link">
+            Already have an account?{" "}
+            <button onClick={() => navigate("/signin")} className="sign-in-btn">
+              Sign In
+            </button>
+          </div>
         </div>
       </StyledWrapper>
     </div>
@@ -494,6 +524,28 @@ const StyledWrapper = styled.div`
 
   .form-container .form-navigation button:hover {
     color: #62d5d0;
+  }
+
+  .sign-in-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #354745;
+    font-size: 14px;
+  }
+
+  .sign-in-btn {
+    background: none;
+    border: none;
+    color: #62d5d0;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 0;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+
+  .sign-in-btn:hover {
+    color: #4db8b3;
   }
 `;
 

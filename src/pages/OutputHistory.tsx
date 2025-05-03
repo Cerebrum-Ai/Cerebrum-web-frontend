@@ -1,3 +1,4 @@
+// OutputHistory.tsx - Read-only version of Output page for displaying history
 import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -79,105 +80,76 @@ interface ApiResponse {
   status?: string;
 }
 
-const OutputPage: React.FC = () => {
+const OutputHistoryPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const apiResponse = location.state?.apiResponse as ApiResponse | undefined;
-  const analysisId = location.state?.analysisId;
   const { user } = useAuth();
-
-  // Save analysis results to Supabase only if this is a new analysis (no analysisId)
-  useEffect(() => {
-    if (analysisId) return; // Don't upload if this is a history record
-
-    const saveAnalysisResults = async () => {
-      if (!apiResponse || !user) return;
-      try {
-        const { data: profileData, error: profileError } = await supabase
-          .from("user_profiles")
-          .select("user_id, first_name, last_name")
-          .eq("user_id", user.id)
-          .single();
-        if (profileError || !profileData) {
-          console.error("Error fetching user profile:", profileError);
-          return;
-        }
-        const { error: insertError } = await supabase
-          .from("analysis_records")
-          .insert({
-            user_id: user.id,
-            name: `Analysis ${new Date().toLocaleString()}`,
-            analysis_data: apiResponse,
-          });
-        if (insertError) {
-          console.error("Error saving analysis:", insertError);
-        }
-      } catch (error) {
-        console.error("Error in saveAnalysisResults:", error);
-      }
-    };
-    saveAnalysisResults();
-  }, [apiResponse, user, analysisId]);
+  const currentAnalysisId = location.state?.analysisId;
 
   // Fetch analysis history from Supabase
   const [analysisHistory, setAnalysisHistory] = useState<AnalysisHistory[]>([]);
+
+  const fetchHistory = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("analysis_records")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
+    if (error) {
+      console.error("Error fetching analysis history:", error);
+      return;
+    }
+    const newHistory = (data || []).map((item: any) => ({
+      id: item.id,
+      date: new Date(item.created_at),
+      condition: item.analysis_data?.analysis?.final_analysis || "Unknown",
+      severity: item.analysis_data?.analysis?.severity || "Moderate",
+      status: "Completed" as const,
+      doctorName: item.analysis_data?.doctorName || "",
+      raw: item,
+    }));
+    setAnalysisHistory(newHistory);
+
+    // If the currently viewed record was deleted, navigate back to dashboard
+    if (
+      currentAnalysisId &&
+      !newHistory.find((item) => item.id === currentAnalysisId)
+    ) {
+      navigate("/dashboard");
+    }
+  };
+
   useEffect(() => {
-    const fetchHistory = async () => {
-      if (!user) return;
-      const { data, error } = await supabase
-        .from("analysis_records")
-        .select("*")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        console.error("Error fetching analysis history:", error);
-        return;
-      }
-      setAnalysisHistory(
-        (data || []).map((item: any) => ({
-          id: item.id,
-          date: new Date(item.created_at),
-          condition: item.analysis_data?.analysis?.final_analysis || "Unknown",
-          severity: item.analysis_data?.analysis?.severity || "Moderate",
-          status: "Completed", // Adjust if you store status
-          doctorName: item.analysis_data?.doctorName || "",
-          raw: item,
-        }))
-      );
-    };
     fetchHistory();
   }, [user]);
 
   const handleSelectAnalysis = (id: string) => {
-    // Handle analysis selection - implement your logic here
-    console.log("Selected analysis:", id);
+    const record = analysisHistory.find((item) => item.id === id);
+    if (record && record.raw) {
+      navigate("/output-history", {
+        state: {
+          apiResponse: record.raw.analysis_data,
+          analysisId: id,
+        },
+      });
+    }
   };
 
   const downloadResponse = () => {
     if (!apiResponse) return;
-
-    // Create a Blob with the JSON data
     const jsonBlob = new Blob([JSON.stringify(apiResponse, null, 2)], {
       type: "application/json",
     });
-
-    // Create a URL for the Blob
     const url = URL.createObjectURL(jsonBlob);
-
-    // Create filename with timestamp
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-
-    // Create an anchor element
     const a = document.createElement("a");
     a.href = url;
     a.download = `skin-analysis-${timestamp}.json`;
-
-    // Trigger the download
     document.body.appendChild(a);
     a.click();
-
-    // Clean up
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
@@ -193,6 +165,7 @@ const OutputPage: React.FC = () => {
         onSelectAnalysis={handleSelectAnalysis}
         isCollapsed={isSidebarCollapsed}
         onCollapse={setIsSidebarCollapsed}
+        onHistoryUpdate={fetchHistory}
       />
       <Navbar />
       <div
@@ -231,7 +204,6 @@ const OutputPage: React.FC = () => {
                         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
                           Analysis
                         </h2>
-
                         {apiResponse.analysis && (
                           <>
                             <div className="mb-6">
@@ -548,7 +520,6 @@ const OutputPage: React.FC = () => {
                             </div>
                           </>
                         )}
-
                         {apiResponse.response && !apiResponse.analysis && (
                           <div className="mb-2">
                             <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -654,4 +625,4 @@ const OutputPage: React.FC = () => {
   );
 };
 
-export default OutputPage;
+export default OutputHistoryPage;

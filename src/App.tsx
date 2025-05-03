@@ -12,6 +12,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import InputPage from "./pages/Dashboard";
 import OutputPage from "./pages/Output";
+import OutputHistoryPage from "./pages/OutputHistory";
 import Enhanced from "./pages/Enhanced";
 import Doctor from "./pages/Doctor";
 
@@ -28,25 +29,33 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
-              <Route 
-                path="/dashboard" 
+              <Route
+                path="/dashboard"
                 element={
                   <ProtectedRoute>
                     <InputPage />
                   </ProtectedRoute>
-                } 
+                }
               />
               <Route path="/signup" element={<SignUp />} />
               <Route
-                path="/output" 
+                path="/output"
                 element={
                   <ProtectedRoute>
-                    <OutputPage/>
+                    <OutputPage />
                   </ProtectedRoute>
-                } 
+                }
               />
-              <Route path="/enhanced" element={<Enhanced />}/>
-              <Route path="/doctor" element={<Doctor/>}/>
+              <Route
+                path="/output-history"
+                element={
+                  <ProtectedRoute>
+                    <OutputHistoryPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/enhanced" element={<Enhanced />} />
+              <Route path="/doctor" element={<Doctor />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
