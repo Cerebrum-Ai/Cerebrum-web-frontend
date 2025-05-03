@@ -8,7 +8,6 @@ import ReviewSubmit from "./signin/ReviewSubmit";
 
 import { supabase } from "../lib/supabase";
 
-
 const SignUp: React.FC = () => {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -181,42 +180,42 @@ const SignUp: React.FC = () => {
           cx="970"
           cy="350"
           r="69"
-          fill="#a5f3fc"
+          fill="#62d5d0"
           fillOpacity="0.11"
         />
-        <circle cx="160" cy="180" r="70" fill="#67e8f9" fillOpacity="0.16" />
+        <circle cx="160" cy="180" r="70" fill="#62d5d0" fillOpacity="0.16" />
         <circle
           className="animate-pulse"
           cx="960"
           cy="789"
           r="35"
-          fill="#22d3ee"
+          fill="#62d5d0"
           fillOpacity="0.14"
         />
-        <circle cx="980" cy="170" r="33" fill="#0ea5e9" fillOpacity="0.26" />
-        <circle cx="120" cy="730" r="24" fill="#0284c7" fillOpacity="0.19" />
+        <circle cx="980" cy="170" r="33" fill="#62d5d0" fillOpacity="0.26" />
+        <circle cx="120" cy="730" r="24" fill="#62d5d0" fillOpacity="0.19" />
         <circle
           className="animate-pulse"
           cx="720"
           cy="100"
           r="41"
-          fill="#0891b2"
+          fill="#62d5d0"
           fillOpacity="0.18"
         />
       </svg>
 
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Blurred gradients */}
-        <div className="floating absolute top-[15%] left-[10%] w-36 h-36 rounded-full bg-gradient-to-br from-blue-400/25 via-sky-300/20 to-cyan-300/15 blur-2xl"></div>
-        <div className="floating absolute bottom-[20%] right-[15%] w-48 h-48 rounded-full bg-gradient-to-br from-sky-400/25 via-blue-300/20 to-cyan-300/15 blur-2xl"></div>
-        <div className="floating absolute top-[60%] left-[20%] w-32 h-32 rounded-full bg-gradient-to-tl from-blue-400/25 via-sky-300/20 to-cyan-300/15 blur-2xl"></div>
+        <div className="floating absolute top-[15%] left-[10%] w-36 h-36 rounded-full bg-gradient-to-br from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
+        <div className="floating absolute bottom-[20%] right-[15%] w-48 h-48 rounded-full bg-gradient-to-br from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
+        <div className="floating absolute top-[60%] left-[20%] w-32 h-32 rounded-full bg-gradient-to-tl from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
 
         {/* Small particles */}
-        <div className="floating absolute top-[30%] right-[30%] w-6 h-6 rounded-full bg-blue-400/30"></div>
-        <div className="floating absolute top-[40%] left-[40%] w-4 h-4 rounded-full bg-sky-400/35"></div>
-        <div className="floating absolute bottom-[35%] left-[25%] w-5 h-5 rounded-full bg-blue-400/35"></div>
-        <div className="floating absolute top-[25%] right-[18%] w-3 h-3 rounded-full bg-sky-400/35"></div>
-        <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-cyan-400/35"></div>
+        <div className="floating absolute top-[30%] right-[30%] w-6 h-6 rounded-full bg-[#62d5d0]/30"></div>
+        <div className="floating absolute top-[40%] left-[40%] w-4 h-4 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute bottom-[35%] left-[25%] w-5 h-5 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute top-[25%] right-[18%] w-3 h-3 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-[#62d5d0]/35"></div>
       </div>
 
       <style>{`
@@ -331,23 +330,23 @@ const StyledWrapper = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgb(215, 231, 255);
+  background: #f8fafc;
 
   .form-container {
     width: 800px;
     max-width: 90vw;
-    background: linear-gradient(rgb(215, 231, 255), rgb(215, 231, 255)) padding-box,
-      linear-gradient(145deg, transparent 35%, #e81cff, #40c9ff) border-box;
-    border: 2px solid transparent;
+    background: white;
+    border: 2px solid #62d5d0;
     padding: 32px 24px;
     font-size: 14px;
     font-family: inherit;
-    color: white;
+    color: #354745;
     display: flex;
     flex-direction: column;
     gap: 20px;
     box-sizing: border-box;
     border-radius: 16px;
+    box-shadow: 0 12px 32px rgba(98, 213, 208, 0.1);
   }
 
   .form-header {
@@ -358,14 +357,14 @@ const StyledWrapper = styled.div`
   .form-header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(145deg, #e81cff, #40c9ff);
+    background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin: 0;
   }
 
   .form-header p {
-    color: #717171;
+    color: #354745;
     margin-top: 8px;
     font-size: 1rem;
   }
@@ -381,12 +380,13 @@ const StyledWrapper = styled.div`
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background-color: #414141;
+    background-color: #e8f7f6;
+    border: 1px solid #62d5d0;
     transition: all 0.3s ease;
   }
 
   .progress-dot.active {
-    background-color: #e81cff;
+    background-color: #62d5d0;
     transform: scale(1.2);
   }
 
@@ -409,7 +409,7 @@ const StyledWrapper = styled.div`
   .form-container .form-group label {
     display: block;
     margin-bottom: 5px;
-    color: #717171;
+    color: #354745;
     font-weight: 600;
     font-size: 12px;
   }
@@ -420,10 +420,10 @@ const StyledWrapper = styled.div`
     width: 100%;
     padding: 12px 16px;
     border-radius: 8px;
-    color: #fff;
+    color: #354745;
     font-family: inherit;
-    background-color: transparent;
-    border: 1px solid #414141;
+    background-color: #e8f7f6;
+    border: 1px solid #62d5d0;
   }
 
   .form-container .form-group textarea {
@@ -432,6 +432,7 @@ const StyledWrapper = styled.div`
   }
 
   .form-container .form-group input::placeholder {
+    color: #354745;
     opacity: 0.5;
   }
 
@@ -439,7 +440,8 @@ const StyledWrapper = styled.div`
   .form-container .form-group select:focus,
   .form-container .form-group textarea:focus {
     outline: none;
-    border-color: #e81cff;
+    border-color: #62d5d0;
+    box-shadow: 0 0 0 2px rgba(98, 213, 208, 0.1);
   }
 
   .form-container .form-submit-btn {
@@ -448,34 +450,27 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     font-family: inherit;
-    color:rgb(0, 0, 0);
+    color: white;
     font-weight: 600;
     width: 40%;
-    background:  linear-gradient(90deg, #e81cff 0%, #40c9ff 100%);
-    border: 1px solid rgb(85, 102, 106);
+    background: #62d5d0;
+    border: none;
     padding: 12px 16px;
     font-size: inherit;
     gap: 8px;
     margin-top: 8px;
     cursor: pointer;
     border-radius: 6px;
+    transition: background 0.2s;
   }
 
   .form-container .form-submit-btn:hover {
-    background-color: #fff;
-    border-color: #fff;
-    color: #212121;
+    background: #4db8b3;
   }
 
   .form-container .form-submit-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  .form-container .form-submit-btn:disabled:hover {
-    background-color: #313131;
-    border-color: #414141;
-    color: #717171;
   }
 
   .form-container .form-navigation {
@@ -489,7 +484,7 @@ const StyledWrapper = styled.div`
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #717171;
+    color: #354745;
     font-weight: 600;
     background: transparent;
     border: none;
@@ -498,7 +493,7 @@ const StyledWrapper = styled.div`
   }
 
   .form-container .form-navigation button:hover {
-    color: #e81cff;
+    color: #62d5d0;
   }
 `;
 

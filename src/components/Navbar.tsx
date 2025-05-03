@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
     const baseItems = [
       { label: "Home", to: "/" },
       { label: "Why CerebrumAI?", to: "#features" },
-      { label: "Skin Analysis", to: "/input" },
+      { label: "Medical Dashboard", to: "/dashboard" },
     ];
 
     // Only show sign in when not authenticated

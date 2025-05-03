@@ -11,10 +11,51 @@ import { Download, ArrowLeft, Network } from "lucide-react";
 interface ApiResponse {
     response?: string;
     error?: string;
+    llm_error?: string;
     analysis?: {
-        final_analysis: string;
-        initial_diagnosis: string;
-        vectordb_results: string;
+        final_analysis?: string;
+        initial_diagnosis?: string;
+        vectordb_results?: string;
+        audio_analysis?: {
+            detected_emotion: string;
+            probabilities: {
+                angry: number;
+                fear: number;
+                happy: number;
+                neutral: number;
+                sad: number;
+            }
+        };
+        image_analysis?: {
+            breastmnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+            chestmnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+            dermamnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+            octmnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+            pathmnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+            pneumoniamnist?: {
+                predicted_label: string;
+                probability: number;
+            };
+        };
+        typing_analysis?: {
+            detected_condition: string;
+            error?: string;
+        };
     };
     status?: string;
 }
@@ -100,6 +141,90 @@ const OutputPage: React.FC = () => {
                                                             {apiResponse.analysis.initial_diagnosis}
                                                         </div>
                                                     </div>
+
+                                                    {apiResponse.analysis?.audio_analysis && (
+                                                        <div className="mb-6">
+                                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Audio Analysis</h3>
+                                                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                                                                <p><strong>Detected Emotion:</strong> {apiResponse.analysis.audio_analysis.detected_emotion}</p>
+                                                                <div className="mt-2">
+                                                                    <p className="mb-1"><strong>Emotion Probabilities:</strong></p>
+                                                                    <div className="grid grid-cols-2 gap-2 text-sm">
+                                                                        <div>Angry: {(apiResponse.analysis.audio_analysis.probabilities.angry * 100).toFixed(1)}%</div>
+                                                                        <div>Fear: {(apiResponse.analysis.audio_analysis.probabilities.fear * 100).toFixed(1)}%</div>
+                                                                        <div>Happy: {(apiResponse.analysis.audio_analysis.probabilities.happy * 100).toFixed(1)}%</div>
+                                                                        <div>Neutral: {(apiResponse.analysis.audio_analysis.probabilities.neutral * 100).toFixed(1)}%</div>
+                                                                        <div>Sad: {(apiResponse.analysis.audio_analysis.probabilities.sad * 100).toFixed(1)}%</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {apiResponse.analysis?.image_analysis && (
+                                                        <div className="mb-6">
+                                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Image Analysis</h3>
+                                                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                    {apiResponse.analysis.image_analysis.dermamnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">Skin Analysis (DermaMNIST):</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.dermamnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.dermamnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                    {apiResponse.analysis.image_analysis.breastmnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">Breast Analysis:</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.breastmnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.breastmnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                    {apiResponse.analysis.image_analysis.chestmnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">Chest X-Ray Analysis:</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.chestmnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.chestmnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                    {apiResponse.analysis.image_analysis.octmnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">OCT Analysis:</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.octmnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.octmnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                    {apiResponse.analysis.image_analysis.pathmnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">Pathology Analysis:</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.pathmnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.pathmnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                    {apiResponse.analysis.image_analysis.pneumoniamnist && (
+                                                                        <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                                                            <p className="font-medium">Pneumonia Analysis:</p>
+                                                                            <p>Prediction: {apiResponse.analysis.image_analysis.pneumoniamnist.predicted_label}</p>
+                                                                            <p>Confidence: {(apiResponse.analysis.image_analysis.pneumoniamnist.probability * 100).toFixed(1)}%</p>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {apiResponse.analysis?.typing_analysis && (
+                                                        <div className="mb-6">
+                                                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Typing Analysis</h3>
+                                                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                                                                {apiResponse.analysis.typing_analysis.error ? (
+                                                                    <p className="text-amber-600 dark:text-amber-400">{apiResponse.analysis.typing_analysis.error}</p>
+                                                                ) : (
+                                                                    <p><strong>Detected Condition:</strong> {apiResponse.analysis.typing_analysis.detected_condition}</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    )}
 
                                                     <div className="mb-6">
                                                         <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">VectorDB Results</h3>

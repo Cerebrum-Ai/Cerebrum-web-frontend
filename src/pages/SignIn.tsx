@@ -90,42 +90,42 @@ const SignIn: React.FC = () => {
           cx="970"
           cy="350"
           r="69"
-          fill="#a5f3fc"
+          fill="#62d5d0"
           fillOpacity="0.11"
         />
-        <circle cx="160" cy="180" r="70" fill="#67e8f9" fillOpacity="0.16" />
+        <circle cx="160" cy="180" r="70" fill="#62d5d0" fillOpacity="0.16" />
         <circle
           className="animate-pulse"
           cx="960"
           cy="789"
           r="35"
-          fill="#22d3ee"
+          fill="#62d5d0"
           fillOpacity="0.14"
         />
-        <circle cx="980" cy="170" r="33" fill="#0ea5e9" fillOpacity="0.26" />
-        <circle cx="120" cy="730" r="24" fill="#0284c7" fillOpacity="0.19" />
+        <circle cx="980" cy="170" r="33" fill="#62d5d0" fillOpacity="0.26" />
+        <circle cx="120" cy="730" r="24" fill="#62d5d0" fillOpacity="0.19" />
         <circle
           className="animate-pulse"
           cx="720"
           cy="100"
           r="41"
-          fill="#0891b2"
+          fill="#62d5d0"
           fillOpacity="0.18"
         />
       </svg>
 
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Blurred gradients */}
-        <div className="floating absolute top-[15%] left-[10%] w-36 h-36 rounded-full bg-gradient-to-br from-blue-400/25 via-sky-300/20 to-cyan-300/15 blur-2xl"></div>
-        <div className="floating absolute bottom-[20%] right-[15%] w-48 h-48 rounded-full bg-gradient-to-br from-sky-400/25 via-blue-300/20 to-cyan-300/15 blur-2xl"></div>
-        <div className="floating absolute top-[60%] left-[20%] w-32 h-32 rounded-full bg-gradient-to-tl from-blue-400/25 via-sky-300/20 to-cyan-300/15 blur-2xl"></div>
+        <div className="floating absolute top-[15%] left-[10%] w-36 h-36 rounded-full bg-gradient-to-br from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
+        <div className="floating absolute bottom-[20%] right-[15%] w-48 h-48 rounded-full bg-gradient-to-br from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
+        <div className="floating absolute top-[60%] left-[20%] w-32 h-32 rounded-full bg-gradient-to-tl from-[#62d5d0]/25 via-[#62d5d0]/20 to-[#62d5d0]/15 blur-2xl"></div>
 
         {/* Small particles */}
-        <div className="floating absolute top-[30%] right-[30%] w-6 h-6 rounded-full bg-blue-400/30"></div>
-        <div className="floating absolute top-[40%] left-[40%] w-4 h-4 rounded-full bg-sky-400/35"></div>
-        <div className="floating absolute bottom-[35%] left-[25%] w-5 h-5 rounded-full bg-blue-400/35"></div>
-        <div className="floating absolute top-[25%] right-[18%] w-3 h-3 rounded-full bg-sky-400/35"></div>
-        <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-cyan-400/35"></div>
+        <div className="floating absolute top-[30%] right-[30%] w-6 h-6 rounded-full bg-[#62d5d0]/30"></div>
+        <div className="floating absolute top-[40%] left-[40%] w-4 h-4 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute bottom-[35%] left-[25%] w-5 h-5 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute top-[25%] right-[18%] w-3 h-3 rounded-full bg-[#62d5d0]/35"></div>
+        <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-[#62d5d0]/35"></div>
       </div>
 
       <style>{`
@@ -229,7 +229,7 @@ const StyledWrapper = styled.div`
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: rgb(215, 231, 255);
+  background: #f8fafc;
   padding: 20px;
 
   .form-container {
@@ -238,7 +238,7 @@ const StyledWrapper = styled.div`
     min-height: 360px;
     padding: 64px 56px;
     border-radius: 32px;
-    box-shadow: 0 12px 32px rgba(0, 183, 255, 0.1);
+    box-shadow: 0 12px 32px rgba(98, 213, 208, 0.1);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -249,7 +249,7 @@ const StyledWrapper = styled.div`
     font-weight: 600;
     margin-bottom: 24px;
     text-align: center;
-    background: linear-gradient(to right, #e81cff, rgb(11, 174, 239));
+    background: linear-gradient(to right, #354745, #62d5d0);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -267,12 +267,12 @@ const StyledWrapper = styled.div`
     height: 40px;
     position: relative;
     padding: 10px;
-    border: 0.1px solid #575cb5;
+    border: 0.1px solid #62d5d0;
   }
 
   .submit-btn {
     width: 100%;
-    background: #6d74e3;
+    background: #62d5d0;
     border: none;
     color: white;
     font-weight: 600;
@@ -284,7 +284,7 @@ const StyledWrapper = styled.div`
   }
 
   .submit-btn:hover {
-    background: #575cb5;
+    background: #4db8b3;
   }
 
   .wrapper {
@@ -308,7 +308,7 @@ const StyledWrapper = styled.div`
   .wrapper .submit-btn::before {
     position: absolute;
     content: "";
-    background: #6d74e3;
+    background: #62d5d0;
     top: 0;
     left: -40px;
     width: 40px;
@@ -322,7 +322,7 @@ const StyledWrapper = styled.div`
   .wrapper .submit-btn::after {
     position: absolute;
     content: "";
-    background: #6d74e3;
+    background: #62d5d0;
     width: 200px;
     height: 40px;
     top: -40px;
@@ -334,41 +334,41 @@ const StyledWrapper = styled.div`
 
   .wrapper li:nth-child(1)::after,
   .wrapper li:nth-child(1)::before {
-    background-color: #d8daf7;
+    background-color: #e8f7f6;
   }
 
   .wrapper li:nth-child(2)::after,
   .wrapper li:nth-child(2)::before {
-    background-color: #989deb;
+    background-color: #b8e9e6;
   }
 
   li .input {
     outline: none;
     border: none;
-    color: black;
+    color: #354745;
     background: transparent;
   }
 
   li .input::placeholder {
-    color: black;
+    color: #354745;
   }
 
   li:nth-child(1) .input {
-    background: #d8daf7;
+    background: #e8f7f6;
   }
 
   li:nth-child(2) .input {
-    background: #989deb;
+    background: #b8e9e6;
   }
 
   li:nth-child(1) .input:focus {
     outline: none;
-    border: 3.5px solid #d8daf7;
+    border: 3.5px solid #e8f7f6;
   }
 
   li:nth-child(2) .input:focus {
     outline: none;
-    border: 3.5px solid #989deb;
+    border: 3.5px solid #b8e9e6;
   }
 
   .wrapper li:hover,
@@ -379,7 +379,7 @@ const StyledWrapper = styled.div`
   button:hover,
   button:hover::before,
   button:hover::after {
-    background: #575cb5;
+    background: #4db8b3;
   }
 
   button:active {
@@ -405,15 +405,15 @@ const StyledWrapper = styled.div`
     font-size: 1.5rem;
     font-weight: 700;
     border-radius: 12px;
-    background: linear-gradient(90deg, #e81cff 0%, #40c9ff 100%);
+    background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
     color: #fff;
     border: none;
-    box-shadow: 0 4px 16px rgba(64, 201, 255, 0.1);
+    box-shadow: 0 4px 16px rgba(98, 213, 208, 0.1);
     cursor: pointer;
     transition: background 0.2s, color 0.2s, transform 0.1s;
   }
   .big-signup-btn:hover {
-    background: linear-gradient(90deg, #40c9ff 0%, #e81cff 100%);
+    background: linear-gradient(90deg, #62d5d0 0%, #354745 100%);
     color: #fff;
     transform: scale(1.03);
   }
@@ -430,7 +430,7 @@ const StyledWrapper = styled.div`
     font-size: 5rem;
     font-weight: 900;
     text-align: center;
-    background: linear-gradient(90deg, #e81cff 0%, #40c9ff 100%);
+    background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
