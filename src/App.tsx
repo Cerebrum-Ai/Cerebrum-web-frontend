@@ -15,6 +15,8 @@ import OutputPage from "./pages/Output";
 import OutputHistoryPage from "./pages/OutputHistory";
 import Enhanced from "./pages/Enhanced";
 import Doctor from "./pages/Doctor";
+import AnalysisSettings from "./pages/AnalysisSettings";
+import AccountPage from "./pages/AccountPage";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +53,22 @@ const App = () => (
                 element={
                   <ProtectedRoute>
                     <OutputHistoryPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/account"
+                element={
+                  <ProtectedRoute>
+                    <AccountPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <AnalysisSettings />
                   </ProtectedRoute>
                 }
               />
