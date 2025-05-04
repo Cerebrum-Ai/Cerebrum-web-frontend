@@ -42,6 +42,7 @@ const SignIn: React.FC = () => {
   });
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [role, setRole] = useState("patient"); // Default to patient login
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -51,29 +52,93 @@ const SignIn: React.FC = () => {
     }));
   };
 
+  const handleRoleChange = (selectedRole: string) => {
+    setRole(selectedRole);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
 
     try {
+      if (role === "doctor") {
+        console.log("Checking doctor email:", formData.email);
+        
+        // Fetch doctor by email with proper column selection
+        const { data: doctorData, error: doctorError } = await supabase
+          .from("doctors")
+          .select("id, email, first_name, last_name")
+          .eq("email", formData.email.trim())
+          .maybeSingle();
+
+        console.log("Doctor check result:", { doctorData, doctorError });
+
+        if (doctorError) {
+          console.error("Doctor verification error:", doctorError);
+          setError("Error verifying doctor credentials");
+          setIsLoading(false);
+          return;
+        }
+
+        if (!doctorData) {
+          console.log("No doctor found with email:", formData.email);
+          
+          // Try a case-insensitive search as a fallback
+          const { data: caseInsensitiveSearch } = await supabase
+            .from("doctors")
+            .select("id, email, first_name, last_name")
+            .ilike("email", formData.email.trim())
+            .maybeSingle();
+            
+          if (caseInsensitiveSearch) {
+            console.log("Found doctor with case-insensitive search:", caseInsensitiveSearch.email);
+            // Continue with authentication using the found email
+          } else {
+            setError("No doctor account found with this email");
+            setIsLoading(false);
+            return;
+          }
+        } else {
+          console.log("Doctor found:", doctorData);
+        }
+      }
+
+      // Authenticate with Supabase
+      console.log("Attempting authentication for:", formData.email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email: formData.email,
         password: formData.password,
       });
 
       if (error) {
+        console.error("Authentication error:", error);
         setError(error.message);
+        setIsLoading(false);
         return;
       }
 
       if (data?.user) {
-        navigate("/dashboard");
+        console.log("Authentication successful, user:", data.user.email);
+        
+        if (role === "doctor") {
+          // Store doctor role in localStorage for later use
+          localStorage.setItem("userRole", "doctor");
+          console.log("Redirecting to doctor dashboard");
+          setIsLoading(false);
+          navigate("/doctor");
+        } else {
+          // User is a patient, proceed to dashboard
+          localStorage.setItem("userRole", "patient");
+          console.log("Redirecting to patient dashboard");
+          setIsLoading(false);
+          navigate("/dashboard");
+        }
       }
     } catch (err) {
+      console.error("Unexpected error during sign in:", err);
       setError("An unexpected error occurred. Please try again.");
-      console.error("Sign in error:", err);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -172,6 +237,7 @@ const SignIn: React.FC = () => {
                     transition: transform 0.4s ease-out;
                 }
             `}</style>
+      
       <StyledWrapper>
         <div className="center-viewport">
           <h1 className="big-header">Sign In</h1>
@@ -214,6 +280,20 @@ const SignIn: React.FC = () => {
               </ul>
               {error && <div className="error-message">{error}</div>}
             </form>
+            <div className="user-type-toggle">
+              <button
+                className={`toggle-btn ${role === "patient" ? "active" : ""}`}
+                onClick={() => handleRoleChange("patient")}
+              >
+                Patient
+              </button>
+              <button
+                className={`toggle-btn ${role === "doctor" ? "active" : ""}`}
+                onClick={() => handleRoleChange("doctor")}
+              >
+                Doctor
+              </button>
+            </div>
           </div>
           <div className="signup-button-container">
             <SignUpButton />
@@ -467,6 +547,33 @@ const StyledWrapper = styled.div`
     display: flex;
     justify-content: center;
     animation: fadeInUp 3.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .user-type-toggle {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  .toggle-btn {
+    background: #62d5d0;
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 0 10px;
+    transition: background 0.2s;
+  }
+
+  .toggle-btn.active {
+    background: #4db8b3;
+  }
+
+  .toggle-btn:hover {
+    background: #4db8b3;
   }
 `;
 

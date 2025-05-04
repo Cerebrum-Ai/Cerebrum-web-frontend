@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
+import {DoctorProtectedRoute} from "./components/DoctorProtectedRoute";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
@@ -73,7 +74,14 @@ const App = () => (
                 }
               />
               <Route path="/enhanced" element={<Enhanced />} />
-              <Route path="/doctor" element={<Doctor />} />
+              <Route
+                path="/doctor"
+                element={
+                    <DoctorProtectedRoute>
+                    <Doctor />
+                    </DoctorProtectedRoute>
+                }
+              />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

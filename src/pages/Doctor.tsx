@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
+import { supabase } from "../lib/supabase";
 import { 
   Calendar, 
   Search, 
@@ -22,9 +23,57 @@ import {
   MessageSquare
 } from "lucide-react";
 
+interface Doctor {
+  id: string;
+  email: string;
+  name: string;
+  specialty: string;
+  created_at: string;
+}
+
 const Doctor = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date(2025, 4, 3)); // May 3, 2025
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  
+  // Fetch doctors from Supabase
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        
+        // Get current user
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email) {
+          setCurrentUserEmail(user.email);
+          console.log("Current user email:", user.email);
+        }
+        
+        // Get all doctors
+        const { data, error } = await supabase
+          .from('doctors')
+          .select('*');
+          
+        if (error) {
+          console.error("Error fetching doctors:", error);
+          return;
+        }
+        
+        if (data) {
+          console.log("Doctors fetched:", data);
+          setDoctors(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctors:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchDoctors();
+  }, []);
   
   // Mock data for doctor's dashboard
   const patientAppointments = [
