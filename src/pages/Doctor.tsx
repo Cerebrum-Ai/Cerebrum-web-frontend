@@ -47,12 +47,40 @@ interface Doctor {
   created_at: string;
 }
 
+interface AnalysisRecord {
+  id: string;
+  user_id: string;
+  name: string;
+  analysis_data: {
+    analysis: {
+      severity: string;
+      final_analysis?: string;
+      initial_diagnosis?: string;
+    };
+    response: string;
+  };
+  created_at: string;
+}
+
+interface PatientAppointment {
+  id: string;
+  name: string;
+  time: string;
+  type: string;
+  condition: string;
+  image: string;
+  age?: number;
+  status: string;
+}
+
 const Doctor = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date(2025, 4, 3)); // May 3, 2025
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [patientAppointments, setPatientAppointments] = useState<PatientAppointment[]>([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(true);
 
   // Fetch doctors from Supabase
   useEffect(() => {
@@ -91,87 +119,95 @@ const Doctor = () => {
     fetchDoctors();
   }, []);
 
-  // Mock data for doctor's dashboard
-  const patientAppointments = [
-    {
-      id: 1,
-      name: "Emma Wilson",
-      time: "9:00 AM",
-      type: "Follow-up",
-      condition: "Eczema",
-      image: "/placeholder.svg",
-      age: 34,
-      status: "Checked In",
-    },
-    {
-      id: 2,
-      name: "Michael Brown",
-      time: "10:30 AM",
-      type: "New Patient",
-      condition: "Acne",
-      image: "/placeholder.svg",
-      age: 22,
-      status: "Scheduled",
-    },
-    {
-      id: 3,
-      name: "Sophia Chen",
-      time: "11:45 AM",
-      type: "Consultation",
-      condition: "Psoriasis",
-      image: "/placeholder.svg",
-      age: 45,
-      status: "Scheduled",
-    },
-    {
-      id: 4,
-      name: "James Miller",
-      time: "1:15 PM",
-      type: "Follow-up",
-      condition: "Rosacea",
-      image: "/placeholder.svg",
-      age: 39,
-      status: "Scheduled",
-    },
-  ];
+  // Fetch analysis records as appointments
+  useEffect(() => {
+    const fetchAnalysisRecords = async () => {
+      try {
+        setLoadingAppointments(true);
 
-  const recentSkinAnalyses = [
-    {
-      id: 101,
-      patientName: "Emma Wilson",
-      date: "May 2, 2025",
-      conditions: ["Eczema", "Dry Skin"],
-      severity: "Moderate",
-      aiConfidence: "94%",
-    },
-    {
-      id: 102,
-      patientName: "Michael Brown",
-      date: "May 1, 2025",
-      conditions: ["Acne", "Oily Skin"],
-      severity: "Mild",
-      aiConfidence: "92%",
-    },
-    {
-      id: 103,
-      patientName: "Sophia Chen",
-      date: "April 30, 2025",
-      conditions: ["Psoriasis"],
-      severity: "Severe",
-      aiConfidence: "97%",
-    },
-  ];
+        // Get today's date in ISO format for comparison (YYYY-MM-DD)
+        const today = new Date();
+        const todayStr = today.toISOString().split("T")[0];
 
-  const patientQueue = [
-    { id: 1, name: "Emma Wilson", waitTime: "5 minutes", status: "In Room" },
-    { id: 2, name: "Alex Johnson", waitTime: "10 minutes", status: "Waiting" },
-    {
-      id: 3,
-      name: "Sam Rodriguez",
-      waitTime: "Just arrived",
-      status: "Check-in",
-    },
-  ];
+        // Get all analysis records
+        const { data, error } = await supabase
+          .from("analysis_records")
+          .select(`
+            id, 
+            user_id, 
+            name, 
+            created_at, 
+            analysis_data,
+            user_profiles(first_name, last_name, date_of_birth, gender)
+          `)
+          .gte("created_at", `${todayStr}T00:00:00`) // Only get records from today
+          .order("created_at", { ascending: false });
+
+        if (error) {
+          console.error("Error fetching analysis records:", error);
+          return;
+        }
+
+        if (data) {
+          console.log("Analysis records fetched:", data);
+
+          // Transform analysis records to appointment format
+          const appointments: PatientAppointment[] = data.map((record: any) => {
+            // Calculate appointment time (convert from ISO to readable time)
+            const appointmentDate = new Date(record.created_at);
+            const hours = appointmentDate.getHours();
+            const minutes = appointmentDate.getMinutes();
+            const ampm = hours >= 12 ? "PM" : "AM";
+            const formattedHours = hours % 12 || 12;
+            const formattedMinutes = minutes.toString().padStart(2, "0");
+            const timeStr = `${formattedHours}:${formattedMinutes} ${ampm}`;
+
+            // Calculate age if date_of_birth is available
+            let age;
+            if (record.user_profiles?.date_of_birth) {
+              const birthDate = new Date(record.user_profiles.date_of_birth);
+              const ageDifMs = Date.now() - birthDate.getTime();
+              const ageDate = new Date(ageDifMs);
+              age = Math.abs(ageDate.getUTCFullYear() - 1970);
+            }
+
+            // Get patient name or use a placeholder
+            const patientName = record.user_profiles
+              ? `${record.user_profiles.first_name || ""} ${
+                  record.user_profiles.last_name || ""
+                }`.trim()
+              : `Patient ${record.id.slice(0, 5)}`;
+
+            return {
+              id: record.id,
+              name: patientName,
+              time: timeStr,
+              type: "Consultation",
+              condition:
+                record.analysis_data?.analysis?.final_analysis ||
+                record.analysis_data?.analysis?.initial_diagnosis ||
+                "Unknown",
+              image: "/placeholder.svg",
+              age: age,
+              status:
+                new Date().getTime() - appointmentDate.getTime() <
+                30 * 60 * 1000
+                  ? "Checked In"
+                  : "Scheduled",
+            };
+          });
+
+          setPatientAppointments(appointments);
+        }
+      } catch (err) {
+        console.error("Failed to fetch analysis records:", err);
+      } finally {
+        setLoadingAppointments(false);
+      }
+    };
+
+    fetchAnalysisRecords();
+  }, [selectedDate]); // Refetch if selected date changes
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16">
@@ -359,85 +395,95 @@ const Doctor = () => {
                   </div>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="border-b border-gray-200 dark:border-gray-700">
-                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-                            Patient
-                          </th>
-                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-                            Time
-                          </th>
-                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-                            Type
-                          </th>
-                          <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-                            Status
-                          </th>
-                          <th className="text-right py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {patientAppointments.map((appointment) => (
-                          <tr
-                            key={appointment.id}
-                            className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50"
-                          >
-                            <td className="py-3 px-6">
-                              <div className="flex items-center gap-3">
-                                <Avatar className="h-8 w-8">
-                                  <AvatarImage src={appointment.image} />
-                                  <AvatarFallback className="bg-gray-200 text-gray-600">
-                                    {appointment.name
-                                      .split(" ")
-                                      .map((n) => n[0])
-                                      .join("")}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <p className="font-medium text-sm">
-                                    {appointment.name}
-                                  </p>
-                                  <p className="text-xs text-gray-500">
-                                    {appointment.age} years •{" "}
-                                    {appointment.condition}
-                                  </p>
-                                </div>
-                              </div>
-                            </td>
-                            <td className="py-3 px-6 text-sm">
-                              {appointment.time}
-                            </td>
-                            <td className="py-3 px-6">
-                              <Badge variant="outline" className="font-normal">
-                                {appointment.type}
-                              </Badge>
-                            </td>
-                            <td className="py-3 px-6">
-                              <Badge
-                                variant={
-                                  appointment.status === "Checked In"
-                                    ? "default"
-                                    : "secondary"
-                                }
-                                className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300 font-normal"
-                              >
-                                {appointment.status}
-                              </Badge>
-                            </td>
-                            <td className="py-3 px-6 text-right">
-                              <Button variant="ghost" size="sm">
-                                View
-                              </Button>
-                            </td>
+                  {loadingAppointments ? (
+                    <div className="flex items-center justify-center py-12">
+                      <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#62d5d0] border-r-transparent align-[-0.125em]" role="status">
+                        <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                      </div>
+                      <p className="ml-3 text-gray-600 dark:text-gray-300">Loading patient appointments...</p>
+                    </div>
+                  ) : patientAppointments.length === 0 ? (
+                    <div className="text-center py-12">
+                      <p className="text-gray-500 dark:text-gray-400">No appointments found for today.</p>
+                      <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">Patient analyses will appear here when they are submitted.</p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full">
+                        <thead>
+                          <tr className="border-b border-gray-200 dark:border-gray-700">
+                            <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Patient</th>
+                            <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Time</th>
+                            <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Type</th>
+                            <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Condition</th>
+                            <th className="text-left py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Status</th>
+                            <th className="text-right py-3 px-6 text-xs font-medium text-gray-500 dark:text-gray-400">Action</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {patientAppointments.map((appointment) => (
+                            <tr key={appointment.id} className="border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                              <td className="py-3 px-6">
+                                <div className="flex items-center gap-3">
+                                  <Avatar className="h-8 w-8">
+                                    <AvatarImage src={appointment.image} />
+                                    <AvatarFallback className="bg-gray-200 text-gray-600">
+                                      {appointment.name.split(' ').map(n => n[0]).join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <p className="font-medium text-sm">{appointment.name}</p>
+                                    {appointment.age && (
+                                      <p className="text-xs text-gray-500">{appointment.age} years</p>
+                                    )}
+                                  </div>
+                                </div>
+                              </td>
+                              <td className="py-3 px-6 text-sm">{appointment.time}</td>
+                              <td className="py-3 px-6">
+                                <Badge variant="outline" className="font-normal">
+                                  {appointment.type}
+                                </Badge>
+                              </td>
+                              <td className="py-3 px-6">
+                                <Badge 
+                                  variant="outline" 
+                                  className={`font-normal ${
+                                    appointment.condition.toLowerCase().includes('mild') || 
+                                    appointment.condition.toLowerCase().includes('minor')
+                                      ? "bg-green-100 text-green-800 border-green-200 dark:bg-green-900/20 dark:text-green-300" 
+                                    : appointment.condition.toLowerCase().includes('moderate')
+                                      ? "bg-yellow-100 text-yellow-800 border-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-300"
+                                    : appointment.condition.toLowerCase().includes('severe') || 
+                                      appointment.condition.toLowerCase().includes('serious')
+                                      ? "bg-red-100 text-red-800 border-red-200 dark:bg-red-900/20 dark:text-red-300"
+                                    : "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-800 dark:text-gray-300"
+                                  }`}
+                                >
+                                  {appointment.condition}
+                                </Badge>
+                              </td>
+                              <td className="py-3 px-6">
+                                <Badge
+                                  variant={appointment.status === "Checked In" ? "default" : "secondary"}
+                                  className={`font-normal ${
+                                    appointment.status === "Checked In"
+                                      ? "bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-300"
+                                      : "bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-300"
+                                  }`}
+                                >
+                                  {appointment.status}
+                                </Badge>
+                              </td>
+                              <td className="py-3 px-6 text-right">
+                                <Button variant="ghost" size="sm">View Analysis</Button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
