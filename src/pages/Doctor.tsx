@@ -5,6 +5,7 @@ import {
   CardHeader,
   CardTitle,
   CardDescription,
+  CardFooter,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -17,6 +18,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { supabase } from "../lib/supabase";
 import {
@@ -31,6 +40,9 @@ import {
   Filter,
   Plus,
   MessageSquare,
+  Download,
+  Network,
+  X,
 } from "lucide-react";
 
 interface Doctor {
@@ -52,12 +64,53 @@ interface AnalysisRecord {
   user_id: string;
   name: string;
   analysis_data: {
-    analysis: {
-      severity: string;
+    analysis?: {
+      severity?: string;
       final_analysis?: string;
       initial_diagnosis?: string;
+      vectordb_results?: string;
+      audio_analysis?: {
+        detected_emotion: string;
+        probabilities: {
+          angry: number;
+          fear: number;
+          happy: number;
+          neutral: number;
+          sad: number;
+        };
+      };
+      image_analysis?: {
+        breastmnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+        chestmnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+        dermamnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+        octmnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+        pathmnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+        pneumoniamnist?: {
+          predicted_label: string;
+          probability: number;
+        };
+      };
+      typing_analysis?: {
+        detected_condition: string;
+        error?: string;
+      };
     };
-    response: string;
+    response?: string;
   };
   created_at: string;
 }
@@ -81,6 +134,7 @@ const Doctor = () => {
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [patientAppointments, setPatientAppointments] = useState<PatientAppointment[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisRecord | null>(null);
 
   // Fetch doctors from Supabase
   useEffect(() => {
@@ -208,6 +262,58 @@ const Doctor = () => {
 
     fetchAnalysisRecords();
   }, [selectedDate]); // Refetch if selected date changes
+
+  // Function to fetch and view the complete analysis record when "View Analysis" is clicked
+  const handleViewAnalysis = async (appointmentId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('analysis_records')
+        .select('*')
+        .eq('id', appointmentId)
+        .single();
+        
+      if (error) {
+        console.error("Error fetching analysis record:", error);
+        return;
+      }
+      
+      if (data) {
+        console.log("Analysis record fetched:", data);
+        setSelectedAnalysis(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch analysis record details:", err);
+    }
+  };
+
+  // Function to download analysis response as JSON
+  const downloadResponse = () => {
+    if (!selectedAnalysis) return;
+
+    // Create a Blob with the JSON data
+    const jsonBlob = new Blob([JSON.stringify(selectedAnalysis.analysis_data, null, 2)], {
+      type: "application/json",
+    });
+
+    // Create a URL for the Blob
+    const url = URL.createObjectURL(jsonBlob);
+
+    // Create filename with timestamp
+    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+
+    // Create an anchor element
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `patient-analysis-${selectedAnalysis.id}-${timestamp}.json`;
+
+    // Trigger the download
+    document.body.appendChild(a);
+    a.click();
+
+    // Clean up
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16">
@@ -476,7 +582,7 @@ const Doctor = () => {
                                 </Badge>
                               </td>
                               <td className="py-3 px-6 text-right">
-                                <Button variant="ghost" size="sm">View Analysis</Button>
+                                <Button variant="ghost" size="sm" onClick={() => handleViewAnalysis(appointment.id)}>View Analysis</Button>
                               </td>
                             </tr>
                           ))}
@@ -904,6 +1010,348 @@ const Doctor = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Analysis Dialog */}
+      {selectedAnalysis && (
+        <Dialog open={!!selectedAnalysis} onOpenChange={() => setSelectedAnalysis(null)}>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle className="text-[#62d5d0]">Patient Analysis Results</DialogTitle>
+              <DialogDescription>
+                Analysis from {new Date(selectedAnalysis.created_at).toLocaleString()}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <Tabs defaultValue="text" className="w-full">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
+                <TabsTrigger value="text">Text Analysis</TabsTrigger>
+                <TabsTrigger value="flow">Visual Flow</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="text">
+                <div className="space-y-6">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                      Analysis
+                    </h2>
+
+                    {selectedAnalysis.analysis_data.analysis && (
+                      <>
+                        <div className="mb-6">
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            Final Analysis
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {selectedAnalysis.analysis_data.analysis.final_analysis}
+                          </div>
+                        </div>
+
+                        <div className="mb-6">
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            Initial Diagnosis
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {selectedAnalysis.analysis_data.analysis.initial_diagnosis}
+                          </div>
+                        </div>
+
+                        {selectedAnalysis.analysis_data.analysis.audio_analysis && (
+                          <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                              Audio Analysis
+                            </h3>
+                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                              <p>
+                                <strong>Detected Emotion:</strong>{" "}
+                                {selectedAnalysis.analysis_data.analysis.audio_analysis.detected_emotion}
+                              </p>
+                              <div className="mt-2">
+                                <p className="mb-1">
+                                  <strong>Emotion Probabilities:</strong>
+                                </p>
+                                <div className="grid grid-cols-2 gap-2 text-sm">
+                                  <div>
+                                    Angry:{" "}
+                                    {(
+                                      selectedAnalysis.analysis_data.analysis.audio_analysis
+                                        .probabilities.angry * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </div>
+                                  <div>
+                                    Fear:{" "}
+                                    {(
+                                      selectedAnalysis.analysis_data.analysis.audio_analysis
+                                        .probabilities.fear * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </div>
+                                  <div>
+                                    Happy:{" "}
+                                    {(
+                                      selectedAnalysis.analysis_data.analysis.audio_analysis
+                                        .probabilities.happy * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </div>
+                                  <div>
+                                    Neutral:{" "}
+                                    {(
+                                      selectedAnalysis.analysis_data.analysis.audio_analysis
+                                        .probabilities.neutral * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </div>
+                                  <div>
+                                    Sad:{" "}
+                                    {(
+                                      selectedAnalysis.analysis_data.analysis.audio_analysis
+                                        .probabilities.sad * 100
+                                    ).toFixed(1)}
+                                    %
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedAnalysis.analysis_data.analysis.image_analysis && (
+                          <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                              Image Analysis
+                            </h3>
+                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.dermamnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">Skin Analysis (DermaMNIST):</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.dermamnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .dermamnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.breastmnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">Breast Analysis:</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.breastmnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .breastmnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.chestmnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">Chest X-Ray Analysis:</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.chestmnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .chestmnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.octmnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">OCT Analysis:</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.octmnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .octmnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.pathmnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">Pathology Analysis:</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.pathmnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .pathmnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                                {selectedAnalysis.analysis_data.analysis.image_analysis.pneumoniamnist && (
+                                  <div className="p-2 border rounded-lg border-gray-200 dark:border-gray-700">
+                                    <p className="font-medium">Pneumonia Analysis:</p>
+                                    <p>
+                                      Prediction:{" "}
+                                      {selectedAnalysis.analysis_data.analysis.image_analysis.pneumoniamnist.predicted_label}
+                                    </p>
+                                    <p>
+                                      Confidence:{" "}
+                                      {(
+                                        selectedAnalysis.analysis_data.analysis.image_analysis
+                                          .pneumoniamnist.probability * 100
+                                      ).toFixed(1)}
+                                      %
+                                    </p>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedAnalysis.analysis_data.analysis.typing_analysis && (
+                          <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                              Typing Analysis
+                            </h3>
+                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                              {selectedAnalysis.analysis_data.analysis.typing_analysis.error ? (
+                                <p className="text-amber-600 dark:text-amber-400">
+                                  {selectedAnalysis.analysis_data.analysis.typing_analysis.error}
+                                </p>
+                              ) : (
+                                <p>
+                                  <strong>Detected Condition:</strong>{" "}
+                                  {selectedAnalysis.analysis_data.analysis.typing_analysis.detected_condition}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {selectedAnalysis.analysis_data.analysis.vectordb_results && (
+                          <div className="mb-6">
+                            <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                              VectorDB Results
+                            </h3>
+                            <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                              <div className="mt-6 w-full">
+                                <h3 className="font-semibold text-lg mb-4 text-[#62d5d0]">
+                                  Similar Conditions (Vector DB Results):
+                                </h3>
+                                <div className="overflow-x-auto">
+                                  <table className="min-w-full text-sm border border-gray-300 dark:border-gray-700">
+                                    <thead className="bg-gray-100 dark:bg-gray-800">
+                                      <tr>
+                                        <th className="px-4 py-2 border-b dark:border-gray-700">
+                                          Condition
+                                        </th>
+                                        <th className="px-4 py-2 border-b dark:border-gray-700">
+                                          Symptoms
+                                        </th>
+                                        <th className="px-4 py-2 border-b dark:border-gray-700">
+                                          Treatment
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {[
+                                        ...selectedAnalysis.analysis_data.analysis.vectordb_results.matchAll(
+                                          /([^,]+(?:\([^)]*\))?)\s*,"([^"]+)","([^"]+)"/g
+                                        ),
+                                      ].map((match, index) => (
+                                        <tr
+                                          key={index}
+                                          className="odd:bg-white even:bg-gray-50 dark:odd:bg-gray-900 dark:even:bg-gray-800"
+                                        >
+                                          <td className="px-4 py-2 border-b dark:border-gray-700">
+                                            {match[1]}
+                                          </td>
+                                          <td className="px-4 py-2 border-b dark:border-gray-700">
+                                            {match[2]}
+                                          </td>
+                                          <td className="px-4 py-2 border-b dark:border-gray-700">
+                                            {match[3]}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
+
+                    {selectedAnalysis.analysis_data.response && !selectedAnalysis.analysis_data.analysis && (
+                      <div className="mb-2">
+                        <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                          Response
+                        </h3>
+                        <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                          {selectedAnalysis.analysis_data.response}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="flow">
+                <div className="p-2 rounded-xl">
+                  <div className="flex items-center justify-center h-48">
+                    <Network size={40} className="text-[#62d5d0]/40" />
+                    <p className="ml-3 text-gray-500">Flow visualization is not available in this view</p>
+                  </div>
+                </div>
+              </TabsContent>
+            </Tabs>
+            
+            <DialogFooter className="flex flex-wrap justify-between gap-3 pt-4 border-t">
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                onClick={() => setSelectedAnalysis(null)}
+              >
+                <X className="h-4 w-4" />
+                Close
+              </Button>
+              
+              <Button
+                onClick={downloadResponse}
+                variant="default"
+                className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+              >
+                <Download className="h-4 w-4" />
+                Download Analysis Data
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };
