@@ -26,8 +26,14 @@ import {
 interface Doctor {
   id: string;
   email: string;
-  name: string;
-  specialty: string;
+  first_name: string;
+  last_name: string;
+  license_number: string;
+  specialty?: string;
+  education?: string;
+  years_experience?: number;
+  bio?: string;
+  profile_image?: string;
   created_at: string;
 }
 
@@ -159,7 +165,15 @@ const Doctor = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
           <div>
             <h1 className="text-2xl md:text-3xl font-bold text-[#354745] dark:text-[#d0caca]">Doctor Dashboard</h1>
-            <p className="text-gray-500 dark:text-gray-400">Welcome back, Dr. Sarah Johnson</p>
+            {loading ? (
+              <p className="text-gray-500 dark:text-gray-400">Loading your profile...</p>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">
+                Welcome back, {doctors.find(doc => doc.email === currentUserEmail) ? 
+                  `Dr. ${doctors.find(doc => doc.email === currentUserEmail)?.first_name} ${doctors.find(doc => doc.email === currentUserEmail)?.last_name}` : 
+                  "Doctor"}
+              </p>
+            )}
           </div>
           
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
@@ -169,21 +183,30 @@ const Doctor = () => {
             </div>
             <div className="flex items-center space-x-2">
               <Avatar className="h-8 w-8 border border-gray-200 dark:border-gray-700">
-                <AvatarImage src="/placeholder.svg" alt="Dr. Sarah Johnson" />
-                <AvatarFallback className="bg-[#62d5d0] text-white">SJ</AvatarFallback>
+                <AvatarImage src="/placeholder.svg" alt="Doctor Profile" />
+                {!loading && doctors.find(doc => doc.email === currentUserEmail) && (
+                  <AvatarFallback className="bg-[#62d5d0] text-white">
+                    {`${doctors.find(doc => doc.email === currentUserEmail)?.first_name?.charAt(0) || ''}${doctors.find(doc => doc.email === currentUserEmail)?.last_name?.charAt(0) || ''}`}
+                  </AvatarFallback>
+                )}
               </Avatar>
-              <span className="hidden md:inline text-sm font-medium">Dr. Johnson</span>
+              {!loading && doctors.find(doc => doc.email === currentUserEmail) && (
+                <span className="hidden md:inline text-sm font-medium">
+                  Dr. {doctors.find(doc => doc.email === currentUserEmail)?.last_name}
+                </span>
+              )}
             </div>
           </div>
         </div>
         
         {/* Main Dashboard Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
-          <TabsList className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+          <TabsList className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="patients">Patients</TabsTrigger>
             <TabsTrigger value="analyses">Skin Analyses</TabsTrigger>
             <TabsTrigger value="appointments">Appointments</TabsTrigger>
+            <TabsTrigger value="team">Team</TabsTrigger>
             <TabsTrigger value="messages" className="hidden lg:block">Messages</TabsTrigger>
           </TabsList>
           
@@ -198,8 +221,6 @@ const Doctor = () => {
                       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Today's Patients</p>
                       <h3 className="text-2xl font-bold mt-1">12</h3>
                       <p className="text-xs text-green-500 mt-1 flex items-center">
-                        <ArrowUpRight className="h-3 w-3 mr-1" />
-                        <span>4% from yesterday</span>
                       </p>
                     </div>
                     <div className="bg-[#62d5d0]/10 p-3 rounded-full">
@@ -216,8 +237,6 @@ const Doctor = () => {
                       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Skin Analyses</p>
                       <h3 className="text-2xl font-bold mt-1">24</h3>
                       <p className="text-xs text-green-500 mt-1 flex items-center">
-                        <ArrowUpRight className="h-3 w-3 mr-1" />
-                        <span>12% from last week</span>
                       </p>
                     </div>
                     <div className="bg-[#62d5d0]/10 p-3 rounded-full">
@@ -234,8 +253,6 @@ const Doctor = () => {
                       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Average Wait Time</p>
                       <h3 className="text-2xl font-bold mt-1">14m</h3>
                       <p className="text-xs text-red-500 mt-1 flex items-center">
-                        <ArrowUpRight className="h-3 w-3 mr-1" />
-                        <span>3m from last week</span>
                       </p>
                     </div>
                     <div className="bg-[#62d5d0]/10 p-3 rounded-full">
@@ -252,8 +269,6 @@ const Doctor = () => {
                       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">AI Accuracy</p>
                       <h3 className="text-2xl font-bold mt-1">96%</h3>
                       <p className="text-xs text-green-500 mt-1 flex items-center">
-                        <ArrowUpRight className="h-3 w-3 mr-1" />
-                        <span>2% from last month</span>
                       </p>
                     </div>
                     <div className="bg-[#62d5d0]/10 p-3 rounded-full">
@@ -536,6 +551,190 @@ const Doctor = () => {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Team Tab Content */}
+          <TabsContent value="team" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                  <div>
+                    <CardTitle>Medical Team</CardTitle>
+                    <CardDescription>View and manage doctor information</CardDescription>
+                  </div>
+                  <Button size="sm" className="bg-[#62d5d0] hover:bg-[#62d5d0]/90 text-white">
+                    <Plus className="h-3.5 w-3.5 mr-1" />
+                    Add Doctor
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#62d5d0] border-r-transparent align-[-0.125em]" role="status">
+                      <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">Loading...</span>
+                    </div>
+                    <p className="ml-3 text-gray-600 dark:text-gray-300">Loading doctor information...</p>
+                  </div>
+                ) : doctors.length === 0 ? (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 dark:text-gray-400">No doctors found in the database.</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                    {doctors.map((doctor) => (
+                      <Card key={doctor.id} className="overflow-hidden">
+                        <div className="bg-gradient-to-r from-[#62d5d0]/80 to-[#62d5d0]/40 h-8"></div>
+                        <CardContent className="pt-6 relative">
+                          <Avatar className="h-16 w-16 border-4 border-white dark:border-gray-800 absolute -top-8 left-4 shadow-md">
+                            <AvatarImage src={doctor.profile_image || '/placeholder.svg'} />
+                            <AvatarFallback className="bg-[#62d5d0] text-white text-lg">
+                              {`${doctor.first_name?.charAt(0) || ''}${doctor.last_name?.charAt(0) || ''}`}
+                            </AvatarFallback>
+                          </Avatar>
+                          
+                          <div className="mt-8">
+                            <h3 className="text-lg font-semibold">Dr. {doctor.first_name} {doctor.last_name}</h3>
+                            
+                            <div className="grid grid-cols-1 gap-3 mt-4">
+                              <div>
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Email</p>
+                                <p className="text-sm">{doctor.email}</p>
+                              </div>
+                              
+                              <div>
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">License Number</p>
+                                <p className="text-sm">{doctor.license_number || 'Not specified'}</p>
+                              </div>
+                              
+                              {doctor.specialty && (
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Specialty</p>
+                                  <p className="text-sm">{doctor.specialty || 'General Practice'}</p>
+                                </div>
+                              )}
+                              
+                              {doctor.education && (
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Education</p>
+                                  <p className="text-sm">{doctor.education}</p>
+                                </div>
+                              )}
+                              
+                              {doctor.years_experience !== undefined && (
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Years of Experience</p>
+                                  <p className="text-sm">{doctor.years_experience} years</p>
+                                </div>
+                              )}
+                              
+                              {doctor.bio && (
+                                <div>
+                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Bio</p>
+                                  <p className="text-sm line-clamp-3">{doctor.bio}</p>
+                                </div>
+                              )}
+                              
+                              <div>
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Joined</p>
+                                <p className="text-sm">{new Date(doctor.created_at).toLocaleDateString()}</p>
+                              </div>
+                            </div>
+                            
+                            <div className="flex space-x-2 mt-4">
+                              <Button variant="outline" size="sm" className="flex-1">View Profile</Button>
+                              <Button variant="outline" size="sm" className="flex-1 text-[#62d5d0] border-[#62d5d0]/30 hover:bg-[#62d5d0]/5">Edit</Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+            
+            {/* Current Doctor Profile */}
+            {!loading && currentUserEmail && doctors.find(doc => doc.email === currentUserEmail) && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Your Profile</CardTitle>
+                  <CardDescription>Update your professional information</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {(() => {
+                    const currentDoctor = doctors.find(doc => doc.email === currentUserEmail);
+                    if (!currentDoctor) return null;
+                    
+                    return (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4">
+                            <Avatar className="h-20 w-20">
+                              <AvatarImage src={currentDoctor.profile_image || '/placeholder.svg'} />
+                              <AvatarFallback className="bg-[#62d5d0] text-white text-xl">
+                                {`${currentDoctor.first_name?.charAt(0) || ''}${currentDoctor.last_name?.charAt(0) || ''}`}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <h3 className="text-xl font-semibold">Dr. {currentDoctor.first_name} {currentDoctor.last_name}</h3>
+                              <p className="text-[#62d5d0]">{currentDoctor.specialty || 'General Practice'}</p>
+                              <p className="text-sm text-gray-500">License #: {currentDoctor.license_number}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="pt-4">
+                            <p className="text-sm font-medium text-gray-500 mb-1">About</p>
+                            <p className="text-sm">{currentDoctor.bio || 'No bio information available. Click Edit Profile to add your professional bio.'}</p>
+                          </div>
+                          
+                          <div>
+                            <p className="text-sm font-medium text-gray-500 mb-1">Contact</p>
+                            <p className="text-sm">{currentDoctor.email}</p>
+                          </div>
+                          
+                          <Button className="bg-[#62d5d0] hover:bg-[#62d5d0]/90 text-white w-full mt-4">
+                            Edit Profile
+                          </Button>
+                        </div>
+                        
+                        <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
+                          <h4 className="font-medium mb-4">Professional Details</h4>
+                          <div className="space-y-4">
+                            {currentDoctor.education && (
+                              <div>
+                                <p className="text-sm font-medium text-gray-500">Education</p>
+                                <p className="text-sm">{currentDoctor.education}</p>
+                              </div>
+                            )}
+                            
+                            {currentDoctor.years_experience !== undefined && (
+                              <div>
+                                <p className="text-sm font-medium text-gray-500">Years of Experience</p>
+                                <p className="text-sm">{currentDoctor.years_experience} years</p>
+                              </div>
+                            )}
+                            
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">CerebrumAI Status</p>
+                              <div className="flex items-center mt-1">
+                                <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                <p className="text-sm">Verified Doctor</p>
+                              </div>
+                            </div>
+                            
+                            <div>
+                              <p className="text-sm font-medium text-gray-500">Account Created</p>
+                              <p className="text-sm">{new Date(currentDoctor.created_at).toLocaleDateString()}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </div>
