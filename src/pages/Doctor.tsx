@@ -126,15 +126,31 @@ interface PatientAppointment {
   status: string;
 }
 
+interface DoctorAnalysis {
+  id?: string;
+  analysis_id: string;
+  doctor_id: string;
+  diagnosis: string;
+  treatment_plan: string;
+  follow_up_notes: string;
+  severity_assessment: string;  // Added this field
+  created_at?: string;
+}
+
 const Doctor = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+  const [currentDoctorId, setCurrentDoctorId] = useState<string | null>(null);
   const [patientAppointments, setPatientAppointments] = useState<PatientAppointment[]>([]);
   const [loadingAppointments, setLoadingAppointments] = useState(true);
   const [selectedAnalysis, setSelectedAnalysis] = useState<AnalysisRecord | null>(null);
+  const [doctorAnalysisDialog, setDoctorAnalysisDialog] = useState(false);
+  const [currentDoctorAnalysis, setCurrentDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
+  const [existingDoctorAnalysis, setExistingDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
+  const [savingAnalysis, setSavingAnalysis] = useState(false);
 
   // Fetch doctors from Supabase
   useEffect(() => {
@@ -149,6 +165,18 @@ const Doctor = () => {
         if (user?.email) {
           setCurrentUserEmail(user.email);
           console.log("Current user email:", user.email);
+          
+          // Get current doctor's ID
+          const { data: doctorData, error: doctorError } = await supabase
+            .from("doctors")
+            .select("id")
+            .eq("email", user.email)
+            .single();
+            
+          if (doctorData && !doctorError) {
+            setCurrentDoctorId(doctorData.id);
+            console.log("Current doctor ID:", doctorData.id);
+          }
         }
 
         // Get all doctors
@@ -275,9 +303,84 @@ const Doctor = () => {
       if (data) {
         console.log("Analysis record fetched:", data);
         setSelectedAnalysis(data);
+        
+        // Check if there's an existing doctor analysis for this record
+        if (currentDoctorId) {
+          const { data: doctorAnalysisData, error: doctorAnalysisError } = await supabase
+            .from('doctor_analyses')
+            .select('*')
+            .eq('analysis_id', appointmentId)
+            .eq('doctor_id', currentDoctorId)
+            .single();
+            
+          if (doctorAnalysisData && !doctorAnalysisError) {
+            setExistingDoctorAnalysis(doctorAnalysisData);
+            console.log("Found existing doctor analysis:", doctorAnalysisData);
+          } else {
+            setExistingDoctorAnalysis(null);
+          }
+        }
       }
     } catch (err) {
       console.error("Failed to fetch analysis record details:", err);
+    }
+  };
+
+  // Function to create or open doctor analysis
+  const handleCreateAnalysis = () => {
+    if (!selectedAnalysis || !currentDoctorId) return;
+    
+    // Always create a new analysis object, even if there's an existing one
+    setCurrentDoctorAnalysis({
+      analysis_id: selectedAnalysis.id,
+      doctor_id: currentDoctorId,
+      diagnosis: selectedAnalysis.analysis_data?.analysis?.initial_diagnosis || "",
+      treatment_plan: "",
+      follow_up_notes: "",
+      severity_assessment: selectedAnalysis.analysis_data?.analysis?.severity || "Moderate" // Default to Moderate if no severity in analysis
+    });
+    
+    setDoctorAnalysisDialog(true);
+  };
+
+  // Function to save doctor analysis
+  const saveDoctorAnalysis = async () => {
+    if (!currentDoctorAnalysis || !currentDoctorId) return;
+    
+    try {
+      setSavingAnalysis(true);
+      
+      // Always insert a new analysis, never update existing ones
+      const { data, error } = await supabase
+        .from('doctor_analyses')
+        .insert({
+          analysis_id: currentDoctorAnalysis.analysis_id,
+          doctor_id: currentDoctorId,
+          diagnosis: currentDoctorAnalysis.diagnosis,
+          treatment_plan: currentDoctorAnalysis.treatment_plan,
+          follow_up_notes: currentDoctorAnalysis.follow_up_notes,
+          severity_assessment: currentDoctorAnalysis.severity_assessment
+        })
+        .select()
+        .single();
+        
+      if (error) {
+        console.error("Error creating doctor analysis:", error);
+        alert("Failed to save analysis: " + error.message);
+        return;
+      }
+      
+      // Update the existing doctor analysis with the result for the UI
+      setExistingDoctorAnalysis(data);
+      console.log("Analysis saved successfully:", data);
+      
+      // Close the dialog
+      setDoctorAnalysisDialog(false);
+    } catch (err) {
+      console.error("Failed to save doctor analysis:", err);
+      alert("An unexpected error occurred while saving the analysis");
+    } finally {
+      setSavingAnalysis(false);
     }
   };
 
@@ -1018,8 +1121,9 @@ const Doctor = () => {
             </DialogHeader>
             
             <Tabs defaultValue="text" className="w-full">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6">
-                <TabsTrigger value="text">Text Analysis</TabsTrigger>
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-6">
+                <TabsTrigger value="text">AI Analysis</TabsTrigger>
+                <TabsTrigger value="doctor">Doctor's Analysis</TabsTrigger>
                 <TabsTrigger value="flow">Visual Flow</TabsTrigger>
               </TabsList>
 
@@ -1315,6 +1419,72 @@ const Doctor = () => {
                 </div>
               </TabsContent>
               
+              <TabsContent value="doctor">
+                <div className="space-y-6">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl">
+                    <div className="flex items-center justify-between mb-4">
+                      <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
+                        Doctor's Analysis
+                      </h2>
+                      
+                      <Button
+                        onClick={handleCreateAnalysis}
+                        variant="default"
+                        className="bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                        disabled={!currentDoctorId}
+                      >
+                        {existingDoctorAnalysis ? "Edit Analysis" : "Create Analysis"}
+                      </Button>
+                    </div>
+                    
+                    {existingDoctorAnalysis ? (
+                      <div className="space-y-4">
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            Doctor's Diagnosis
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {existingDoctorAnalysis.diagnosis || "No diagnosis provided"}
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            Treatment Plan
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {existingDoctorAnalysis.treatment_plan || "No treatment plan provided"}
+                          </div>
+                        </div>
+                        
+                        
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            Follow-up Notes
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {existingDoctorAnalysis.follow_up_notes || "No follow-up notes provided"}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mt-4">
+                          <Clock className="h-4 w-4 mr-1" />
+                          Created: {new Date(existingDoctorAnalysis.created_at || '').toLocaleString()}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <FileText size={40} className="text-gray-300 dark:text-gray-600 mb-3" />
+                        <p className="text-gray-500 dark:text-gray-400 mb-2">No doctor's analysis has been created yet</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500">
+                          Click the button above to create a medical assessment for this patient
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+              
               <TabsContent value="flow">
                 <div className="p-2 rounded-xl">
                   <div className="flex items-center justify-center h-48">
@@ -1342,6 +1512,112 @@ const Doctor = () => {
               >
                 <Download className="h-4 w-4" />
                 Download Analysis Data
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+      
+      {/* Doctor Analysis Dialog */}
+      {doctorAnalysisDialog && currentDoctorAnalysis && (
+        <Dialog open={doctorAnalysisDialog} onOpenChange={setDoctorAnalysisDialog}>
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle className="text-[#62d5d0]">
+                {existingDoctorAnalysis ? "Edit Medical Analysis" : "Create Medical Analysis"}
+              </DialogTitle>
+              <DialogDescription>
+                {existingDoctorAnalysis 
+                  ? "Update your medical assessment for this patient" 
+                  : "Provide your medical assessment for this patient"}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <label htmlFor="diagnosis" className="text-sm font-medium">
+                  Diagnosis
+                </label>
+                <textarea 
+                  id="diagnosis"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900"
+                  rows={4}
+                  value={currentDoctorAnalysis.diagnosis}
+                  onChange={(e) => setCurrentDoctorAnalysis({
+                    ...currentDoctorAnalysis,
+                    diagnosis: e.target.value
+                  })}
+                  placeholder="Enter your diagnosis based on the analysis results..."
+                />
+                <p className="text-xs text-gray-500">
+                  Include your professional assessment of the patient's condition
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="treatment" className="text-sm font-medium">
+                  Treatment Plan
+                </label>
+                <textarea 
+                  id="treatment"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900"
+                  rows={4}
+                  value={currentDoctorAnalysis.treatment_plan}
+                  onChange={(e) => setCurrentDoctorAnalysis({
+                    ...currentDoctorAnalysis,
+                    treatment_plan: e.target.value
+                  })}
+                  placeholder="Describe the recommended treatment plan..."
+                />
+              </div>
+              
+
+              
+              <div className="space-y-2">
+                <label htmlFor="followup" className="text-sm font-medium">
+                  Follow-up Notes
+                </label>
+                <textarea 
+                  id="followup"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900"
+                  rows={3}
+                  value={currentDoctorAnalysis.follow_up_notes}
+                  onChange={(e) => setCurrentDoctorAnalysis({
+                    ...currentDoctorAnalysis,
+                    follow_up_notes: e.target.value
+                  })}
+                  placeholder="Add recommendations for follow-up appointments, tests, or other notes..."
+                />
+              </div>
+            </div>
+            
+            <DialogFooter className="flex flex-wrap justify-between gap-3 pt-4 border-t">
+              <Button
+                variant="outline"
+                className="flex items-center gap-1"
+                onClick={() => setDoctorAnalysisDialog(false)}
+              >
+                <X className="h-4 w-4" />
+                Cancel
+              </Button>
+              
+              <Button
+                onClick={saveDoctorAnalysis}
+                variant="default"
+                className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                disabled={savingAnalysis}
+              >
+                {savingAnalysis ? (
+                  <>
+                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-solid border-white border-r-transparent mr-2" />
+                    Saving...
+                  </>
+                ) : (
+                  <>
+                    <FileText className="h-4 w-4 mr-1" />
+                    Save Analysis
+                  </>
+                )}
               </Button>
             </DialogFooter>
           </DialogContent>
