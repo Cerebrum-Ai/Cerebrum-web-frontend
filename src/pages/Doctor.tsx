@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dialog";
 import { format } from "date-fns";
 import { supabase } from "../lib/supabase";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Calendar,
   Search,
@@ -43,6 +44,7 @@ import {
   Download,
   Network,
   X,
+  CheckCircle,
 } from "lucide-react";
 
 interface Doctor {
@@ -152,6 +154,7 @@ const Doctor = () => {
   const [currentDoctorAnalysis, setCurrentDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
   const [existingDoctorAnalysis, setExistingDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
   const [savingAnalysis, setSavingAnalysis] = useState(false);
+  const { toast } = useToast();
 
   // Fetch doctors from Supabase
   useEffect(() => {
@@ -379,6 +382,26 @@ const Doctor = () => {
       
       // Close the dialog
       setDoctorAnalysisDialog(false);
+
+      // Show toast notification
+      toast({
+        title: "Analysis Saved",
+        description: (
+          <div className="flex items-center">
+            <CheckCircle className="text-green-500 mr-2 h-4 w-4" />
+            <span>Your analysis has been saved successfully.</span>
+          </div>
+        ),
+      });
+
+      // Update the appointment status
+      setPatientAppointments((prevAppointments) =>
+        prevAppointments.map((appointment) =>
+          appointment.id === currentDoctorAnalysis.analysis_id
+            ? { ...appointment, status: "Analyzed" }
+            : appointment
+        )
+      );
     } catch (err) {
       console.error("Failed to save doctor analysis:", err);
       alert("An unexpected error occurred while saving the analysis");
