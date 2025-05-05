@@ -132,6 +132,7 @@ interface DoctorAnalysis {
   doctor_id: string;
   diagnosis: string;
   treatment_plan: string;
+  recommendations: string;
   follow_up_notes: string;
   severity_assessment: string;  // Added this field
   created_at?: string;
@@ -336,6 +337,7 @@ const Doctor = () => {
       doctor_id: currentDoctorId,
       diagnosis: selectedAnalysis.analysis_data?.analysis?.initial_diagnosis || "",
       treatment_plan: "",
+      recommendations: "",
       follow_up_notes: "",
       severity_assessment: selectedAnalysis.analysis_data?.analysis?.severity || "Moderate" // Default to Moderate if no severity in analysis
     });
@@ -358,6 +360,7 @@ const Doctor = () => {
           doctor_id: currentDoctorId,
           diagnosis: currentDoctorAnalysis.diagnosis,
           treatment_plan: currentDoctorAnalysis.treatment_plan,
+          recommendations: currentDoctorAnalysis.recommendations,
           follow_up_notes: currentDoctorAnalysis.follow_up_notes,
           severity_assessment: currentDoctorAnalysis.severity_assessment
         })
@@ -1457,6 +1460,14 @@ const Doctor = () => {
                           </div>
                         </div>
                         
+                        <div>
+                          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
+                            recommendations
+                          </h3>
+                          <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
+                            {existingDoctorAnalysis.recommendations || "No recommendation plan provided"}
+                          </div>
+                        </div>
                         
                         <div>
                           <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">
@@ -1566,6 +1577,23 @@ const Doctor = () => {
                   onChange={(e) => setCurrentDoctorAnalysis({
                     ...currentDoctorAnalysis,
                     treatment_plan: e.target.value
+                  })}
+                  placeholder="Describe the recommended treatment plan..."
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label htmlFor="treatment" className="text-sm font-medium">
+                  Recommendation
+                </label>
+                <textarea 
+                  id="treatment"
+                  className="w-full p-3 border border-gray-300 dark:border-gray-700 rounded-md bg-white dark:bg-gray-900"
+                  rows={4}
+                  value={currentDoctorAnalysis.recommendations}
+                  onChange={(e) => setCurrentDoctorAnalysis({
+                    ...currentDoctorAnalysis,
+                    recommendations: e.target.value
                   })}
                   placeholder="Describe the recommended treatment plan..."
                 />
