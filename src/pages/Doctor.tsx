@@ -179,11 +179,7 @@ const Doctor = () => {
       try {
         setLoadingAppointments(true);
 
-        // Get today's date in ISO format for comparison (YYYY-MM-DD)
-        const today = new Date();
-        const todayStr = today.toISOString().split("T")[0];
-
-        // Get all analysis records
+        // Get all analysis records (removed date filter)
         const { data, error } = await supabase
           .from("analysis_records")
           .select(`
@@ -194,7 +190,6 @@ const Doctor = () => {
             analysis_data,
             user_profiles(first_name, last_name, date_of_birth, gender)
           `)
-          .gte("created_at", `${todayStr}T00:00:00`) // Only get records from today
           .order("created_at", { ascending: false });
 
         if (error) {
