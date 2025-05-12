@@ -120,7 +120,7 @@ const Index: React.FC = () => {
       </div>
 
       <Navbar />
-      <section className="relative flex flex-col-reverse md:flex-row items-center justify-between min-h-screen pt-20 md:pt-20 pb-8 px-4 md:px-12 max-w-6xl mx-auto gap-8 animate-fade-in">
+      <section className="relative flex flex-col-reverse md:flex-row items-center justify-center h-screen pt-20 md:pt-20 px-4 md:px-12 max-w-6xl mx-auto gap-8 animate-fade-in">
         <div className="w-full md:w-1/2 flex flex-col gap-6 md:gap-9 z-10">
           <h1 className="text-4xl md:text-4xl text-[#354745] tracking-widest leading-loose animate-[fade-in_1s_ease-in] dark:text-[#e8f7f6] trasnform -translate-y-2">
             CerebrumAI : Intelligent, Multimodal Triage System
@@ -201,7 +201,7 @@ const Index: React.FC = () => {
       <MarqueeCompanies />
 
       {/* Animated overview section */}
-      <section className="relative z-1 py-14 px-2 md:px-0 backdrop-blur-2xl dark:backdrop-blur-2xl animate-fade-in">
+      <section className="relative z-1 h-screen flex items-center justify-center px-2 md:px-0   animate-fade-in">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-7 md:gap-10 text-center">
           <h3 className="font-semibold text-2xl md:text-3xl mb-2 dark:text-[#ffffff]">How CerebrumAI Modernizes Digital Triage</h3>
           <p className="text-lg md:text-xl max-w-3xl animate-fade-in">
@@ -220,41 +220,43 @@ const Index: React.FC = () => {
       <LatestDevelopments />
 
       {/* Secure Experience Highlight */}
-      <section className="relative max-w-5xl  mx-auto mt-14 md:mt-20 px-4 pb-12 animate-fade-in flex flex-col md:flex-row gap-10 items-center ">
-        <div className="bg-white/80 dark:bg-card/90 w-full md:w-4/6 flex flex-col gap-7  rounded-2xl  p-8 border border-gray-200 dark:border-gray-700 backdrop-blur-3xl">
-          <div>
-            <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#62d5d0]">
-              Experience Secure, Intuitive, and Expert Triage
-            </h3>
+      <section className="relative h-screen flex items-center justify-center max-w-5xl mx-auto px-4 animate-fade-in ">
+        <div className="flex flex-col md:flex-row gap-10 items-center">
+          <div className="bg-white/80 dark:bg-card/90 w-full md:w-4/6 flex flex-col gap-7 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 backdrop-blur-3xl">
+            <div>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#62d5d0]">
+                Experience Secure, Intuitive, and Expert Triage
+              </h3>
+            </div>
+            <ul className="list-disc marker:text-[#62d5d0] dark:marker:text-[#62d5d0] text-gray-700 dark:text-gray-200 ml-6 space-y-1 text-base">
+              <li>
+                <strong>Intelligent AI:</strong> Understands each patient to provide tailored advice.
+              </li>
+              <li>
+                <strong>Privacy First:</strong> We keep your behavioral, text, and image data secure—only connecting you to a doctor if needed.
+              </li>
+              <li>
+                <strong>User-Friendly:</strong> Designed for all, with a beautiful, intuitive experience on any device.
+              </li>
+              <li>
+                <strong>Bridges to Care:</strong> Seamlessly connects you to a professional when your case is complex.
+              </li>
+            </ul>
           </div>
-          <ul className="list-disc marker:text-[#62d5d0] dark:marker:text-[#62d5d0] text-gray-700 dark:text-gray-200 ml-6 space-y-1 text-base">
-            <li>
-              <strong>Intelligent AI:</strong> Understands each patient to provide tailored advice.
-            </li>
-            <li>
-              <strong>Privacy First:</strong> We keep your behavioral, text, and image data secure—only connecting you to a doctor if needed.
-            </li>
-            <li>
-              <strong>User-Friendly:</strong> Designed for all, with a beautiful, intuitive experience on any device.
-            </li>
-            <li>
-              <strong>Bridges to Care:</strong> Seamlessly connects you to a professional when your case is complex.
-            </li>
-          </ul>
-        </div>
-        <div className="w-full md:w-2/6 flex items-center justify-center">
-          <img
-            src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80"
-            alt="AI patient triage experience"
-            className="rounded-2xl shadow-2xl border-[2.5px] border-[#62d5d0]/50 object-cover animate-scale-in"
-            loading="lazy"
-            draggable={false}
-          />
+          <div className="w-full md:w-2/6 flex items-center justify-center">
+            <img
+              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80"
+              alt="AI patient triage experience"
+              className="rounded-2xl shadow-2xl border-[2.5px] border-[#62d5d0]/50 object-cover animate-scale-in"
+              loading="lazy"
+              draggable={false}
+            />
+          </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="relative max-w-xl mx-auto py-10 flex flex-col items-center">
+      {/* Call to Action
+      <section className="relative h-screen flex items-center justify-center max-w-xl mx-auto px-4">
         <div className="bg-white/80 dark:bg-card/90 rounded-[40px] backdrop-blur-lg shadow-lg p-8 w-full flex flex-col gap-4 items-center border border-gray-200 dark:border-gray-700 animate-fade-in">
           <span className="text-lg md:text-xl font-medium text-center">
             Start your journey toward smarter, safer healthcare.
@@ -266,7 +268,7 @@ const Index: React.FC = () => {
             Sign In
           </button>
         </div>
-      </section>
+      </section> */}
 
       {/* Enhanced Footer */}
       <EnhancedFooter />
