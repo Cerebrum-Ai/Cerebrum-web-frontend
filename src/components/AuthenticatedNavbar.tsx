@@ -70,7 +70,7 @@ const AuthenticatedNavbar: React.FC = () => {
           {/* Logo */}
           <div
             className="flex items-center gap-3 cursor-pointer"
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
           >
             <span className="font-semibold text-3xl font-['Varela Round'] flex items-center">
               <span className="text-[#354745] tracking-wider dark:text-[#d0caca]">
@@ -90,23 +90,10 @@ const AuthenticatedNavbar: React.FC = () => {
               <LayoutDashboard size={18} />
               Dashboard
             </Button>
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/advice")}
-              className="flex items-center gap-2"
-            >
-              <Stethoscope size={18} />
-              Doctor Advice
-            </Button>
           </div>
 
           {/* Right side items */}
           <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell size={20} />
-              <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-            </Button>
-
             <ThemeToggle />
 
             <DropdownMenu>
@@ -129,10 +116,6 @@ const AuthenticatedNavbar: React.FC = () => {
                 <DropdownMenuItem onClick={() => navigate("/dashboard")}>
                   <LayoutDashboard size={16} className="mr-2" />
                   Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate("/doctor advice")}>
-                  <Stethoscope size={16} className="mr-2" />
-                  Doctor Advice
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/account")}>
                   <User size={16} className="mr-2" />

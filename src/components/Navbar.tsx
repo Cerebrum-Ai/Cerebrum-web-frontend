@@ -18,12 +18,12 @@ const Navbar: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center gap-3 cursor-pointer">
-            <span className="font-semibold text-3xl font-['Varela Round'] flex items-center">
+            <a href="/" className="font-semibold text-3xl font-['Varela Round'] flex items-center">
               <span className="text-[#354745] tracking-wider dark:text-[#d0caca]">
                 Cerebrum
               </span>
               <span className="text-[#62d5d0] tracking-wider">.ai</span>
-            </span>
+            </a>
           </div>
 
           {/* Navigation Links and Theme Toggle */}

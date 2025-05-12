@@ -133,7 +133,7 @@ const Index: React.FC = () => {
           </p>
           <div className="flex gap-4">
             <button
-              onClick={() => navigate("/signin")}
+              onClick={() => navigate("/dashboard")}
               className="group flex items-center gap-2 px-8 py-3 font-semibold rounded-[40px] border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 animate-fade-in"
             >
               Get Started
