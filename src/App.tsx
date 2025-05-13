@@ -16,6 +16,7 @@ import OutputPage from "./pages/Output";
 import OutputHistoryPage from "./pages/OutputHistory";
 import Enhanced from "./pages/Enhanced";
 import Doctor from "./pages/Doctor";
+import DoctorResponse from "./pages/DoctorResponse";
 import AnalysisSettings from "./pages/AnalysisSettings";
 import AccountPage from "./pages/AccountPage";
 
@@ -74,6 +75,14 @@ const App = () => (
                 }
               />
               <Route path="/enhanced" element={<Enhanced />} />
+              <Route
+                path="/doctor-response"
+                element={
+                  <ProtectedRoute>
+                    <DoctorResponse />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/doctor"
                 element={

@@ -573,7 +573,12 @@ const OutputPage: React.FC = () => {
                     </Button>
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => navigate("/enhanced")}
+                        onClick={() => navigate("/enhanced", { 
+                          state: { 
+                            analysisId: analysisId,
+                            apiResponse: apiResponse 
+                          } 
+                        })}
                         variant="default"
                         className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
                       >

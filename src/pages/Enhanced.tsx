@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -14,6 +15,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertTriangle, Stethoscope, CheckCircle2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useToast } from "@/components/ui/use-toast";
 import Navbar from "@/components/Navbar";
 import { supabase } from "@/lib/supabase";
 
@@ -28,11 +30,20 @@ interface Doctor {
 }
 
 const Enhanced = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { toast } = useToast();
+  
+  // Get analysis ID from location state if available
+  const existingAnalysisId = location.state?.analysisId;
+  const apiResponse = location.state?.apiResponse;
+  
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [consentToShare, setConsentToShare] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -58,19 +69,78 @@ const Enhanced = () => {
     fetchDoctors();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (selectedDoctor && consentToShare && agreeToTerms) {
-      // Handle form submission
-      console.log(
-        "Form submitted, user consented to share data with",
-        selectedDoctor
-      );
+      try {
+        setSubmitting(true);
+
+        // Get current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError) throw userError;
+        if (!user) throw new Error("You must be logged in to submit an analysis");
+
+        let analysisId = existingAnalysisId;
+        
+        // If we have an existing analysis ID, update it instead of creating a new one
+        if (existingAnalysisId) {
+          // Update the existing analysis record to include the doctor ID
+          const { error: updateError } = await supabase
+            .from('analysis_records')
+            .update({
+              analysis_data: {
+                ...apiResponse,
+                doctor_id: selectedDoctor,
+                status: "pending",
+                request_date: new Date().toISOString()
+              }
+            })
+            .eq('id', existingAnalysisId);
+            
+          if (updateError) throw updateError;
+        } else {
+          // Create a new analysis record
+          const { data: analysisRecord, error: analysisError } = await supabase
+            .from('analysis_records')
+            .insert({
+              user_id: user.id,
+              name: "Doctor Consultation Request",
+              analysis_data: {
+                doctor_id: selectedDoctor,
+                status: "pending",
+                request_date: new Date().toISOString()
+              }
+            })
+            .select()
+            .single();
+
+          if (analysisError) throw analysisError;
+          analysisId = analysisRecord.id;
+        }
+
+        toast({
+          title: "Request Submitted",
+          description: "Your consultation request has been sent to the doctor.",
+        });
+
+        // Redirect to the doctor response page
+        navigate(`/doctor-response?analysisId=${analysisId}&doctorId=${selectedDoctor}`);
+      } catch (err) {
+        console.error("Error submitting form:", err);
+        toast({
+          title: "Submission Error",
+          description: "There was a problem submitting your request. Please try again.",
+          variant: "destructive",
+        });
+      } finally {
+        setSubmitting(false);
+      }
     } else {
-      // Show error or alert that checkboxes must be checked
-      console.log(
-        "Please select a doctor and agree to all terms before submitting"
-      );
+      toast({
+        title: "Required Fields",
+        description: "Please select a doctor and agree to all terms before submitting",
+        variant: "destructive",
+      });
     }
   };
 
@@ -210,10 +280,17 @@ const Enhanced = () => {
                     type="submit"
                     className="w-full bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
                     disabled={
-                      !selectedDoctor || !consentToShare || !agreeToTerms
+                      !selectedDoctor || !consentToShare || !agreeToTerms || submitting
                     }
                   >
-                    Submit and Continue
+                    {submitting ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      "Submit and Continue"
+                    )}
                   </Button>
                 </div>
               </form>

@@ -45,6 +45,7 @@ import {
   Network,
   X,
   CheckCircle,
+  User,
 } from "lucide-react";
 
 interface Doctor {
@@ -115,6 +116,24 @@ interface AnalysisRecord {
     response?: string;
   };
   created_at: string;
+  user_profiles?: {
+    first_name?: string;
+    last_name?: string;
+    date_of_birth?: string;
+    gender?: string;
+    height?: number;
+    weight?: number;
+    blood_type?: string;
+    chronic_conditions?: string;
+    medications?: string;
+    allergies?: string;
+    family_history?: string;
+    smoking_status?: string;
+    alcohol_consumption?: string;
+    physical_activity?: string;
+    occupation?: string;
+    stress_level?: string;
+  };
 }
 
 interface PatientAppointment {
@@ -220,7 +239,24 @@ const Doctor = () => {
             name, 
             created_at, 
             analysis_data,
-            user_profiles(first_name, last_name, date_of_birth, gender)
+            user_profiles(
+              first_name, 
+              last_name, 
+              date_of_birth, 
+              gender,
+              height,
+              weight,
+              blood_type,
+              chronic_conditions,
+              medications,
+              allergies,
+              family_history,
+              smoking_status,
+              alcohol_consumption,
+              physical_activity,
+              occupation,
+              stress_level
+            )
           `)
           .order("created_at", { ascending: false });
 
@@ -295,7 +331,27 @@ const Doctor = () => {
     try {
       const { data, error } = await supabase
         .from('analysis_records')
-        .select('*')
+        .select(`
+          *,
+          user_profiles(
+            first_name, 
+            last_name, 
+            date_of_birth, 
+            gender,
+            height,
+            weight,
+            blood_type,
+            chronic_conditions,
+            medications,
+            allergies,
+            family_history,
+            smoking_status,
+            alcohol_consumption,
+            physical_activity,
+            occupation,
+            stress_level
+          )
+        `)
         .eq('id', appointmentId)
         .single();
         
@@ -1147,9 +1203,10 @@ const Doctor = () => {
             </DialogHeader>
             
             <Tabs defaultValue="text" className="w-full">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-3 mb-6">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-6">
                 <TabsTrigger value="text">AI Analysis</TabsTrigger>
                 <TabsTrigger value="doctor">Doctor's Analysis</TabsTrigger>
+                <TabsTrigger value="patient">Patient Info</TabsTrigger>
                 <TabsTrigger value="flow">Visual Flow</TabsTrigger>
               </TabsList>
 
@@ -1512,6 +1569,181 @@ const Doctor = () => {
                         <p className="text-gray-500 dark:text-gray-400 mb-2">No doctor's analysis has been created yet</p>
                         <p className="text-sm text-gray-400 dark:text-gray-500">
                           Click the button above to create a medical assessment for this patient
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </TabsContent>
+              
+              <TabsContent value="patient">
+                <div className="space-y-6">
+                  <div className="bg-gray-50 dark:bg-gray-800/50 p-6 rounded-xl">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
+                      Patient Information
+                    </h2>
+                    
+                    {selectedAnalysis && selectedAnalysis.user_profiles ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Personal Information */}
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-sm font-medium text-[#62d5d0] mb-3">Personal Details</h3>
+                            <div className="grid grid-cols-1 gap-3">
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Name
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.first_name} {selectedAnalysis.user_profiles.last_name}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Date of Birth
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.date_of_birth ? 
+                                    format(new Date(selectedAnalysis.user_profiles.date_of_birth), "MMMM d, yyyy") : 
+                                    "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Gender
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.gender || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Blood Type
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.blood_type || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Height / Weight
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.height ? selectedAnalysis.user_profiles.height + " cm" : "?"} / 
+                                  {selectedAnalysis.user_profiles.weight ? selectedAnalysis.user_profiles.weight + " kg" : "?"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Medical Information */}
+                        <div className="space-y-4">
+                          <div>
+                            <h3 className="text-sm font-medium text-[#62d5d0] mb-3">Medical History</h3>
+                            <div className="grid grid-cols-1 gap-3">
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Chronic Conditions
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.chronic_conditions || "None reported"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Current Medications
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.medications || "None reported"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Allergies
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.allergies || "None reported"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Family History
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.family_history || "None reported"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        {/* Lifestyle Information */}
+                        <div className="space-y-4 md:col-span-2">
+                          <div>
+                            <h3 className="text-sm font-medium text-[#62d5d0] mb-3">Lifestyle Information</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Smoking Status
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.smoking_status || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Alcohol Consumption
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.alcohol_consumption || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Physical Activity
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.physical_activity || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Occupation
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.occupation || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Stress Level
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.stress_level || "Not provided"}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-8 text-center">
+                        <User size={40} className="text-gray-300 dark:text-gray-600 mb-3" />
+                        <p className="text-gray-500 dark:text-gray-400 mb-2">No patient profile information available</p>
+                        <p className="text-sm text-gray-400 dark:text-gray-500">
+                          This patient hasn't completed their profile information
                         </p>
                       </div>
                     )}

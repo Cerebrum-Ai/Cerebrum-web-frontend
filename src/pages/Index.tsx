@@ -255,22 +255,6 @@ const Index: React.FC = () => {
         </div>
       </section>
 
-      {/* Call to Action
-      <section className="relative h-screen flex items-center justify-center max-w-xl mx-auto px-4">
-        <div className="bg-white/80 dark:bg-card/90 rounded-[40px] backdrop-blur-lg shadow-lg p-8 w-full flex flex-col gap-4 items-center border border-gray-200 dark:border-gray-700 animate-fade-in">
-          <span className="text-lg md:text-xl font-medium text-center">
-            Start your journey toward smarter, safer healthcare.
-          </span>
-          <button
-            onClick={() => navigate("/signin")}
-            className="group flex gap-2 items-center bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white font-semibold px-6 py-2 rounded-[40px] shadow-md border border-[#62d5d0]/40 hover:scale-105 transition-all animate-fade-in"
-          >
-            Sign In
-          </button>
-        </div>
-      </section> */}
-
-      {/* Enhanced Footer */}
       <EnhancedFooter />
     </div>
   );
