@@ -117,7 +117,7 @@ const InputPage: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen backdrop-blur-sm">
+    <div className="min-h-screen backdrop-blur-sm overflow-hidden ">
       <AnalysisHistorySidebar
         history={analysisHistory}
         onSelectAnalysis={handleSelectAnalysis}
@@ -253,7 +253,7 @@ const InputPage: React.FC = () => {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">
               Medical Analysis
             </h1>
-            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mt-7 ">
               Get an AI-powered analysis of your medical condition. Simply enter
               your symptoms and provide data for a personalized assessment.
             </p>
@@ -270,7 +270,6 @@ const InputPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <EnhancedFooter />
     </div>
   );
 };
