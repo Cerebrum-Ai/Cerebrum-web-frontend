@@ -22,6 +22,8 @@ interface ReviewSubmitProps {
     medications: string;
     conditions: string;
     familyHistory: string;
+    bloodgroup: string;
+    pregnancyStatus: string;
 
     // Lifestyle Info
     smokingStatus: string;
@@ -92,8 +94,15 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
               <div className="review-value">{formData.weight} kg</div>
             </div>
             <div className="form-group">
-              <label>Blood Type</label>
-              <div className="review-value">{formData.bloodType}</div>
+              <label>Blood Group</label>
+              <div className="review-value">{formData.bloodgroup || "Not specified"}</div>
+            </div>
+            <div className="form-group">
+              <label>Pregnancy Status</label>
+              <div className="review-value">
+                {formData.pregnancyStatus === "pregnant" ? "Pregnant" : 
+                 formData.pregnancyStatus === "not-pregnant" ? "Not Pregnant" : "Not specified"}
+              </div>
             </div>
             <div className="form-group full-width">
               <label>Allergies</label>
@@ -195,9 +204,6 @@ const StyledForm = styled.form`
     font-weight: 600;
     margin-bottom: 24px;
     text-align: center;
-    background: linear-gradient(to right, #e81cff, #40c9ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
   }
 
   .review-sections {
@@ -207,7 +213,7 @@ const StyledForm = styled.form`
   }
 
   .review-section {
-    background: #313131;
+    background: #E2DFD2;
     border-radius: 12px;
     padding: 20px;
   }
@@ -216,7 +222,6 @@ const StyledForm = styled.form`
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 16px;
-    color: #fff;
   }
 
   .form-grid {
@@ -238,7 +243,7 @@ const StyledForm = styled.form`
   .form-group label {
     display: block;
     margin-bottom: 5px;
-    color: #717171;
+    // color: #717171;
     font-weight: 600;
     font-size: 12px;
   }
@@ -247,7 +252,7 @@ const StyledForm = styled.form`
     color: #fff;
     font-size: 14px;
     padding: 10px 14px;
-    background: #414141;
+    background: #8c8c8c;
     border-radius: 8px;
     min-height: 20px;
   }
@@ -279,9 +284,9 @@ const StyledForm = styled.form`
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 16px 0 0 0;
+    margin: 16px 0 0 10px;
     font-size: 14px;
-    color: #e0e0e0;
+
   }
   .terms-checkbox input[type="checkbox"] {
     accent-color: #40c9ff;

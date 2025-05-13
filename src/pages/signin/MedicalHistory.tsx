@@ -10,6 +10,8 @@ interface MedicalHistoryProps {
     medications: string;
     allergies: string;
     familyHistory: string;
+    bloodgroup: string;
+    pregnancyStatus: string;
   };
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
   nextStep: () => void;
@@ -47,6 +49,39 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ formData, handleChange,
             value={formData.weight} 
             onChange={handleChange} 
           />
+        </div>
+        <div className="form-group">
+          <label htmlFor="bloodgroup">Blood Group</label>
+          <select 
+            id="bloodgroup"
+            name="bloodgroup" 
+            value={formData.bloodgroup} 
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="pregnancyStatus">Pregnancy Status</label>
+          <select 
+            id="pregnancyStatus"
+            name="pregnancyStatus" 
+            value={formData.pregnancyStatus} 
+            onChange={handleChange}
+          >
+            <option value="">Select</option>
+            <option value="not-pregnant">Not Pregnant</option>
+            <option value="pregnant">Pregnant</option>
+          </select>
         </div>
 
         <div className="form-group full-width">
@@ -119,7 +154,7 @@ const StyledForm = styled.form`
     font-weight: 600;
     margin-bottom: 24px;
     text-align: center;
-    background: linear-gradient(to right, #e81cff, #40c9ff);
+    background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }

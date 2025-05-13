@@ -8,6 +8,7 @@ interface PersonalInfoProps {
     lastName: string;
     dateOfBirth: string;
     gender: string;
+    occupation: string;
   };
   handleChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -67,6 +68,19 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({
             required
             value={formData.dateOfBirth}
             onChange={handleChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="occupation">Occupation</label>
+          <input
+            type="text"
+            id="occupation"
+            name="occupation"
+            required
+            value={formData.occupation}
+            onChange={handleChange}
+            placeholder="Software Engineer"
           />
         </div>
 

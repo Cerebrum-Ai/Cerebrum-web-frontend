@@ -25,6 +25,7 @@ const SignUp: React.FC = () => {
     dateOfBirth: "",
     phone: "",
     gender: "",
+    bloodgroup: "",
 
     // Medical Info
     height: "",
@@ -45,6 +46,7 @@ const SignUp: React.FC = () => {
     occupation: "",
     stressLevel: "",
     hobbies: "",
+    pregnancyStatus: "",
   });
 
   const handleChange = (
@@ -130,6 +132,7 @@ const SignUp: React.FC = () => {
         date_of_birth: profileData.dateOfBirth,
         phone: profileData.phone,
         gender: profileData.gender,
+        blood_group: profileData.bloodgroup,
         height: profileData.height,
         weight: profileData.weight,
         blood_type: profileData.bloodType,
@@ -146,6 +149,7 @@ const SignUp: React.FC = () => {
         occupation: profileData.occupation,
         stress_level: profileData.stressLevel,
         hobbies: profileData.hobbies,
+        pregnancy_status: profileData.pregnancyStatus,
       };
 
       const { error: insertError } = await supabase
@@ -387,9 +391,9 @@ const StyledWrapper = styled.div`
   .form-header h1 {
     font-size: 2.5rem;
     font-weight: 700;
-    background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    // background: linear-gradient(90deg, #354745 0%, #62d5d0 100%);
+    // -webkit-background-clip: text;
+    // -webkit-text-fill-color: transparent;
     margin: 0;
   }
 
@@ -494,9 +498,9 @@ const StyledWrapper = styled.div`
     transition: background 0.2s;
   }
 
-  .form-container .form-submit-btn:hover {
-    background: #4db8b3;
-  }
+  // .form-container .form-submit-btn:hover {
+  //   background: #4db8b3;
+  // }
 
   .form-container .form-submit-btn:disabled {
     opacity: 0.5;
