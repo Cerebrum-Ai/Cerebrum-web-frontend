@@ -209,7 +209,7 @@ const Index: React.FC = () => {
             By analyzing a combination of <span className="text-primary">textual descriptions</span>, <span className="text-primary">medical images</span>, and <span className="text-primary">behavioral biometrics</span>,
             it delivers context-aware assessments that go beyond conventional symptom checkers—enabling safer and more actionable care journeys.
           </p>
-          <img src="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?w=540&q=80" alt="Patient with digital triage screens" className="rounded-2xl shadow-xl border-2 border-primary/10 w-full max-w-md mx-auto animate-scale-in" loading="lazy" draggable={false}/>
+          <img src="/Dna.jpeg" alt="Patient with digital triage screens" className="rounded-2xl shadow-xl border-2 border-primary/10 w-full max-w-md mx-auto animate-scale-in" loading="lazy" draggable={false}/>
         </div>
       </section>
 

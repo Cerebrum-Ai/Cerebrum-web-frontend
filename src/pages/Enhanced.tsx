@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -11,46 +11,52 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertTriangle, Stethoscope, CheckCircle2 } from "lucide-react";
+import { AlertTriangle, Stethoscope, CheckCircle2, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
+
+interface Doctor {
+  id: string;
+  first_name: string;
+  last_name: string;
+  specialization: string;
+  education: string;
+  image_url: string;
+  license_number: string;
+}
 
 const Enhanced = () => {
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [consentToShare, setConsentToShare] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const doctors = [
-    {
-      id: "dr-smith",
-      name: "Dr. Sarah Smith",
-      specialty: "Dermatology",
-      education: "Stanford University School of Medicine, 2015",
-      image: "/placeholder.svg",
-    },
-    {
-      id: "dr-patel",
-      name: "Dr. Raj Patel",
-      specialty: "General Practice",
-      education: "Johns Hopkins University, 2012",
-      image: "/placeholder.svg",
-    },
-    {
-      id: "dr-johnson",
-      name: "Dr. Michael Johnson",
-      specialty: "Pediatric Dermatology",
-      education: "Harvard Medical School, 2010",
-      image: "/placeholder.svg",
-    },
-    {
-      id: "dr-chen",
-      name: "Dr. Lisa Chen",
-      specialty: "Cosmetic Dermatology",
-      education: "UCLA School of Medicine, 2014",
-      image: "/placeholder.svg",
-    },
-  ];
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('doctors')
+          .select('*');
+        
+        if (error) {
+          throw error;
+        }
+        
+        setDoctors(data || []);
+      } catch (err) {
+        console.error('Error fetching doctors:', err);
+        setError('Failed to load doctors. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -84,51 +90,62 @@ const Enhanced = () => {
             </CardHeader>
 
             <CardContent>
-              <RadioGroup
-                value={selectedDoctor || ""}
-                onValueChange={setSelectedDoctor}
-                className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
-              >
-                {doctors.map((doctor) => (
-                  <Label
-                    key={doctor.id}
-                    htmlFor={doctor.id}
-                    className={`flex flex-col h-full border rounded-lg p-4 cursor-pointer transition-all hover:border-[#62d5d0]/50 ${
-                      selectedDoctor === doctor.id
-                        ? "border-[#62d5d0] bg-[#62d5d0]/10"
-                        : "border-gray-200 dark:border-gray-700"
-                    }`}
-                  >
-                    <RadioGroupItem
-                      value={doctor.id}
-                      id={doctor.id}
-                      className="sr-only"
-                    />
-                    <div className="flex items-start gap-4">
-                      <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
-                        <AvatarImage src={doctor.image} alt={doctor.name} />
-                        <AvatarFallback>
-                          <Stethoscope className="h-6 w-6 text-gray-400" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <h3 className="font-medium">{doctor.name}</h3>
-                          {selectedDoctor === doctor.id && (
-                            <CheckCircle2 className="h-5 w-5 text-[#62d5d0]" />
-                          )}
+              {loading ? (
+                <div className="flex justify-center items-center">
+                  <Loader2 className="animate-spin h-8 w-8 text-[#62d5d0]" />
+                </div>
+              ) : error ? (
+                <div className="text-red-500 text-center">{error}</div>
+              ) : (
+                <RadioGroup
+                  value={selectedDoctor || ""}
+                  onValueChange={setSelectedDoctor}
+                  className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4"
+                >
+                  {doctors.map((doctor) => (
+                    <Label
+                      key={doctor.id}
+                      htmlFor={doctor.id}
+                      className={`flex flex-col h-full border rounded-lg p-4 cursor-pointer transition-all hover:border-[#62d5d0]/50 ${
+                        selectedDoctor === doctor.id
+                          ? "border-[#62d5d0] bg-[#62d5d0]/10"
+                          : "border-gray-200 dark:border-gray-700"
+                      }`}
+                    >
+                      <RadioGroupItem
+                        value={doctor.id}
+                        id={doctor.id}
+                        className="sr-only"
+                      />
+                      <div className="flex items-start gap-4">
+                        <Avatar className="w-12 h-12 border border-gray-200 dark:border-gray-700">
+                          <AvatarImage src={doctor.image_url} alt={doctor.first_name} />
+                          <AvatarFallback>
+                            <Stethoscope className="h-6 w-6 text-gray-400" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-medium">{doctor.first_name} {doctor.last_name}</h3>
+                            {selectedDoctor === doctor.id && (
+                              <CheckCircle2 className="h-5 w-5 text-[#62d5d0]" />
+                            )}
+                          </div>
+                          <p className="text-sm font-medium text-[#62d5d0]">
+                            {doctor.specialization}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            {doctor.education}
+                          </p>
+                          <p className="text-xs text-gray-500 mt-1">
+                            License Number: {doctor.license_number}
+                          </p>
                         </div>
-                        <p className="text-sm font-medium text-[#62d5d0]">
-                          {doctor.specialty}
-                        </p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {doctor.education}
-                        </p>
                       </div>
-                    </div>
-                  </Label>
-                ))}
-              </RadioGroup>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              )}
             </CardContent>
           </Card>
 

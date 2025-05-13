@@ -13,7 +13,7 @@ import Navbar from "@/components/Navbar";
 import EnhancedFooter from "@/components/EnhancedFooter";
 import FlowConditions from "@/components/FlowConditions";
 import AnalysisHistorySidebar from "@/components/AnalysisHistorySidebar";
-import { Download, ArrowLeft, Network } from "lucide-react";
+import { Download, ArrowLeft, Network, Stethoscope } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 
@@ -571,14 +571,24 @@ const OutputPage: React.FC = () => {
                       <ArrowLeft className="h-4 w-4" />
                       Back to Input
                     </Button>
-                    <Button
-                      onClick={downloadResponse}
-                      variant="default"
-                      className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
-                    >
-                      <Download className="h-4 w-4" />
-                      Save Results
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        onClick={() => navigate("/enhanced")}
+                        variant="default"
+                        className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                      >
+                        <Stethoscope className="h-4 w-4" />
+                        Doctor's Analysis
+                      </Button>
+                      <Button
+                        onClick={downloadResponse}
+                        variant="default"
+                        className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                      >
+                        <Download className="h-4 w-4" />
+                        Save Results
+                      </Button>
+                    </div>
                   </CardFooter>
                 </Card>
               </TabsContent>
