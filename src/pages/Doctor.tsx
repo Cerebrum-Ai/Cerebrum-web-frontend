@@ -32,7 +32,6 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   Calendar,
   Search,
-  Bell,
   Users,
   FileText,
   BarChart2,
@@ -47,6 +46,7 @@ import {
   CheckCircle,
   User,
 } from "lucide-react";
+import Navbar from "@/components/Navbar";
 
 interface Doctor {
   id: string;
@@ -504,71 +504,10 @@ const Doctor = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16">
+    <div>
+      <Navbar />
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-24 pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Doctor Dashboard Header */}
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-          <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-[#354745] dark:text-[#d0caca]">
-              Doctor Dashboard
-            </h1>
-            {loading ? (
-              <p className="text-gray-500 dark:text-gray-400">
-                Loading your profile...
-              </p>
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">
-                Welcome back,{" "}
-                {doctors.find((doc) => doc.email === currentUserEmail)
-                  ? `Dr. ${
-                      doctors.find((doc) => doc.email === currentUserEmail)
-                        ?.first_name
-                    } ${
-                      doctors.find((doc) => doc.email === currentUserEmail)
-                        ?.last_name
-                    }`
-                  : "Doctor"}
-              </p>
-            )}
-          </div>
-
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <div className="relative">
-              <Bell className="h-5 w-5 text-gray-500 cursor-pointer hover:text-[#62d5d0] transition-colors" />
-              <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Avatar className="h-8 w-8 border border-gray-200 dark:border-gray-700">
-                <AvatarImage src="/placeholder.svg" alt="Doctor Profile" />
-                {!loading &&
-                  doctors.find((doc) => doc.email === currentUserEmail) && (
-                    <AvatarFallback className="bg-[#62d5d0] text-white">
-                      {`${
-                        doctors
-                          .find((doc) => doc.email === currentUserEmail)
-                          ?.first_name?.charAt(0) || ""
-                      }${
-                        doctors
-                          .find((doc) => doc.email === currentUserEmail)
-                          ?.last_name?.charAt(0) || ""
-                      }`}
-                    </AvatarFallback>
-                  )}
-              </Avatar>
-              {!loading &&
-                doctors.find((doc) => doc.email === currentUserEmail) && (
-                  <span className="hidden md:inline text-sm font-medium">
-                    Dr.{" "}
-                    {
-                      doctors.find((doc) => doc.email === currentUserEmail)
-                        ?.last_name
-                    }
-                  </span>
-                )}
-            </div>
-          </div>
-        </div>
-
         {/* Main Dashboard Navigation */}
         <Tabs
           value={activeTab}
@@ -851,37 +790,6 @@ const Doctor = () => {
                                 </p>
                               </div>
 
-                              {doctor.specialty && (
-                                <div>
-                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Specialty
-                                  </p>
-                                  <p className="text-sm">
-                                    {doctor.specialty || "General Practice"}
-                                  </p>
-                                </div>
-                              )}
-
-                              {doctor.education && (
-                                <div>
-                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Education
-                                  </p>
-                                  <p className="text-sm">{doctor.education}</p>
-                                </div>
-                              )}
-
-                              {doctor.years_experience !== undefined && (
-                                <div>
-                                  <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                    Years of Experience
-                                  </p>
-                                  <p className="text-sm">
-                                    {doctor.years_experience} years
-                                  </p>
-                                </div>
-                              )}
-
                               {doctor.bio && (
                                 <div>
                                   <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
@@ -1039,7 +947,7 @@ const Doctor = () => {
           </TabsContent>
         </Tabs>
       </div>
-
+    </div>
       {/* Analysis Dialog */}
       {selectedAnalysis && (
         <Dialog open={!!selectedAnalysis} onOpenChange={() => setSelectedAnalysis(null)}>
@@ -1052,7 +960,7 @@ const Doctor = () => {
             </DialogHeader>
             
             <Tabs defaultValue="text" className="w-full">
-              <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-6">
+              <TabsList className="grid w-full max-w-md mx-auto grid-cols-4 mb-8">
                 <TabsTrigger value="text">AI Analysis</TabsTrigger>
                 <TabsTrigger value="doctor">Doctor's Analysis</TabsTrigger>
                 <TabsTrigger value="patient">Patient Info</TabsTrigger>
