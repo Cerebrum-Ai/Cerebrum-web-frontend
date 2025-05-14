@@ -30,38 +30,32 @@ const AuthenticatedNavbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) setScrolled(true);
-      else setScrolled(false);
+      const currentY = window.scrollY;
+      setScrolled(currentY > 10);
 
-      if (window.scrollY > lastY && window.scrollY > 96) setShow(false);
-      else setShow(true);
+      if (currentY > lastY) {
+        setShow(false); // Hide when scrolling down
+      } else {
+        setShow(true); // Show when scrolling up
+      }
 
-      setLastY(window.scrollY);
+      setLastY(currentY);
     };
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastY]);
 
-  // Generate user initials for avatar
-  const getUserInitials = () => {
-    if (!user || !user.email) return "U";
-    return user.email.charAt(0).toUpperCase();
-  };
-
-  // Handle user sign out
   const handleSignOut = async () => {
     await signOut();
-    navigate("/");
+    navigate("/signin");
   };
 
   return (
     <nav
-      className={`fixed top-0 left-0 w-full z-30 transition-all duration-300
-        ${
-          scrolled
-            ? "backdrop-blur-xl bg-white/80 dark:bg-background/80 shadow-[0_2px_16px_-1px_rgba(80,51,150,0.10)] border-b border-gray-200 dark:border-gray-800"
-            : "bg-transparent"
-        }
+      className={`
+        fixed top-0 left-0 w-full z-30 transition-all duration-300
+        bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm
         ${show ? "translate-y-0" : "-translate-y-full"}
       `}
     >
@@ -80,37 +74,51 @@ const AuthenticatedNavbar: React.FC = () => {
             </span>
           </div>
 
-          {/* Navigation Links */}
-          <div className="hidden md:flex items-center gap-6">
-            <Button
-              variant="ghost"
-              onClick={() => navigate("/dashboard")}
-              className="flex items-center gap-2"
+          {/* Navigation Options */}
+          <div className="hidden md:flex md:items-center space-x-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/dashboard")} 
+              className="text-gray-600 dark:text-gray-200 hover:text-[#62d5d0] hover:bg-transparent"
             >
-              <LayoutDashboard size={18} />
               Dashboard
             </Button>
-          </div>
-
-          {/* Right side items */}
-          <div className="flex items-center gap-4">
+            
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/output-history")} 
+              className="text-gray-600 dark:text-gray-200 hover:text-[#62d5d0] hover:bg-transparent"
+            >
+              <History size={18} className="mr-2" />
+              History
+            </Button>
+            
+            {localStorage.getItem("userRole") === "doctor" && (
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate("/doctor")} 
+                className="text-gray-600 dark:text-gray-200 hover:text-[#62d5d0] hover:bg-transparent"
+              >
+                <Stethoscope size={18} className="mr-2" />
+                Doctor Portal
+              </Button>
+            )}
+            
             <ThemeToggle />
-
+            
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  className="relative h-9 w-9 rounded-full"
-                  aria-label="Profile"
-                >
-                  <Avatar className="h-9 w-9 bg-[#62d5d0] text-white hover:ring-2 hover:ring-[#62d5d0]/20">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                  </Avatar>
-                </Button>
+                <Avatar className="cursor-pointer">
+                  <AvatarFallback className="bg-[#62d5d0]/30 text-[#354745] dark:bg-[#62d5d0]/20 dark:text-gray-200">
+                    {user?.email?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end">
-                <div className="p-2">
-                  <p className="text-sm font-medium">{user?.email}</p>
+              <DropdownMenuContent align="end">
+                <div className="flex items-center justify-start gap-2 p-2">
+                  <div className="flex flex-col space-y-0.5 leading-none">
+                    <p className="text-sm font-medium">{user?.email}</p>
+                  </div>
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => navigate("/dashboard")}>

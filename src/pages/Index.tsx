@@ -201,7 +201,7 @@ const Index: React.FC = () => {
       <MarqueeCompanies />
 
       {/* Animated overview section */}
-      <section className="relative z-1 h-screen flex items-center justify-center px-2 md:px-0   animate-fade-in">
+      <section className="relative z-1 h-screen flex items-center justify-center px-2 md:px-0   animate-fade-in" id="features">
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-7 md:gap-10 text-center">
           <h3 className="font-semibold text-2xl md:text-3xl mb-2 dark:text-[#ffffff]">How CerebrumAI Modernizes Digital Triage</h3>
           <p className="text-lg md:text-xl max-w-3xl animate-fade-in">

@@ -7,7 +7,7 @@ const EnhancedFooter = () => {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="w-full py-12 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 border-t border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300">
+    <footer className="w-full py-12 bg-gradient-to-b from-gray-50 to-gray-200 dark:from-gray-900 dark:to-gray-800  text-gray-700 dark:text-gray-400 backdrop-blur-m">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-8">
           {/* Company Info */}

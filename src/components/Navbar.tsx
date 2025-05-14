@@ -13,7 +13,7 @@ const Navbar: React.FC = () => {
 
   // Otherwise, render the unauthenticated navbar
   return (
-    <nav className="fixed top-0 left-0 w-full z-30 transition-all duration-300 bg-transparent">
+    <nav className="fixed top-0 left-0 w-full z-30 transition-all duration-300 bg-white dark:bg-black ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
