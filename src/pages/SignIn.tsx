@@ -568,11 +568,13 @@ const StyledWrapper = styled.div`
     transition: background 0.2s;
   }
 
-  .toggle-btn.active {
+  /* Override the wrapper hover effect for toggle buttons */
+  .user-type-toggle .toggle-btn:hover {
+    transform: none;
     background: #4db8b3;
   }
 
-  .toggle-btn:hover {
+  .toggle-btn.active {
     background: #4db8b3;
   }
 `;
