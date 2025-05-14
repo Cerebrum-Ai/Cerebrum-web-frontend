@@ -569,19 +569,14 @@ const Doctor = () => {
         >
           <TabsList className="grid grid-cols-2 md:grid-cols-5 lg:grid-cols-6 mb-8 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
-            <TabsTrigger value="patients">Patients</TabsTrigger>
-            <TabsTrigger value="analyses">Skin Analyses</TabsTrigger>
-            <TabsTrigger value="appointments">Appointments</TabsTrigger>
             <TabsTrigger value="team">Team</TabsTrigger>
-            <TabsTrigger value="messages" className="hidden lg:block">
-              Messages
-            </TabsTrigger>
+
           </TabsList>
 
           {/* Dashboard Content */}
           <TabsContent value="dashboard" className="space-y-6">
             {/* Statistics Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <Card>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
@@ -599,7 +594,7 @@ const Doctor = () => {
                 </CardContent>
               </Card>
 
-              <Card>
+              {/* <Card>
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
@@ -614,7 +609,7 @@ const Doctor = () => {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               <Card>
                 <CardContent className="p-6">
@@ -773,132 +768,6 @@ const Doctor = () => {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-
-          {/* Patients Tab Content */}
-          <TabsContent value="patients" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
-                  <CardTitle>Patient Management</CardTitle>
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
-                      <Input
-                        placeholder="Search patients..."
-                        className="pl-9 w-full sm:w-[220px]"
-                      />
-                    </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="flex items-center gap-1"
-                    >
-                      <Filter className="h-3.5 w-3.5" />
-                      <span>Filter</span>
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="bg-[#62d5d0] hover:bg-[#62d5d0]/90 text-white"
-                    >
-                      <Plus className="h-3.5 w-3.5 mr-1" />
-                      New Patient
-                    </Button>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                  Patient management functionality would be implemented here
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Skin Analyses Tab Content */}
-          <TabsContent value="analyses" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Skin Analysis Reports</CardTitle>
-                <CardDescription>
-                  Review and manage patient skin analyses
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-center text-gray-500 dark:text-gray-400 py-8">
-                  Detailed skin analysis reports and trends would be displayed
-                  here
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Appointments Tab Content */}
-          <TabsContent value="appointments" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Appointment Calendar</CardTitle>
-                    <CardDescription>
-                      Manage your schedule and patient appointments
-                    </CardDescription>
-                  </div>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex items-center gap-1"
-                      >
-                        <Calendar className="h-3.5 w-3.5 mr-1" />
-                        <span>{format(selectedDate, "d MMM, yyyy")}</span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="end">
-                      <CalendarComponent
-                        mode="single"
-                        selected={selectedDate}
-                        onSelect={(date) => date && setSelectedDate(date)}
-                        initialFocus
-                        className="rounded-md border"
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 py-8">
-                  <Calendar className="h-5 w-5" />
-                  <span>
-                    Appointment schedule for{" "}
-                    {format(selectedDate, "MMMM d, yyyy")}
-                  </span>
-                </div>
-                <p className="text-center text-gray-500 dark:text-gray-400">
-                  Calendar view with appointment management would be displayed
-                  here
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Messages Tab Content */}
-          <TabsContent value="messages" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Patient Messages</CardTitle>
-                <CardDescription>
-                  Secure messaging with patients
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-center gap-2 text-gray-500 dark:text-gray-400 py-8">
-                  <MessageSquare className="h-5 w-5" />
-                  <span>Messaging functionality would be displayed here</span>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
           {/* Team Tab Content */}
@@ -1853,8 +1722,6 @@ const Doctor = () => {
                   placeholder="Describe the recommended treatment plan..."
                 />
               </div>
-              
-
               
               <div className="space-y-2">
                 <label htmlFor="followup" className="text-sm font-medium">
