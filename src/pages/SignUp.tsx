@@ -25,7 +25,6 @@ const SignUp: React.FC = () => {
     dateOfBirth: "",
     phone: "",
     gender: "",
-    bloodgroup: "",
 
     // Medical Info
     height: "",
@@ -36,7 +35,7 @@ const SignUp: React.FC = () => {
     medications: "",
     allergies: "",
     familyHistory: "",
-
+    blood_type: "",
     // Lifestyle Info
     smokingStatus: "",
     alcoholConsumption: "",
@@ -132,10 +131,9 @@ const SignUp: React.FC = () => {
         date_of_birth: profileData.dateOfBirth,
         phone: profileData.phone,
         gender: profileData.gender,
-        blood_group: profileData.bloodgroup,
         height: profileData.height,
         weight: profileData.weight,
-        blood_type: profileData.bloodType,
+        blood_type: profileData.blood_type,
         chronic_conditions: profileData.chronicConditions,
         conditions: profileData.conditions,
         medications: profileData.medications,

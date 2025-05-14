@@ -10,7 +10,7 @@ interface MedicalHistoryProps {
     medications: string;
     allergies: string;
     familyHistory: string;
-    bloodgroup: string;
+    blood_type: string;
     pregnancyStatus: string;
   };
   handleChange: (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => void;
@@ -51,11 +51,11 @@ const MedicalHistory: React.FC<MedicalHistoryProps> = ({ formData, handleChange,
           />
         </div>
         <div className="form-group">
-          <label htmlFor="bloodgroup">Blood Group</label>
+          <label htmlFor="blood_type">Blood Group</label>
           <select 
-            id="bloodgroup"
-            name="bloodgroup" 
-            value={formData.bloodgroup} 
+            id="blood_type"
+            name="blood_type" 
+            value={formData.blood_type} 
             onChange={handleChange}
           >
             <option value="">Select</option>
@@ -261,4 +261,4 @@ const StyledForm = styled.form`
   }
 `;
 
-export default MedicalHistory; 
+export default MedicalHistory;

@@ -22,7 +22,7 @@ interface ReviewSubmitProps {
     medications: string;
     conditions: string;
     familyHistory: string;
-    bloodgroup: string;
+    blood_type: string;
     pregnancyStatus: string;
 
     // Lifestyle Info
@@ -95,7 +95,7 @@ const ReviewSubmit: React.FC<ReviewSubmitProps> = ({
             </div>
             <div className="form-group">
               <label>Blood Group</label>
-              <div className="review-value">{formData.bloodgroup || "Not specified"}</div>
+              <div className="review-value">{formData.blood_type || "Not specified"}</div>
             </div>
             <div className="form-group">
               <label>Pregnancy Status</label>
