@@ -632,7 +632,12 @@ const OutputPage: React.FC = () => {
                     <Button
                       variant="default"
                       className="bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
-                      onClick={() => navigate("/enhanced")}
+                      onClick={() => navigate("/enhanced", {
+                        state: { 
+                          analysisId: analysisId,
+                          apiResponse: apiResponse 
+                        }
+                      })}
                     >
                       Enhanced Analysis
                     </Button>

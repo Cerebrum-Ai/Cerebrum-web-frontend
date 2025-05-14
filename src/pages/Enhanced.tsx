@@ -35,8 +35,8 @@ const Enhanced = () => {
   const { toast } = useToast();
   
   // Get analysis ID from location state if available
-  const existingAnalysisId = location.state?.analysisId;
-  const apiResponse = location.state?.apiResponse;
+  const [existingAnalysisId, setExistingAnalysisId] = useState(location.state?.analysisId);
+  const [apiResponse, setApiResponse] = useState(location.state?.apiResponse);
   
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [consentToShare, setConsentToShare] = useState(false);
@@ -45,6 +45,48 @@ const Enhanced = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Check if a record with the same content already exists
+  useEffect(() => {
+    const checkForExistingRecord = async () => {
+      // Skip if we already have an analysisId or we don't have apiResponse
+      if (existingAnalysisId || !apiResponse) return;
+      
+      try {
+        // Get current user
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
+        if (userError || !user) return;
+        
+        // Query for existing records with the same content
+        const { data, error } = await supabase
+          .from('analysis_records')
+          .select('id')
+          .eq('user_id', user.id)
+          .filter('analysis_data', 'neq', null);
+        
+        if (error || !data) return;
+        
+        // Find a match based on some unique property in the apiResponse
+        // You might need to adjust this based on what fields reliably identify a unique analysis
+        const match = data.find((record: any) => {
+          const analysisData = record.analysis_data;
+          return analysisData && 
+                 analysisData.analysis &&
+                 apiResponse.analysis &&
+                 analysisData.analysis.final_analysis === apiResponse.analysis.final_analysis;
+        });
+        
+        if (match) {
+          console.log("Found existing record:", match.id);
+          setExistingAnalysisId(match.id);
+        }
+      } catch (err) {
+        console.error("Error checking for existing records:", err);
+      }
+    };
+    
+    checkForExistingRecord();
+  }, [existingAnalysisId, apiResponse]);
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -82,9 +124,8 @@ const Enhanced = () => {
 
         let analysisId = existingAnalysisId;
         
-        // If we have an existing analysis ID, update it instead of creating a new one
         if (existingAnalysisId) {
-          // Update the existing analysis record to include the doctor ID
+          // If we have an existing analysisId, update that record
           const { error: updateError } = await supabase
             .from('analysis_records')
             .update({
@@ -98,14 +139,16 @@ const Enhanced = () => {
             .eq('id', existingAnalysisId);
             
           if (updateError) throw updateError;
+          console.log("Updated existing record:", existingAnalysisId);
         } else {
-          // Create a new analysis record
+          // Only create a new record if no existing analysisId
           const { data: analysisRecord, error: analysisError } = await supabase
             .from('analysis_records')
             .insert({
               user_id: user.id,
               name: "Doctor Consultation Request",
               analysis_data: {
+                ...apiResponse,
                 doctor_id: selectedDoctor,
                 status: "pending",
                 request_date: new Date().toISOString()
@@ -116,6 +159,7 @@ const Enhanced = () => {
 
           if (analysisError) throw analysisError;
           analysisId = analysisRecord.id;
+          console.log("Created new record:", analysisId);
         }
 
         toast({
