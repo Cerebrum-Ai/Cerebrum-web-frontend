@@ -173,6 +173,7 @@ const Doctor = () => {
   const [currentDoctorAnalysis, setCurrentDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
   const [existingDoctorAnalysis, setExistingDoctorAnalysis] = useState<DoctorAnalysis | null>(null);
   const [savingAnalysis, setSavingAnalysis] = useState(false);
+  const [todaysPatientCount, setTodaysPatientCount] = useState(0);
   const { toast } = useToast();
 
   // Fetch doctors from Supabase
@@ -315,6 +316,13 @@ const Doctor = () => {
           });
 
           setPatientAppointments(appointments);
+
+          // Count today's patients
+          const today = new Date().toISOString().split("T")[0];
+          const todaysCount = data.filter((record: any) =>
+            record.created_at.startsWith(today)
+          ).length;
+          setTodaysPatientCount(todaysCount);
         }
       } catch (err) {
         console.error("Failed to fetch analysis records:", err);
@@ -584,7 +592,7 @@ const Doctor = () => {
                       <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                         Today's Patients
                       </p>
-                      <h3 className="text-2xl font-bold mt-1">12</h3>
+                      <h3 className="text-2xl font-bold mt-1">{todaysPatientCount}</h3>
                       <p className="text-xs text-green-500 mt-1 flex items-center"></p>
                     </div>
                     <div className="bg-[#62d5d0]/10 p-3 rounded-full">
@@ -781,13 +789,6 @@ const Doctor = () => {
                       View and manage doctor information
                     </CardDescription>
                   </div>
-                  <Button
-                    size="sm"
-                    className="bg-[#62d5d0] hover:bg-[#62d5d0]/90 text-white"
-                  >
-                    <Plus className="h-3.5 w-3.5 mr-1" />
-                    Add Doctor
-                  </Button>
                 </div>
               </CardHeader>
               <CardContent>
@@ -903,23 +904,6 @@ const Doctor = () => {
                                 </p>
                               </div>
                             </div>
-
-                            <div className="flex space-x-2 mt-4">
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex-1"
-                              >
-                                View Profile
-                              </Button>
-                              <Button
-                                variant="outline"
-                                size="sm"
-                                className="flex-1 text-[#62d5d0] border-[#62d5d0]/30 hover:bg-[#62d5d0]/5"
-                              >
-                                Edit
-                              </Button>
-                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -995,10 +979,6 @@ const Doctor = () => {
                               </p>
                               <p className="text-sm">{currentDoctor.email}</p>
                             </div>
-
-                            <Button className="bg-[#62d5d0] hover:bg-[#62d5d0]/90 text-white w-full mt-4">
-                              Edit Profile
-                            </Button>
                           </div>
 
                           <div className="bg-gray-50 dark:bg-gray-800/50 rounded-lg p-6">
