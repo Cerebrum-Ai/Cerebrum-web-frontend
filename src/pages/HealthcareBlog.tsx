@@ -7,7 +7,7 @@ const HealthcareBlog = () => {
     {
       title: "The Future of AI in Healthcare",
       excerpt: "Exploring how artificial intelligence is revolutionizing patient care and medical diagnosis",
-      author: "Dr. Sarah Chen",
+      author: "Dr. Arnav Gupta",
       date: "March 15, 2024",
       category: "Technology",
       readTime: "5 min read"
@@ -15,7 +15,7 @@ const HealthcareBlog = () => {
     {
       title: "Understanding Medical Triage",
       excerpt: "A comprehensive guide to how medical triage works and its importance in healthcare",
-      author: "Dr. Michael Rodriguez",
+      author: "Dr. Gourav Sharma",
       date: "March 10, 2024",
       category: "Healthcare",
       readTime: "4 min read"
@@ -23,7 +23,7 @@ const HealthcareBlog = () => {
     {
       title: "Digital Health Trends 2024",
       excerpt: "The latest trends shaping the future of digital healthcare and patient experience",
-      author: "Dr. Emily Thompson",
+      author: "Dr. Ankit Patel",
       date: "March 5, 2024",
       category: "Trends",
       readTime: "6 min read"
@@ -31,7 +31,7 @@ const HealthcareBlog = () => {
     {
       title: "Patient Privacy in the Digital Age",
       excerpt: "How healthcare providers are protecting patient data in an increasingly connected world",
-      author: "Dr. James Wilson",
+      author: "Dr. Abhang Singh",
       date: "February 28, 2024",
       category: "Privacy",
       readTime: "4 min read"
@@ -39,7 +39,7 @@ const HealthcareBlog = () => {
     {
       title: "The Role of Machine Learning in Diagnosis",
       excerpt: "How machine learning algorithms are improving diagnostic accuracy and efficiency",
-      author: "Dr. Lisa Park",
+      author: "Dr. Arnav Kumar",
       date: "February 20, 2024",
       category: "Technology",
       readTime: "5 min read"
@@ -47,7 +47,7 @@ const HealthcareBlog = () => {
     {
       title: "Telemedicine Best Practices",
       excerpt: "Essential guidelines for effective remote healthcare delivery",
-      author: "Dr. Robert Martinez",
+      author: "Dr. Gourav Verma",
       date: "February 15, 2024",
       category: "Healthcare",
       readTime: "4 min read"
@@ -92,7 +92,7 @@ const HealthcareBlog = () => {
                     <div className="flex items-center gap-4">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-gray-200"></div>
-                        <span className="text-sm">Dr. Sarah Chen</span>
+                        <span className="text-sm">Dr. Arnav Gupta</span>
                       </div>
                       <span className="text-sm text-muted-foreground">March 15, 2024</span>
                     </div>

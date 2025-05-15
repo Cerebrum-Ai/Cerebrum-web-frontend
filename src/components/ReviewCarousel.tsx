@@ -41,21 +41,21 @@ const reviews = [
   {
     quote:
       "As a healthcare administrator, I've seen CerebrumAI dramatically reduce unnecessary referrals while improving patient satisfaction scores.",
-    author: "Michael Chen",
+    author: "Arnav Gupta",
     title: "Healthcare Administrator",
     image: "https://randomuser.me/api/portraits/men/32.jpg"
   },
   {
     quote:
       "The AI-powered triage system is incredibly accurate. It's helped our clinic prioritize cases more effectively than any system we've used before.",
-    author: "Dr. Sarah Johnson",
+    author: "Dr. Gourav Sharma",
     title: "Clinical Director",
     image: "https://randomuser.me/api/portraits/women/28.jpg"
   },
   {
     quote:
       "The platform's ability to integrate with our existing systems made adoption seamless. Our staff adapted to it within days.",
-    author: "Robert Taylor",
+    author: "Ankit Patel",
     title: "IT Healthcare Specialist",
     image: "https://randomuser.me/api/portraits/men/45.jpg"
   },
