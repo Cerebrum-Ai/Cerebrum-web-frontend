@@ -19,6 +19,14 @@ import Doctor from "./pages/Doctor";
 import DoctorResponse from "./pages/DoctorResponse";
 import AnalysisSettings from "./pages/AnalysisSettings";
 import AccountPage from "./pages/AccountPage";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
+import CookiePolicy from "./pages/CookiePolicy";
+import HIPAACompliance from "./pages/HIPAACompliance";
+import HelpCenter from "./pages/HelpCenter";
+import Documentation from "./pages/Documentation";
+import CaseStudies from "./pages/CaseStudies";
+import HealthcareBlog from "./pages/HealthcareBlog";
 
 const queryClient = new QueryClient();
 
@@ -91,6 +99,18 @@ const App = () => (
                     </DoctorProtectedRoute>
                 }
               />
+              {/* Legal Pages */}
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms-of-service" element={<TermsOfService />} />
+              <Route path="/cookie-policy" element={<CookiePolicy />} />
+              <Route path="/hipaa-compliance" element={<HIPAACompliance />} />
+              
+              {/* Resource Pages */}
+              <Route path="/help-center" element={<HelpCenter />} />
+              <Route path="/documentation" element={<Documentation />} />
+              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/blog" element={<HealthcareBlog />} />
+              
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

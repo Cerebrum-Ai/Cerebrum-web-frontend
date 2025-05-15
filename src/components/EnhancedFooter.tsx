@@ -57,10 +57,10 @@ const EnhancedFooter = () => {
           <div>
             <h4 className="font-semibold text-base mb-3 text-[#354745] dark:text-gray-200">Resources</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-[#62d5d0] transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-[#62d5d0] transition-colors">Documentation</a></li>
-              <li><a href="#" className="hover:text-[#62d5d0] transition-colors">Case Studies</a></li>
-              <li><a href="#" className="hover:text-[#62d5d0] transition-colors">Healthcare Blog</a></li>
+              <li><a onClick={() => navigate("/help-center")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Help Center</a></li>
+              <li><a onClick={() => navigate("/documentation")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Documentation</a></li>
+              <li><a onClick={() => navigate("/case-studies")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Case Studies</a></li>
+              <li><a onClick={() => navigate("/blog")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Healthcare Blog</a></li>
             </ul>
           </div>
 
@@ -90,10 +90,10 @@ const EnhancedFooter = () => {
               &copy; {year} CerebrumAI Technologies, Inc. All rights reserved.
             </p>
             <div className="flex space-x-6 text-xs">
-              <a href="#" className="hover:text-[#62d5d0] transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-[#62d5d0] transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-[#62d5d0] transition-colors">Cookie Policy</a>
-              <a href="#" className="hover:text-[#62d5d0] transition-colors">HIPAA Compliance</a>
+              <a onClick={() => navigate("/privacy-policy")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Privacy Policy</a>
+              <a onClick={() => navigate("/terms-of-service")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Terms of Service</a>
+              <a onClick={() => navigate("/cookie-policy")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">Cookie Policy</a>
+              <a onClick={() => navigate("/hipaa-compliance")} className="hover:text-[#62d5d0] cursor-pointer transition-colors">HIPAA Compliance</a>
             </div>
           </div>
         </div>
