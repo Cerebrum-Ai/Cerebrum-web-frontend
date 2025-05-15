@@ -219,41 +219,326 @@ const Index: React.FC = () => {
       {/* Latest Developments */}
       <LatestDevelopments />
 
-      {/* Secure Experience Highlight */}
-      <section className="relative h-screen flex items-center justify-center max-w-5xl mx-auto px-4 animate-fade-in ">
-        <div className="flex flex-col md:flex-row gap-10 items-center">
-          <div className="bg-white/80 dark:bg-card/90 w-full md:w-4/6 flex flex-col gap-7 rounded-2xl p-8 border border-gray-200 dark:border-gray-700 backdrop-blur-3xl">
-            <div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-[#62d5d0]">
-                Experience Secure, Intuitive, and Expert Triage
-              </h3>
+      {/* App Showcase Section */}
+      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center w-full mx-auto py-16 px-4 animate-fade-in bg-gradient-to-b from-[#f0f9ff] to-[#e0f2fe] dark:from-[#1e293b] dark:to-[#334155]">
+        <div className="max-w-6xl mx-auto w-full mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-semibold mb-4 dark:text-white">Experience Cerebrum.ai with app</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            Our intuitive interface makes triage simple, secure, and effective across all devices.
+          </p>
+        </div>
+        
+        <div className="flex flex-col md:flex-row items-center justify-evenly gap-6 md:gap-8 w-full py-8 max-w-6xl mx-auto">
+          {/* App Screenshot 1 */}
+          <div className="app-screenshot-card group">
+            <div className="app-screenshot-container">
+              <div className="phone-frame">
+                <div className="phone-notch"></div>
+                <img 
+                  src="/app_photo2.jpeg" 
+                  alt="CerebrumAI Analysis Interface" 
+                  className="app-screenshot"
+                  loading="lazy"
+                />
+                <div className="phone-home-indicator"></div>
+              </div>
+              <div className="screenshot-overlay">
+                <span className="screenshot-label">Analysis Interface</span>
+              </div>
             </div>
-            <ul className="list-disc marker:text-[#62d5d0] dark:marker:text-[#62d5d0] text-gray-700 dark:text-gray-200 ml-6 space-y-1 text-base">
-              <li>
-                <strong>Intelligent AI:</strong> Understands each patient to provide tailored advice.
-              </li>
-              <li>
-                <strong>Privacy First:</strong> We keep your behavioral, text, and image data secure—only connecting you to a doctor if needed.
-              </li>
-              <li>
-                <strong>User-Friendly:</strong> Designed for all, with a beautiful, intuitive experience on any device.
-              </li>
-              <li>
-                <strong>Bridges to Care:</strong> Seamlessly connects you to a professional when your case is complex.
-              </li>
-            </ul>
           </div>
-          <div className="w-full md:w-2/6 flex items-center justify-center">
-            <img
-              src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80"
-              alt="AI patient triage experience"
-              className="rounded-2xl shadow-2xl border-[2.5px] border-[#62d5d0]/50 object-cover animate-scale-in"
-              loading="lazy"
-              draggable={false}
-            />
+          
+          {/* App Screenshot 2 - Featured/Middle */}
+          <div className="app-screenshot-card group featured">
+            <div className="app-screenshot-container">
+              <div className="phone-frame">
+                <div className="phone-notch"></div>
+                <img 
+                  src="/app_photo1.jpeg" 
+                  alt="CerebrumAI Dashboard" 
+                  className="app-screenshot"
+                  loading="lazy" 
+                />
+                <div className="phone-home-indicator"></div>
+              </div>
+              <div className="screenshot-overlay">
+                <span className="screenshot-label">Landing Page</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* App Screenshot 3 */}
+          <div className="app-screenshot-card group">
+            <div className="app-screenshot-container">
+              <div className="phone-frame">
+                <div className="phone-notch"></div>
+                <img 
+                  src="/app_photo3.jpeg" 
+                  alt="CerebrumAI Results View" 
+                  className="app-screenshot"
+                  loading="lazy"
+                />
+                <div className="phone-home-indicator"></div>
+              </div>
+              <div className="screenshot-overlay">
+                <span className="screenshot-label">Results View</span>
+              </div>
+            </div>
           </div>
         </div>
+        
+        <div className="mt-12 text-center">
+          <button
+            onClick={() => navigate("/dashboard")}
+            className="group flex items-center gap-2 mx-auto px-8 py-3 font-semibold rounded-[40px] border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+          >
+            Try It Now
+            <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+          </button>
+        </div>
       </section>
+      
+      {/* Add CSS for app screenshots */}
+      <style>{`
+        .app-screenshot-card {
+          perspective: 1000px;
+          width: 280px;
+          transition: all 0.5s ease;
+        }
+        
+        .app-screenshot-card.featured {
+          transform: translateY(-20px) scale(1.05);
+          z-index: 20;
+        }
+        
+        .app-screenshot-container {
+          position: relative;
+          border-radius: 28px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.05);
+          transform-style: preserve-3d;
+          transition: transform 0.6s ease;
+          height: 580px;
+          background: linear-gradient(145deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+          backdrop-filter: blur(10px);
+        }
+        
+        .dark .app-screenshot-container {
+          background: linear-gradient(145deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.1) 100%);
+        }
+        
+        .group:hover .app-screenshot-container {
+          transform: translateY(-8px);
+          box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 0 8px rgba(0, 0, 0, 0.06);
+        }
+        
+        /* Phone frame styling */
+        .phone-frame {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          border-radius: 28px;
+          background-color: #1a1a1a;
+          padding: 12px 8px;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+          display: flex;
+          flex-direction: column;
+          overflow: hidden;
+        }
+        
+        .dark .phone-frame {
+          background-color: #121212;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Notch styling */
+        .phone-notch {
+          position: relative;
+          height: 28px;
+          width: 40%;
+          margin: 0 auto 8px;
+          background-color: #1a1a1a;
+          border-bottom-left-radius: 14px;
+          border-bottom-right-radius: 14px;
+          z-index: 10;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        
+        .phone-notch:before {
+          content: "";
+          position: absolute;
+          height: 6px;
+          width: 6px;
+          border-radius: 50%;
+          background-color: rgba(80, 80, 80, 0.8);
+          left: 25%;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        
+        .phone-notch:after {
+          content: "";
+          position: absolute;
+          height: 8px;
+          width: 40px;
+          border-radius: 4px;
+          background-color: rgba(80, 80, 80, 0.5);
+          top: 50%;
+          transform: translateY(-50%);
+        }
+        
+        /* Home indicator */
+        .phone-home-indicator {
+          height: 5px;
+          width: 36%;
+          background-color: rgba(255, 255, 255, 0.5);
+          border-radius: 2.5px;
+          margin: 8px auto 5px;
+        }
+        
+        .dark .phone-home-indicator {
+          background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .app-screenshot {
+          width: 100%;
+          height: calc(100% - 41px); /* Adjust for notch and home indicator */
+          object-fit: cover;
+          transition: transform 0.5s ease;
+          border-radius: 10px;
+        }
+        
+        .group:hover .app-screenshot {
+          transform: scale(1.03);
+        }
+        
+        .screenshot-overlay {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 16px;
+          background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+          opacity: 0;
+          transform: translateY(10px);
+          transition: all 0.3s ease;
+        }
+        
+        .group:hover .screenshot-overlay {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        
+        .screenshot-label {
+          color: white;
+          font-weight: 500;
+          font-size: 16px;
+        }
+        
+        /* Side buttons for phone-like look */
+        .app-screenshot-container:before {
+          content: "";
+          position: absolute;
+          top: 100px;
+          right: -2px;
+          height: 35px;
+          width: 4px;
+          background-color: rgba(60, 60, 60, 0.8);
+          border-top-left-radius: 2px;
+          border-bottom-left-radius: 2px;
+          z-index: 30;
+        }
+        
+        .app-screenshot-container:after {
+          content: "";
+          position: absolute;
+          top: 150px;
+          right: -2px;
+          height: 65px;
+          width: 4px;
+          background-color: rgba(60, 60, 60, 0.8);
+          border-top-left-radius: 2px;
+          border-bottom-left-radius: 2px;
+          z-index: 30;
+        }
+        
+        /* Volume buttons */
+        .app-screenshot-card:before {
+          content: "";
+          position: absolute;
+          top: 100px;
+          left: -2px;
+          height: 30px;
+          width: 4px;
+          background-color: rgba(60, 60, 60, 0.8);
+          border-top-right-radius: 2px;
+          border-bottom-right-radius: 2px;
+          z-index: 30;
+        }
+        
+        .app-screenshot-card:after {
+          content: "";
+          position: absolute;
+          top: 140px;
+          left: -2px;
+          height: 30px;
+          width: 4px;
+          background-color: rgba(60, 60, 60, 0.8);
+          border-top-right-radius: 2px;
+          border-bottom-right-radius: 2px;
+          z-index: 30;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+          .app-screenshot-card {
+            width: 240px;
+            margin-bottom: 40px;
+          }
+          
+          .app-screenshot-card.featured {
+            transform: scale(1.05);
+          }
+          
+          .app-screenshot-container {
+            height: 480px;
+          }
+          
+          .phone-notch {
+            height: 24px;
+          }
+          
+          .app-screenshot {
+            height: calc(100% - 37px);
+          }
+        }
+        
+        @media (max-width: 640px) {
+          .app-screenshot-card {
+            width: 220px;
+          }
+          
+          .app-screenshot-container {
+            height: 440px;
+          }
+          
+          .phone-notch {
+            height: 20px;
+            width: 35%;
+          }
+          
+          .phone-home-indicator {
+            height: 4px;
+            width: 30%;
+          }
+          
+          .app-screenshot {
+            height: calc(100% - 32px);
+          }
+        }
+      `}</style>
 
       <EnhancedFooter />
     </div>
