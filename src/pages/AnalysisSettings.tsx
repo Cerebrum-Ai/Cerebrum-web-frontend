@@ -177,23 +177,23 @@ const AnalysisSettings: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <Navbar />
-      <div className="container mx-auto px-4 py-8 mt-16">
+      <div className="container mx-auto px-4 py-8 mt-16 ">
         <Tabs defaultValue="account" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-2 ">
             <TabsTrigger value="account">Account Settings</TabsTrigger>
             <TabsTrigger value="analysis">Analysis Records</TabsTrigger>
           </TabsList>
 
           <TabsContent value="account">
-            <Card>
+            <Card >
               <CardHeader>
                 <CardTitle>Account Settings</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 ">
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
+                  <div className="space-y-2 ">
                     <Label>First Name</Label>
                     <Input
                       value={profile.first_name}
