@@ -28,9 +28,7 @@ interface ApiResponse {
 
   analysis?: {
     final_analysis: string;
-
     initial_diagnosis: string;
-
     vectordb_results: string;
   };
 
@@ -118,9 +116,7 @@ const SkinQueryForm: React.FC = () => {
 
         timeUp: currentTime,
       };
-
       setKeystrokes((prev) => [...prev, completeKeystroke]);
-
       currentKeyRef.current = null;
     }
   };
