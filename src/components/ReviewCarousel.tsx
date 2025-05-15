@@ -6,59 +6,40 @@ import {
   CarouselNext, 
   CarouselPrevious 
 } from "@/components/ui/carousel";
+import { title } from "process";
 
-// Create an expanded set of reviews to create a more seamless experience
-const originalReviews = [
-  {
-    quote:
-      "CerebrumAI's holistic recommendations made me feel truly understood as a patient. Connecting securely to a doctor only when needed gave such peace of mind.",
-    author: "Jane Williams",
-    title: "Patient",
-    image: "https://randomuser.me/api/portraits/women/65.jpg"
-  },
-  {
-    quote:
-      "The multimodal input captures details other systems miss—game-changer for remote consultation workflows.",
-    author: "Dr. Amjad Farooq",
-    title: "Physician",
-    image: "https://randomuser.me/api/portraits/men/75.jpg"
-  },
-  {
-    quote:
-      "I love how fast and intuitive the experience is. Adding behavioral data is an innovation the space desperately needed.",
-    author: "Luisa K.",
-    title: "Health Tech Reviewer",
-    image: "https://randomuser.me/api/portraits/women/44.jpg"
-  },
-  
-];
 
-// Create a longer array by duplicating and slightly varying the reviews
 // This creates the illusion of more content and a continuous experience
 const reviews = [
-  ...originalReviews,
   // Add more unique reviews to create a longer sequence
   {
     quote:
       "As a healthcare administrator, I've seen CerebrumAI dramatically reduce unnecessary referrals while improving patient satisfaction scores.",
-    author: "Arnav Gupta",
+    author: "Abhang Pawar",
     title: "Healthcare Administrator",
-    image: "https://randomuser.me/api/portraits/men/32.jpg"
+    image: "/abhang.jpeg"
   },
   {
     quote:
       "The AI-powered triage system is incredibly accurate. It's helped our clinic prioritize cases more effectively than any system we've used before.",
-    author: "Dr. Gourav Sharma",
+    author: "Arnav Angarkar",
     title: "Clinical Director",
-    image: "https://randomuser.me/api/portraits/women/28.jpg"
+    image: "/arnav.jpeg"
   },
   {
     quote:
       "The platform's ability to integrate with our existing systems made adoption seamless. Our staff adapted to it within days.",
-    author: "Ankit Patel",
+    author: "Ankit Dash",
     title: "IT Healthcare Specialist",
-    image: "https://randomuser.me/api/portraits/men/45.jpg"
+    image: "/ankit.jpeg"
   },
+  {
+    quote:
+      "CerebrumAI's solutions have not only improved our workflow but also enhanced the quality of care we provide to our patients.",
+    author:"Gourav Purohit",
+    title: "Healthcare Consultant",
+    image: "/gourav.jpeg"
+  }
 ];
 
 const ReviewCarousel: React.FC = () => {
@@ -171,21 +152,6 @@ const ReviewCarousel: React.FC = () => {
                     handlePrev();
                   }}
                 />
-                
-                {/* Dots - show only for original reviews to avoid overwhelming with too many dots */}
-                <div className="flex gap-2 justify-center">
-                  {originalReviews.map((_, i) => (
-                    <span
-                      key={i}
-                      className={`w-2.5 h-2.5 rounded-full cursor-pointer transition-all duration-200 ${
-                        current % originalReviews.length === i ? "bg-[#64d0d5] scale-110" : "bg-[#64d0d5]/50"
-                      }`}
-                      onClick={() => {
-                        handleNavigation(i);
-                      }}
-                    />
-                  ))}
-                </div>
                 
                 <CarouselNext 
                   className="!static h-8 w-8 p-2 bg-primary/10 hover:bg-fuchsia-200/40 border-none transition" 
