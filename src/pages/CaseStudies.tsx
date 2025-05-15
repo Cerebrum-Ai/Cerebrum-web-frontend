@@ -2,7 +2,7 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import EnhancedFooter from "@/components/EnhancedFooter";
 
-const CaseStudies = () => {
+const CaseStudies =   () => {
   const caseStudies = [
     {
       title: "Early Detection of Skin Conditions",
@@ -14,7 +14,7 @@ const CaseStudies = () => {
     {
       title: "Emergency Room Triage Optimization",
       description: "Implementing AI-powered triage in a busy urban hospital",
-      impact: "40% reduction in wait times",
+      impact: "40% reduction in wait times", 
       details: "By integrating Cerebrum.ai into their emergency room workflow, City General Hospital was able to significantly reduce patient wait times while maintaining accuracy in condition assessment.",
       image: "/case-studies/er-triage.jpg"
     },
