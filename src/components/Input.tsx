@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { supabaseAdmin } from "@/lib/supabase";
+import { Paperclip, Loader2, Image, Headphones } from "lucide-react";
 
 interface CustomInputProps {
   onSubmit: (msg: string, url: string, type: string) => void | Promise<void>;
@@ -125,36 +126,11 @@ const Input: React.FC<CustomInputProps> = ({
     <StyledWrapper>
       <div className="flex flex-col items-center w-full gap-4">
         <div className="container flex justify-center w-full">
-          <div className="inputGroup">
+          <div className={`inputGroup ${message.trim() ? 'has-text' : ''}`}>
             <div className="fileUploadWrapper">
-              <label htmlFor="file">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 337 337"
-                >
-                  <circle
-                    strokeWidth={20}
-                    stroke="#6c6c6c"
-                    fill="none"
-                    r="158.5"
-                    cy="168.5"
-                    cx="168.5"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeWidth={25}
-                    stroke="#6c6c6c"
-                    d="M167.759 79V259"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeWidth={25}
-                    stroke="#6c6c6c"
-                    d="M79 167.138H259"
-                  />
-                </svg>
-                <span className="tooltip">Optional: Add an image or audio</span>
+              <label htmlFor="file" className="upload-button">
+                <Paperclip className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+                <span className="tooltip">Add an image or audio file</span>
               </label>
               <input
                 type="file"
@@ -162,12 +138,13 @@ const Input: React.FC<CustomInputProps> = ({
                 name="file"
                 accept="image/png,audio/wav"
                 onChange={handleFileChange}
+                disabled={isLoading}
               />
             </div>
             <input
               type="text"
               id="messageInput"
-              placeholder="Enter your message here... *"
+              placeholder="Describe your symptoms in detail..."
               value={message}
               onChange={(e) => {
                 const msg = e.target.value;
@@ -181,265 +158,183 @@ const Input: React.FC<CustomInputProps> = ({
                 }
               }}
               onKeyUp={handleKeyUp}
+              aria-label="Enter your medical symptoms"
             />
           </div>
         </div>
+        
         {uploading && (
-          <div className="text-center text-white mt-2">Uploading...</div>
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <Loader2 className="w-3 h-3 animate-spin text-[#62d5d0]" />
+            <span className="text-gray-500 dark:text-gray-400">Uploading file...</span>
+          </div>
         )}
-        {error && <div className="text-center text-red-500 mt-2">{error}</div>}
-        <div className="flex flex-col items-center gap-2">
-          {imageFile && (
-            <div className="text-black dark:text-white text-sm text-center">
-              Image: {imageFile.name}
-            </div>
-          )}
-          {audioFile && (
-            <div className="text-black dark:text-white text-sm text-center">
-              Audio: {audioFile.name}
-            </div>
-          )}
-          {fileUrl && (
-            <div className="text-center">
-              <a
-                href={fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[#62d5d0] text-sm"
-              >
-                View Latest Upload
-              </a>
-            </div>
-          )}
-        </div>
+        
+        {error && (
+          <div className="text-center text-red-500 text-sm mt-1">{error}</div>
+        )}
+        
+        {(imageFile || audioFile || fileUrl) && (
+          <div className="flex items-center gap-2 bg-teal-50/50 dark:bg-teal-900/20 px-3 py-2 rounded-lg text-xs">
+            {imageFile && (
+              <div className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                <Image className="w-3 h-3 text-[#62d5d0]" />
+                <span>{imageFile.name}</span>
+              </div>
+            )}
+            {audioFile && (
+              <div className="flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                <Headphones className="w-3 h-3 text-[#62d5d0]" />
+                <span>{audioFile.name}</span>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </StyledWrapper>
   );
 };
 
 const StyledWrapper = styled.div`
+  width: 100%;
+  
   .container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
   }
 
   .inputGroup {
     display: flex;
     align-items: center;
-    width: fit-content;
-    height: 40px;
-    background-color: #e0f7fa;
-    border: 1px solid #3f3f3f;
-    border-radius: 10px;
-    transition: background-color 0.3s, border-color 0.3s;
-    padding: 0 0 0 8px;
+    width: 100%;
+    max-width: 500px;
+    min-height: 52px;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    padding: 0.5rem;
+    
+    &:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+    }
   }
 
-  :global(.light) .inputGroup {
-    background-color: #e0f7fa;
-    border: 1px solid #b6e6ef;
+  .dark .inputGroup {
+    background-color: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(51, 65, 85, 0.5);
+    
+    &:hover {
+      border-color: rgba(71, 85, 105, 0.8);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
   }
 
   .inputGroup:focus-within {
-    border: 1px solid #e81cff;
-    background: #232323;
+    border-color: #62d5d0;
+    box-shadow: 0 0 0 2px rgba(98, 213, 208, 0.2);
   }
 
-  :global(.light) .inputGroup:focus-within {
-    border: 1px solid #62d5d0;
-    background: #fff;
+  .dark .inputGroup:focus-within {
+    border-color: #62d5d0;
+    box-shadow: 0 0 0 2px rgba(98, 213, 208, 0.1);
   }
 
   .inputGroup.has-text {
-    background-color: #e0f7fa;
-    border: 1px solid #3f3f3f;
-    transition: background-color 0.3s, border-color 0.3s;
+    border-color: #62d5d0;
   }
 
-  :global(.light) .inputGroup.has-text {
-    background-color: #e0f7fa;
-    border: 1.5px solid #62d5d0;
+  .dark .inputGroup.has-text {
+    border-color: #62d5d0;
   }
 
   .fileUploadWrapper {
-    width: fit-content;
-    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: Arial, Helvetica, sans-serif;
+    padding-right: 8px;
   }
 
   #file {
     display: none;
   }
 
-  .fileUploadWrapper label {
+  .upload-button {
     cursor: pointer;
-    width: fit-content;
-    height: fit-content;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
+    transition: all 0.2s ease;
     position: relative;
+    
+    &:hover {
+      background-color: #f1f5f9;
+    }
   }
-
-  .fileUploadWrapper label svg {
-    height: 18px;
-  }
-
-  .fileUploadWrapper label svg path,
-  .fileUploadWrapper label svg circle {
-    stroke: #6c6c6c;
-    transition: all 0.3s;
-  }
-
-  :global(.light) .fileUploadWrapper label svg path,
-  :global(.light) .fileUploadWrapper label svg circle {
-    stroke: #4b5563;
-  }
-
-  .fileUploadWrapper label:hover svg path,
-  .fileUploadWrapper label:hover svg circle {
-    stroke: #fff;
-  }
-
-  :global(.light) .fileUploadWrapper label:hover svg path,
-  :global(.light) .fileUploadWrapper label:hover svg circle {
-    stroke: #e0f7fa;
-  }
-
-  .fileUploadWrapper label:hover svg circle {
-    fill: #3c3c3c;
-  }
-
-  :global(.light) .fileUploadWrapper label:hover svg circle {
-    fill: #e5e7eb;
-  }
-
-  .fileUploadWrapper label:hover .tooltip {
-    display: block;
-    opacity: 1;
+  
+  .dark .upload-button:hover {
+    background-color: rgba(51, 65, 85, 0.5);
   }
 
   .tooltip {
     position: absolute;
     top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
     display: none;
     opacity: 0;
     color: white;
     font-size: 10px;
-    text-wrap: nowrap;
-    background-color: #000;
+    white-space: nowrap;
+    background-color: #0f172a;
     padding: 6px 10px;
-    border: 1px solid #3c3c3c;
-    border-radius: 5px;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.596);
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transition: all 0.3s;
+    z-index: 10;
+  }
+  
+  .dark .tooltip {
+    background-color: #1e293b;
+    border: 1px solid #334155;
   }
 
-  :global(.light) .tooltip {
-    color: #1f2937;
-    background-color: #fff;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+  .upload-button:hover .tooltip {
+    display: block;
+    opacity: 1;
   }
 
   #messageInput {
-    width: 400px;
-    height: 100%;
-    background: none;
+    width: 100%;
+    min-height: 38px;
+    padding: 0.5rem;
+    background: transparent;
     outline: none;
     border: none;
-    padding-left: 10px;
-    color: white;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s, border 0.2s;
+    color: #0f172a;
+    font-size: 14px;
+  }
+  
+  .dark #messageInput {
+    color: #f8fafc;
   }
 
-  :global(.light) #messageInput {
-    background: none;
-    color: #1f2937;
-    border: none;
-    box-shadow: none;
-    padding-left: 10px;
-  }
-
-  #messageInput:focus {
-    outline: none;
-    border: none;
-    background: none;
-  }
-  :global(.light) #messageInput:focus {
-    border: none;
-    background: none;
+  #messageInput:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 
   #messageInput::placeholder {
-    color: #6c6c6c;
+    color: #94a3b8;
   }
-
-  :global(.light) #messageInput::placeholder {
-    color: #9ca3af;
-  }
-
-  .sendButton {
-    width: 40px;
-    height: 40px;
-    background-color: #2d2d2d;
-    outline: none;
-    border: 1px solid rgb(63, 63, 63);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s;
-    padding: 0 10px;
-  }
-
-  :global(.light) .sendButton {
-    background-color: #fff;
-    border: 1px solid #e5e7eb;
-  }
-
-  .sendButton:hover {
-    border-color: rgb(110, 110, 110);
-  }
-
-  :global(.light) .sendButton:hover {
-    border-color: #d1d5db;
-    background-color: #f3f4f6;
-  }
-
-  .sendButton svg {
-    height: 18px;
-    transition: all 0.3s;
-  }
-
-  .sendButton svg path {
-    transition: all 0.3s;
-  }
-
-  .sendButton:hover svg path {
-    fill: #3c3c3c;
-    stroke: white;
-  }
-
-  :global(.light) .sendButton svg path {
-    stroke: #1f2937;
-  }
-
-  :global(.light) .sendButton:hover svg path {
-    fill: #fff;
-    stroke: #111827;
-  }
-
-  .sendButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+  
+  .dark #messageInput::placeholder {
+    color: #64748b;
   }
 `;
 

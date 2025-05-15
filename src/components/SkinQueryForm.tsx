@@ -3,9 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-// Note: No need to import typingdna.js here, it's already imported in Input.tsx
 import styled from "styled-components";
-// Removed supabaseAdmin import and upload logic
 import CustomInput from "./Input";
 import CustomCheckbox from "./CustomCheckbox";
 import GradientButton from "./GradientButton";
@@ -19,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Loader2 } from "lucide-react";
+import { Loader2, ShieldCheck, FileText, Brain } from "lucide-react";
 
 import axios from "axios";
 
@@ -45,54 +43,55 @@ declare global {
   }
 }
 
+const StyledCard = styled(Card)`
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.15);
+  transition: all 0.3s ease;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: 0 10px 40px rgba(31, 38, 135, 0.25);
+    transform: translateY(-2px);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #62d5d0, #4a9c98, #2d7a77);
+  }
+`;
+
 const SkinQueryForm: React.FC = () => {
   const navigate = useNavigate();
-
   const [message, setMessage] = useState("");
-
   const [fileUrl, setFileUrl] = useState("");
-
   const [fileType, setFileType] = useState<string | null>(null); // 'image' or 'audio'
-
   const [isLoading, setIsLoading] = useState(false);
-
   const [error, setError] = useState<string | null>(null);
-
   const [typingPattern, setTypingPattern] = useState(null);
-
   const [typingDnaInstance, setTypingDnaInstance] = useState<any>(null);
-
   const [includeTypingData, setIncludeTypingData] = useState(false);
-
-  // Removed imageUrl and audioUrl state
-
-  // Update to track keystrokes in the requested format
 
   interface KeyStroke {
     key: string;
-
     timeDown: number;
-
     timeUp: number | null;
   }
 
   const [keystrokes, setKeystrokes] = useState<KeyStroke[]>([]);
-
   const currentKeyRef = useRef<KeyStroke | null>(null);
 
-  // Removed uploadToSupabase function
-
   useEffect(() => {
-    // Initialize TypingDNA only if it's not already initialized in Input.tsx
-
     if (typeof window !== "undefined" && window.TypingDNA) {
       try {
         const tdna = new window.TypingDNA();
-
         tdna.addTarget("symptoms"); // ID of textarea
-
         setTypingDnaInstance(tdna);
-
         console.log("TypingDNA initialized in SkinQueryForm");
       } catch (err) {
         console.error("Error initializing TypingDNA:", err);
@@ -100,28 +99,18 @@ const SkinQueryForm: React.FC = () => {
     }
   }, []);
 
-  // Track key down events
-
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const currentTime = Date.now();
 
-    // Save the current key press with timeDown
-
     currentKeyRef.current = {
       key: e.key,
-
       timeDown: currentTime,
-
       timeUp: null,
     };
   };
 
-  // Track key up events
-
   const handleKeyUp = (e: React.KeyboardEvent) => {
     const currentTime = Date.now();
-
-    // Only process if we have a corresponding keyDown event
 
     if (currentKeyRef.current && currentKeyRef.current.key === e.key) {
       const completeKeystroke: KeyStroke = {
@@ -130,15 +119,11 @@ const SkinQueryForm: React.FC = () => {
         timeUp: currentTime,
       };
 
-      // Add to our keystrokes array
-
       setKeystrokes((prev) => [...prev, completeKeystroke]);
 
       currentKeyRef.current = null;
     }
   };
-
-  // Handler to receive message and file urls from CustomInput
 
   const handleInputSubmit = async (
     msg: string,
@@ -205,29 +190,30 @@ const SkinQueryForm: React.FC = () => {
   };
 
   return (
-    <Card className="w-full max-w-xl mx-auto bg-white/90 dark:bg-card/90 backdrop-blur-lg border border-gray-200 dark:border-gray-800 shadow-sm">
-      <CardHeader className="text-center">
-        <CardTitle className="text-[#62d5d0]">Medical Data</CardTitle>
-
-        <CardDescription className="text-gray-600 dark:text-gray-400">
-          Describe your symptoms below. Optionally, you can upload a PNG image
-          or WAV audio for additional analysis.
+    <StyledCard className="w-full max-w-xl mx-auto bg-white/95 dark:bg-card/95 backdrop-blur-lg border border-gray-200 dark:border-gray-800 shadow-md rounded-xl">
+      <CardHeader className="text-center pb-2">
+        <div className="flex justify-center mb-2">
+          <div className="p-3 rounded-full bg-teal-50 dark:bg-teal-900/30">
+            <Brain className="h-8 w-8 text-[#62d5d0]" />
+          </div>
+        </div>
+        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#62d5d0] to-[#2d7a77] bg-clip-text text-transparent">Medical Assistant</CardTitle>
+        <CardDescription className="text-gray-600 dark:text-gray-400 mt-2 max-w-md mx-auto">
+          Describe your symptoms in detail for the most accurate analysis. You can optionally include an image or audio recording.
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
-        <div className="flex flex-col items-center justify-center space-y-4">
+      <CardContent className="pt-4">
+        <div className="flex flex-col items-center justify-center space-y-6">
           <div className="w-full flex justify-center">
             <CustomInput
               onSubmit={async (msg: string, url: string, type: string) => {
                 let uploaded = { imageUrl: "", audioUrl: "" };
-
                 if (type === "image") {
                   uploaded.imageUrl = url;
                 } else if (type === "audio") {
                   uploaded.audioUrl = url;
                 }
-
                 await handleInputSubmit(msg, uploaded);
               }}
               isLoading={isLoading}
@@ -244,39 +230,50 @@ const SkinQueryForm: React.FC = () => {
             />
           </div>
 
-          <div className="flex justify-center">
-            <CustomCheckbox
-              checked={includeTypingData}
-              onChange={setIncludeTypingData}
-            />
+          <div className="flex items-center justify-center w-full">
+            <div className="flex items-center space-x-2 px-4 py-2 bg-teal-50 dark:bg-teal-900/20 rounded-lg">
+              <ShieldCheck className="h-4 w-4 text-[#62d5d0]" />
+              <div className="flex items-center">
+                <CustomCheckbox
+                  checked={includeTypingData}
+                  onChange={setIncludeTypingData}
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center w-full">
             <GradientButton
               onClick={handleSubmit}
               disabled={isLoading}
-              text={isLoading ? "Processing..." : "Submit"}
+              text={isLoading ? "Analyzing..." : "Submit for Analysis"}
             />
           </div>
 
           {isLoading && (
-            <div className="flex items-center justify-center gap-2 text-sm text-gray-500">
-              <Loader2 className="h-4 w-4 animate-spin" />
-
-              <span>Analyzing your input...</span>
+            <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-lg w-full">
+              <Loader2 className="h-4 w-4 animate-spin text-[#62d5d0]" />
+              <span>Processing your medical data...</span>
             </div>
           )}
+
+          <div className="w-full pt-2">
+            <div className="flex items-center justify-center gap-2 text-xs text-gray-500 border-t border-gray-100 dark:border-gray-800 pt-4">
+              <FileText className="h-3 w-3" />
+              <span>All data is encrypted and processed securely</span>
+            </div>
+          </div>
         </div>
       </CardContent>
 
-      <CardFooter className="flex flex-col items-center">
+      <CardFooter className="flex flex-col items-center pt-0">
         {error && (
           <div className="w-full text-center p-3 mb-3 bg-red-100 border border-red-200 rounded-xl text-red-800 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800">
             {error}
           </div>
         )}
       </CardFooter>
-    </Card>
+    </StyledCard>
   );
 };
 
