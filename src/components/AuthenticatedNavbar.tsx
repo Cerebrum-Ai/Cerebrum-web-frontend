@@ -55,7 +55,7 @@ const AuthenticatedNavbar: React.FC = () => {
     <nav
       className={`
         fixed top-0 left-0 w-full z-30 transition-all duration-300
-        bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 shadow-sm
+       bg-white dark:bg-black
         ${show ? "translate-y-0" : "-translate-y-full"}
       `}
     >
