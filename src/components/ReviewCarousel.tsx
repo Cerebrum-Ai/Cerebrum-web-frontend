@@ -88,7 +88,7 @@ const ReviewCarousel: React.FC = () => {
   };
 
   return (
-    <section className="relative z-10 py-20 px-4 md:px-8 transition-colors">
+    <section className="relative z-10 px-4 md:px-8 transition-colors">
       <div className="relative h-screen flex items-center justify-center overflow-hidden py-10 md:py-14 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="w-full">
           <div className="max-w-5xl mx-auto flex flex-col items-center text-center gap-8 animate-fade-in">
