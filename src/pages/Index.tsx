@@ -263,18 +263,18 @@ const Index: React.FC = () => {
       <LatestDevelopments />
 
       {/* App Showcase Section */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center w-full mx-auto py-16 px-4 animate-fade-in bg-gradient-to-b from-[#f0f9ff] to-[#e0f2fe] dark:from-[#1e293b] dark:to-[#334155]">
-        <div className="max-w-6xl mx-auto w-full mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 dark:text-white">
+      <section className="relative z-10 min-h-screen py-12 flex flex-col items-center justify-center w-full mx-auto px-4 animate-fade-in bg-gradient-to-b from-[#f0f9ff] to-[#e0f2fe] dark:from-[#1e293b] dark:to-[#334155]">
+        <div className="max-w-6xl mx-auto w-full mb-6 md:mb-10 text-center">
+          <h2 className="text-2xl md:text-4xl font-semibold mb-3 md:mb-4 dark:text-white">
             Experience Cerebrum.ai with app
           </h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Our intuitive interface makes triage simple, secure, and effective
             across all devices.
           </p>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-evenly gap-6 md:gap-8 w-full py-8 max-w-6xl mx-auto">
+        <div className="flex flex-col md:flex-row items-center justify-evenly gap-6 md:gap-8 w-full py-4 md:py-8 max-w-6xl mx-auto">
           {/* App Screenshot 1 */}
           <div className="app-screenshot-card group">
             <div className="app-screenshot-container">
@@ -364,7 +364,10 @@ const Index: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-12 text-center">
+        <div className="mt-6 md:mt-8 pb-6 text-center">
+          <p className="text-base md:text-lg mb-3 text-gray-700 dark:text-gray-300">
+            Ready to experience CerebrumAI?
+          </p>
           <button
             onClick={() =>
               window.open(
@@ -372,7 +375,7 @@ const Index: React.FC = () => {
                 "_blank"
               )
             }
-            className="group flex items-center gap-2 mx-auto px-8 py-3 font-semibold rounded-[40px] border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+            className="inline-flex items-center justify-center gap-2 px-6 py-2 md:px-8 md:py-3 font-medium rounded-full border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-md hover:shadow-lg transition-all duration-200"
           >
             Try It Now
             <span className="ml-1 group-hover:translate-x-1 transition-transform">

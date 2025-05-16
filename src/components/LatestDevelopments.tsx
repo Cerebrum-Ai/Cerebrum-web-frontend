@@ -3,7 +3,7 @@ import TweetCard from "./TweetCard";
 
 const tweets = [
   {
-    avatar: "https://pbs.twimg.com/profile_images/1374617745287936001/wMbdRvFg_400x400.jpg",
+    avatar: "/favicon.ico",
     name: "CerebrumAI",
     username: "@cerebrum_ai",
     time: "2d",
@@ -11,7 +11,7 @@ const tweets = [
     link: "https://twitter.com/",
   },
   {
-    avatar: "https://pbs.twimg.com/profile_images/1374617745287936001/wMbdRvFg_400x400.jpg",
+    avatar: "/favicon.ico",
     name: "CerebrumAI",
     username: "@cerebrum_ai",
     time: "3d",
@@ -22,7 +22,7 @@ const tweets = [
 
 const news = [
   {
-    image: "https://images.unsplash.com/photo-1511174511562-5f97fba21be8?w=420&q=80",
+    image: "/ai_tweet.jpeg",
     title: "AI Helps Doctors Treat Stroke Faster: CerebrumAI Study",
     highlight: "Significant real-world impact: improved diagnosis & outcomes via AI-powered triage.",
     details: "In resource-limited settings, timely treatment of acute stroke is critical. CerebrumAI's latest peer-reviewed study demonstrates that AI support leads to faster and more accurate stroke triage, with improved patient outcomes and reduced disparities.",
@@ -30,7 +30,7 @@ const news = [
     link: "#"
   },
   {
-    image: "https://images.unsplash.com/photo-1559757175-5700dde6754b?w=350&q=80",
+    image: "lung_tweet.jpeg",
     title: "PenRAD Imaging Network Deploys AI to Detect Lung Cancer Early",
     highlight: "AI solutions help UK’s NHS PenRAD identify lung cancer sooner.",
     details: "CerebrumAI’s chest CT AI has been deployed for early lung cancer detection, enabling more lives to be saved. Read how hospitals are accelerating diagnosis at scale.",
