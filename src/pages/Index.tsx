@@ -263,7 +263,7 @@ const Index: React.FC = () => {
       <LatestDevelopments />
 
       {/* App Showcase Section */}
-      <section className="relative z-10 min-h-screen py-12 flex flex-col items-center justify-center w-full mx-auto px-4 animate-fade-in bg-gradient-to-b from-[#f0f9ff] to-[#e0f2fe] dark:from-[#1e293b] dark:to-[#334155]">
+      <section className="relative z-10 min-h-screen py-12 flex flex-col items-center justify-center w-full mx-auto px-4 animate-fade-in bg-gradient-to-t from-[#f0f9ff] to-[#e0f2fe] dark:from-[#141c2a] dark:to-[#334155]">
         <div className="max-w-6xl mx-auto w-full mb-6 md:mb-10 text-center">
           <h2 className="text-2xl md:text-4xl font-semibold mb-3 md:mb-4 dark:text-white">
             Experience Cerebrum.ai with app
