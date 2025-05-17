@@ -269,7 +269,7 @@ const Index: React.FC = () => {
           <ellipse cx="1200" cy="500" rx="200" ry="80" fill="#a5f3fc" fillOpacity="0.10" />
         </svg>
         <div className="relative z-10 w-full max-w-6xl mx-auto">
-          <div className="backdrop-blur-2xl bg-white/95 dark:bg-[#1a2233]/80 border border-cyan-400/20 rounded-3xl shadow-2xl p-8 md:p-14 flex flex-col items-center">
+          <div className="backdrop-blur-2xl bg-white/95 dark:bg-[#1a2233]/80 border border-cyan-400/20 rounded-3xl p-8 md:p-14 flex flex-col items-center">
             <h3 className="font-extrabold text-3xl md:text-4xl mb-6 text-cyan-600 dark:text-cyan-300 text-center tracking-wide drop-shadow-lg">
               The CerebrumAI Triage Journey
             </h3>
@@ -281,7 +281,7 @@ const Index: React.FC = () => {
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4">
               <JourneyCard 
                 number="1"
-                icon="🔍"
+                icon=""
                 title="Multimodal Input"
                 description="Submit your symptoms using text, images, or even behavioral biometrics for a comprehensive analysis."
                 delay={0}
@@ -289,7 +289,7 @@ const Index: React.FC = () => {
               />
               <JourneyCard 
                 number="2"
-                icon="🧠"
+                icon=""
                 title="AI-Powered Analysis"
                 description="CerebrumAI fuses your data and runs advanced models for a holistic, accurate assessment."
                 delay={150}
@@ -297,7 +297,7 @@ const Index: React.FC = () => {
               />
               <JourneyCard 
                 number="3"
-                icon="💡"
+                icon=""
                 title="Personalized Insights"
                 description="Receive context-aware, actionable recommendations tailored specifically to your unique needs."
                 delay={300}
@@ -305,7 +305,7 @@ const Index: React.FC = () => {
               />
               <JourneyCard 
                 number="4"
-                icon="👨‍⚕️"
+                icon=""
                 title="Seamless Doctor Connect"
                 description="If needed, securely connect with healthcare professionals for specialized care."
                 delay={450}
@@ -313,24 +313,9 @@ const Index: React.FC = () => {
               />
             </div>
 
-            {/* Journey Path Connector */}
-            <div className="hidden md:flex w-full justify-center mt-6 mb-8">
-              <div className="h-1 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 rounded-full w-3/4 opacity-60"></div>
-            </div>
-
-            {/* Animated Journey Progress */}
-            <div className="hidden md:block relative w-full max-w-3xl h-2 my-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full journey-progress-bar"></div>
-              <div className="absolute left-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-cyan-300 shadow-lg shadow-cyan-500/50 journey-node"></div>
-              <div className="absolute left-1/3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-blue-400 shadow-lg shadow-blue-500/50 journey-node delay-1"></div>
-              <div className="absolute left-2/3 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-indigo-400 shadow-lg shadow-indigo-500/50 journey-node delay-2"></div>
-              <div className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-purple-400 shadow-lg shadow-purple-500/50 journey-node delay-3"></div>
-            </div>
-
-            {/* Call to Action */}
             <button
               onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-              className="mt-10 px-10 py-3 bg-gradient-to-r from-cyan-400 to-blue-500 text-white rounded-full font-bold shadow-xl hover:scale-105 hover:from-cyan-300 hover:to-blue-400 transition-all text-lg"
+              className="mt-10 px-10 py-3 bg-[#62D5D0] text-white rounded-full font-bold hover:scale-105 hover:from-cyan-300 hover:to-blue-400 transition-all text-lg"
             >
               Start Your Triage Journey
             </button>

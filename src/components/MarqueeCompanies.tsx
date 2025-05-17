@@ -27,44 +27,24 @@ const companyLogos = [
   // },
   // Added medical companies
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/e/e9/Medtronic.svg",
+    src: "/jj.png",
     alt: "Medtronic",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/9/94/Siemens_Healthineers_logo.svg",
+    src: "/i.png",
     alt: "Siemens Healthineers",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/f/f5/Bayer_HealthCare_logo.svg",
+    src: "/raptim.png",
     alt: "Bayer Healthcare",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/3/33/GE_HealthCare_Logo.svg",
+    src: "/plus.png",
     alt: "GE Healthcare",
   },
   {
-    src: "https://upload.wikimedia.org/wikipedia/commons/0/0e/Pfizer_logo.svg",
-    alt: "Pfizer",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/2/2a/Johnson_%26_Johnson_Logo.svg",
-    alt: "Johnson & Johnson",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/4/44/Abbott_logo.svg",
-    alt: "Abbott",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Boston_Scientific.svg",
-    alt: "Boston Scientific",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/5/55/Novartis_logo.svg",
-    alt: "Novartis",
-  },
-  {
-    src: "https://upload.wikimedia.org/wikipedia/commons/3/34/Roche_Logo.svg",
-    alt: "Roche",
+    src: "/ribox.png",
+    alt: "GE Healthcare",
   },
 ];
 
@@ -86,30 +66,34 @@ const MarqueeCompanies: React.FC = () => (
         </div>
       </div>
 
-      {/* Marquee animation */}
-      
-      <div className="w-full overflow-x-hidden relative mt-4">
-        <div className="marquee inline-flex gap-12 animate-marquee whitespace-nowrap">
-          {companyLogos.map((logo, i) => (
-            <img 
-              src={logo.src} 
-              alt={logo.alt} 
-              key={i}
-              className="h-10 md:h-12 opacity-80 hover:opacity-100 transition-all duration-300 mx-8 inline-block" 
-            />
-          ))}
-          {/* Second batch to make the marquee infinite */}
-          {companyLogos.map((logo, i) => (
-            <img 
-              src={logo.src} 
-              alt={logo.alt} 
-              key={`marq2-${i}`}
-              className="h-10 md:h-12 opacity-80 hover:opacity-100 transition-all duration-300 mx-8 inline-block" 
-            />
-          ))}
+      {/* Marquee animation with fixed "Featured in" text */}
+      <div className="w-full relative mt-4 flex items-center">
+        <div className="hidden md:flex items-center mr-8 z-10 bg-white dark:bg-[#111111] pr-4">
+          <h3 className="font-semibold text-xl md:text-2xl text-gray-700 dark:text-gray-300 whitespace-nowrap">Featured in</h3>
+        </div>
+        <div className="relative overflow-hidden w-full">
+          <div className="marquee inline-flex gap-12 animate-marquee whitespace-nowrap">
+            {companyLogos.map((logo, i) => (
+              <img 
+                src={logo.src} 
+                alt={logo.alt} 
+                key={i}
+                className="h-12 md:h-16 opacity-80 hover:opacity-100 transition-all duration-300 mx-8 inline-block" 
+              />
+            ))}
+            {/* Second batch to make the marquee infinite */}
+            {companyLogos.map((logo, i) => (
+              <img 
+                src={logo.src} 
+                alt={logo.alt} 
+                key={`marq2-${i}`}
+                className="h-12 md:h-16 opacity-80 hover:opacity-100 transition-all duration-300 mx-8 inline-block" 
+              />
+            ))}
+          </div>
         </div>
       </div>
-      {/* Marquee animation keyframes - slower speed to accommodate more logos */}
+      {/* Marquee animation keyframes */}
       <style>
         {`
         @keyframes marquee {
