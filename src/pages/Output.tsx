@@ -84,12 +84,15 @@ const OutputPage: React.FC = () => {
   const navigate = useNavigate();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const apiResponse = location.state?.apiResponse as ApiResponse | undefined;
-  const analysisId = location.state?.analysisId;
+  const analysisId = location.state?.analysis_data;
   const { user } = useAuth();
+  const [createdAnalysisId, setCreatedAnalysisId] = useState<string | null>(
+    analysisId || null
+  );
 
   // Save analysis results to Supabase only if this is a new analysis (no analysisId)
   useEffect(() => {
-    if (analysisId) return; // Don't upload if this is a history record
+    if (analysisId || createdAnalysisId) return; // Don't upload if this is a history record or already created
 
     const saveAnalysisResults = async () => {
       if (!apiResponse || !user) return;
@@ -103,22 +106,26 @@ const OutputPage: React.FC = () => {
           console.error("Error fetching user profile:", profileError);
           return;
         }
-        const { error: insertError } = await supabase
+        const { data: insertData, error: insertError } = await supabase
           .from("analysis_records")
           .insert({
             user_id: user.id,
             name: `Analysis ${new Date().toLocaleString()}`,
             analysis_data: apiResponse,
-          });
+          })
+          .select()
+          .single();
         if (insertError) {
           console.error("Error saving analysis:", insertError);
+        } else if (insertData) {
+          setCreatedAnalysisId(insertData.id);
         }
       } catch (error) {
         console.error("Error in saveAnalysisResults:", error);
       }
     };
     saveAnalysisResults();
-  }, [apiResponse, user, analysisId]);
+  }, [apiResponse, user, analysisId, createdAnalysisId]);
 
   // Fetch analysis history from Supabase
   const [analysisHistory, setAnalysisHistory] = useState<AnalysisHistory[]>([]);
@@ -189,25 +196,29 @@ const OutputPage: React.FC = () => {
   // Helper function to format initial diagnosis into bullet points
   const formatInitialDiagnosis = (diagnosis: string): React.ReactNode => {
     if (!diagnosis) return null;
-    
+
     // Split the text by sentences or sections
     const sections = diagnosis
       .split(/(?<=\.|\!|\?)\s+/)
-      .filter(section => section.trim().length > 0);
-    
+      .filter((section) => section.trim().length > 0);
+
     // Check if we should render as bullet points
     if (sections.length <= 1) {
       return <p>{diagnosis}</p>; // If it's just one sentence, render as paragraph
     }
-    
+
     return (
       <div className="space-y-2">
         <div className="mb-2">
-          <p className="font-medium text-gray-700 dark:text-gray-300">Key Findings:</p>
+          <p className="font-medium text-gray-700 dark:text-gray-300">
+            Key Findings:
+          </p>
         </div>
         <ul className="list-disc pl-5 space-y-1.5">
           {sections.map((section, index) => (
-            <li key={index} className="text-gray-800 dark:text-gray-200">{section.trim()}</li>
+            <li key={index} className="text-gray-800 dark:text-gray-200">
+              {section.trim()}
+            </li>
           ))}
         </ul>
       </div>
@@ -276,7 +287,9 @@ const OutputPage: React.FC = () => {
                                 Initial Diagnosis
                               </h3>
                               <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
-                                {formatInitialDiagnosis(apiResponse.analysis.initial_diagnosis || "")}
+                                {formatInitialDiagnosis(
+                                  apiResponse.analysis.initial_diagnosis || ""
+                                )}
                               </div>
                             </div>
 
@@ -601,12 +614,14 @@ const OutputPage: React.FC = () => {
                     </Button>
                     <div className="flex gap-2">
                       <Button
-                        onClick={() => navigate("/enhanced", { 
-                          state: { 
-                            analysisId: analysisId,
-                            apiResponse: apiResponse 
-                          } 
-                        })}
+                        onClick={() =>
+                          navigate("/enhanced", {
+                            state: {
+                              analysisId: createdAnalysisId || analysisId,
+                              apiResponse: apiResponse,
+                            },
+                          })
+                        }
                         variant="default"
                         className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
                       >
@@ -660,12 +675,14 @@ const OutputPage: React.FC = () => {
                     <Button
                       variant="default"
                       className="bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
-                      onClick={() => navigate("/enhanced", {
-                        state: { 
-                          analysisId: analysisId,
-                          apiResponse: apiResponse 
-                        }
-                      })}
+                      onClick={() =>
+                        navigate("/enhanced", {
+                          state: {
+                            analysisId: createdAnalysisId || analysisId,
+                            apiResponse: apiResponse,
+                          },
+                        })
+                      }
                     >
                       Enhanced Analysis
                     </Button>
