@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Loader2, ShieldCheck, FileText, Brain } from "lucide-react";
+import { Loader2, ShieldCheck, FileText } from "lucide-react";
 
 import axios from "axios";
 
@@ -190,7 +190,11 @@ const SkinQueryForm: React.FC = () => {
       <CardHeader className="text-center pb-2">
         <div className="flex justify-center mb-2">
           <div className="p-3 rounded-full bg-teal-50 dark:bg-teal-900/30">
-            <Brain className="h-8 w-8 text-[#62d5d0]" />
+            <img 
+              src="/favicon.ico" 
+              alt="Cerebrum Icon" 
+              className="h-8 w-8"
+            />
           </div>
         </div>
         <CardTitle className="text-2xl font-bold bg-gradient-to-r from-[#62d5d0] to-[#2d7a77] bg-clip-text text-transparent">Medical Assistant</CardTitle>
