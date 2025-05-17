@@ -114,3 +114,7 @@
 body {
   font-family: 'Inter', sans-serif;
 }
+
+::selection {
+  color: cyan;         /* Text color when selected */
+}

@@ -65,21 +65,42 @@ const Index: React.FC = () => {
   return (
     <div className="relative min-h-screen dark:from-[#34205e]/50 dark:via-background/60 dark:to-background transition-colors overflow-x-hidden">
       {/* Unique animated SVG ambient background - Removed blue circle */}
-      <svg 
+      <svg
         className="pointer-events-none fixed w-[135vw] h-[135vw] md:w-[98vw] md:h-[98vw] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-[-1] opacity-55 select-none dark:opacity-20"
-        viewBox="0 0 1200 900" 
+        viewBox="0 0 1200 900"
         fill="none"
-        style={{ transform: 'translate(-50%, -50%)' }}
+        style={{ transform: "translate(-50%, -50%)" }}
       >
         {/* Changed colors to cyan/blue shades */}
-        <circle className="animate-pulse" cx="970" cy="350" r="69" fill="#a5f3fc" fillOpacity="0.11" />
+        <circle
+          className="animate-pulse"
+          cx="970"
+          cy="350"
+          r="69"
+          fill="#a5f3fc"
+          fillOpacity="0.11"
+        />
         <circle cx="160" cy="180" r="70" fill="#67e8f9" fillOpacity="0.16" />
-        <circle className="animate-pulse" cx="960" cy="789" r="35" fill="#22d3ee" fillOpacity="0.14" />
+        <circle
+          className="animate-pulse"
+          cx="960"
+          cy="789"
+          r="35"
+          fill="#22d3ee"
+          fillOpacity="0.14"
+        />
         <circle cx="980" cy="170" r="33" fill="#0ea5e9" fillOpacity="0.26" />
         <circle cx="120" cy="730" r="24" fill="#0284c7" fillOpacity="0.19" />
-        <circle className="animate-pulse" cx="720" cy="100" r="41" fill="#0891b2" fillOpacity="0.18" />
+        <circle
+          className="animate-pulse"
+          cx="720"
+          cy="100"
+          r="41"
+          fill="#0891b2"
+          fillOpacity="0.18"
+        />
       </svg>
-    
+
       {/* Animated floating elements - Enhanced with more blue shades */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Blurred gradients - More blue-centric */}
@@ -90,14 +111,14 @@ const Index: React.FC = () => {
         <div className="floating absolute bottom-[35%] right-[25%] w-36 h-36 rounded-full bg-gradient-to-bl from-sky-400/20 via-blue-300/25 to-cyan-300/15 blur-2xl"></div>
         <div className="floating absolute top-[38%] right-[38%] w-44 h-44 rounded-full bg-gradient-to-tr from-blue-400/15 via-sky-300/20 to-cyan-300/25 blur-2xl"></div>
         <div className="floating absolute bottom-[55%] left-[40%] w-52 h-52 rounded-full bg-gradient-to-bl from-sky-400/15 via-blue-300/20 to-cyan-300/25 blur-2xl"></div>
-        
+
         {/* Small particles - Blue focused */}
         <div className="floating absolute top-[30%] right-[30%] w-6 h-6 rounded-full bg-blue-400/30"></div>
         <div className="floating absolute top-[40%] left-[40%] w-4 h-4 rounded-full bg-sky-400/35"></div>
         <div className="floating absolute bottom-[35%] left-[25%] w-5 h-5 rounded-full bg-blue-400/35"></div>
         <div className="floating absolute top-[25%] right-[18%] w-3 h-3 rounded-full bg-sky-400/35"></div>
         <div className="floating absolute bottom-[15%] right-[35%] w-4 h-4 rounded-full bg-cyan-400/35"></div>
-        
+
         {/* Additional particles - More blue variety */}
         <div className="floating absolute top-[18%] right-[45%] w-7 h-7 rounded-full bg-blue-500/25"></div>
         <div className="floating absolute top-[55%] right-[15%] w-5 h-5 rounded-full bg-blue-400/30"></div>
@@ -109,7 +130,7 @@ const Index: React.FC = () => {
         <div className="floating absolute bottom-[55%] right-[10%] w-6 h-6 rounded-full bg-sky-400/30"></div>
         <div className="floating absolute top-[75%] left-[38%] w-5 h-5 rounded-full bg-blue-400/30"></div>
         <div className="floating absolute bottom-[65%] right-[42%] w-4 h-4 rounded-full bg-sky-500/25"></div>
-        
+
         {/* Medium-sized circles with blue gradients */}
         <div className="floating absolute top-[38%] left-[15%] w-12 h-12 rounded-full bg-gradient-to-r from-blue-600/15 to-blue-400/10"></div>
         <div className="floating absolute bottom-[40%] right-[20%] w-14 h-14 rounded-full bg-gradient-to-r from-sky-600/15 to-blue-400/10"></div>
@@ -127,9 +148,9 @@ const Index: React.FC = () => {
           </h1>
           <p className="text-xl">___</p>
           <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300">
-            CerebrumAI is a next-generation,
-            multimodal AI system that collects and analyzes patient inputs—including text,
-            images, and behavioral data—to deliver personalized triage recommendations.
+            CerebrumAI is a next-generation, multimodal AI system that collects
+            and analyzes patient inputs—including text, images, and behavioral
+            data—to deliver personalized triage recommendations.
           </p>
           <div className="flex gap-4">
             <button
@@ -137,13 +158,15 @@ const Index: React.FC = () => {
               className="group flex items-center gap-2 px-8 py-3 font-semibold rounded-[40px] border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 animate-fade-in"
             >
               Get Started
-              <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+              <span className="ml-1 group-hover:translate-x-1 transition-transform">
+                →
+              </span>
             </button>
           </div>
         </div>
         <div className="w-full md:w-1/2 flex justify-center items-center relative t">
           <div className="flex flex-col items-center relative transform -translate-y-10 translate-x-10">
-            <ThemeAwareSpline/>
+            <ThemeAwareSpline />
             <div className="absolute bottom-6 right-4 w-[120px] h-[40px] md:w-[180px] rounded-2xl z-20 translate-x-[20%] translate-y-[20%] flex items-center justify-center bg-white dark:bg-card/80 backdrop-blur-lg">
               Cerebrum.ai
             </div>
@@ -201,15 +224,35 @@ const Index: React.FC = () => {
       <MarqueeCompanies />
 
       {/* Animated overview section */}
-      <section className="relative z-1 h-screen flex items-center justify-center px-2 md:px-0   animate-fade-in" id="features">
+      <section
+        className="relative z-1 h-screen flex items-center justify-center px-2 md:px-0   animate-fade-in"
+        id="features"
+      >
         <div className="max-w-4xl mx-auto flex flex-col items-center gap-7 md:gap-10 text-center">
-          <h3 className="font-semibold text-2xl md:text-3xl mb-2 dark:text-[#ffffff]">How CerebrumAI Modernizes Digital Triage</h3>
+          <h3 className="font-semibold text-2xl md:text-3xl mb-2 dark:text-[#ffffff]">
+            How CerebrumAI Modernizes Digital Triage
+          </h3>
           <p className="text-lg md:text-xl max-w-3xl animate-fade-in">
-            CerebrumAI is designed to modernize digital triage through an intelligent, <span className="text-primary hover:scale-105 transition-transform">multimodal approach</span>.<br/>
-            By analyzing a combination of <span className="text-primary">textual descriptions</span>, <span className="text-primary">medical images</span>, and <span className="text-primary">behavioral biometrics</span>,
-            it delivers context-aware assessments that go beyond conventional symptom checkers—enabling safer and more actionable care journeys.
+            CerebrumAI is designed to modernize digital triage through an
+            intelligent,{" "}
+            <span className="text-primary hover:scale-105 transition-transform">
+              multimodal approach
+            </span>
+            .<br />
+            By analyzing a combination of{" "}
+            <span className="text-primary">textual descriptions</span>,{" "}
+            <span className="text-primary">medical images</span>, and{" "}
+            <span className="text-primary">behavioral biometrics</span>, it
+            delivers context-aware assessments that go beyond conventional
+            symptom checkers—enabling safer and more actionable care journeys.
           </p>
-          <img src="/Dna.jpeg" alt="Patient with digital triage screens" className="rounded-2xl shadow-xl border-2 border-primary/10 w-full max-w-md mx-auto animate-scale-in" loading="lazy" draggable={false}/>
+          <img
+            src="/Dna.jpeg"
+            alt="Patient with digital triage screens"
+            className="rounded-2xl shadow-xl border-2 border-primary/10 w-full max-w-md mx-auto animate-scale-in"
+            loading="lazy"
+            draggable={false}
+          />
         </div>
       </section>
 
@@ -220,26 +263,40 @@ const Index: React.FC = () => {
       <LatestDevelopments />
 
       {/* App Showcase Section */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center w-full mx-auto py-16 px-4 animate-fade-in bg-gradient-to-b from-[#f0f9ff] to-[#e0f2fe] dark:from-[#1e293b] dark:to-[#334155]">
-        <div className="max-w-6xl mx-auto w-full mb-12 text-center">
-          <h2 className="text-3xl md:text-4xl font-semibold mb-4 dark:text-white">Experience Cerebrum.ai with app</h2>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-            Our intuitive interface makes triage simple, secure, and effective across all devices.
+      <section className="relative z-10 min-h-screen py-12 flex flex-col items-center justify-center w-full mx-auto px-4 animate-fade-in bg-gradient-to-t from-[#f0f9ff] to-[#e0f2fe] dark:from-[#141c2a] dark:to-[#334155]">
+        <div className="max-w-6xl mx-auto w-full mb-6 md:mb-10 text-center">
+          <h2 className="text-2xl md:text-4xl font-semibold mb-3 md:mb-4 dark:text-white">
+            Experience Cerebrum.ai with app
+          </h2>
+          <p className="text-base md:text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Our intuitive interface makes triage simple, secure, and effective
+            across all devices.
           </p>
         </div>
-        
-        <div className="flex flex-col md:flex-row items-center justify-evenly gap-6 md:gap-8 w-full py-8 max-w-6xl mx-auto">
+
+        <div className="flex flex-col md:flex-row items-center justify-evenly gap-6 md:gap-8 w-full py-4 md:py-8 max-w-6xl mx-auto">
           {/* App Screenshot 1 */}
           <div className="app-screenshot-card group">
             <div className="app-screenshot-container">
               <div className="phone-frame">
                 <div className="phone-notch"></div>
-                <img 
-                  src="/app_photo2.jpeg" 
-                  alt="CerebrumAI Analysis Interface" 
-                  className="app-screenshot"
+
+                {/* Light mode image */}
+                <img
+                  src="/app2_light.jpeg"
+                  alt="CerebrumAI Analysis Interface"
+                  className="app-screenshot block dark:hidden"
                   loading="lazy"
                 />
+
+                {/* Dark mode image */}
+                <img
+                  src="/app_photo2.jpeg"
+                  alt="CerebrumAI Analysis Interface (Dark Mode)"
+                  className="app-screenshot hidden dark:block"
+                  loading="lazy"
+                />
+
                 <div className="phone-home-indicator"></div>
               </div>
               <div className="screenshot-overlay">
@@ -247,17 +304,27 @@ const Index: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* App Screenshot 2 - Featured/Middle */}
           <div className="app-screenshot-card group featured">
             <div className="app-screenshot-container">
               <div className="phone-frame">
                 <div className="phone-notch"></div>
-                <img 
-                  src="/app_photo1.jpeg" 
-                  alt="CerebrumAI Dashboard" 
-                  className="app-screenshot"
-                  loading="lazy" 
+
+                {/* Light mode image */}
+                <img
+                  src="/app1_light.jpeg"
+                  alt="CerebrumAI Analysis Interface"
+                  className="app-screenshot block dark:hidden"
+                  loading="lazy"
+                />
+
+                {/* Dark mode image */}
+                <img
+                  src="/app_photo1.jpeg"
+                  alt="CerebrumAI Analysis Interface (Dark Mode)"
+                  className="app-screenshot hidden dark:block"
+                  loading="lazy"
                 />
                 <div className="phone-home-indicator"></div>
               </div>
@@ -266,16 +333,26 @@ const Index: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           {/* App Screenshot 3 */}
           <div className="app-screenshot-card group">
             <div className="app-screenshot-container">
               <div className="phone-frame">
                 <div className="phone-notch"></div>
-                <img 
-                  src="/app_photo3.jpeg" 
-                  alt="CerebrumAI Results View" 
-                  className="app-screenshot"
+
+                {/* Light mode image */}
+                <img
+                  src="/app3_light.jpeg"
+                  alt="CerebrumAI Analysis Interface"
+                  className="app-screenshot block dark:hidden"
+                  loading="lazy"
+                />
+
+                {/* Dark mode image */}
+                <img
+                  src="/app_photo3.jpeg"
+                  alt="CerebrumAI Analysis Interface (Dark Mode)"
+                  className="app-screenshot hidden dark:block"
                   loading="lazy"
                 />
                 <div className="phone-home-indicator"></div>
@@ -286,18 +363,28 @@ const Index: React.FC = () => {
             </div>
           </div>
         </div>
-        
-        <div className="mt-12 text-center">
+
+        <div className="mt-6 md:mt-8 pb-6 text-center">
+          <p className="text-base md:text-lg mb-3 text-gray-700 dark:text-gray-300">
+            Ready to experience CerebrumAI?
+          </p>
           <button
-            onClick={() => navigate("/dashboard")}
-            className="group flex items-center gap-2 mx-auto px-8 py-3 font-semibold rounded-[40px] border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+            onClick={() =>
+              window.open(
+                "https://drive.google.com/file/d/1CuoDjR35BBWVv9ZU-V84n51eaooQRoci/view?usp=drivesdk",
+                "_blank"
+              )
+            }
+            className="inline-flex items-center justify-center gap-2 px-6 py-2 md:px-8 md:py-3 font-medium rounded-full border-2 border-[#62d5d0] bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white shadow-md hover:shadow-lg transition-all duration-200"
           >
             Try It Now
-            <span className="ml-1 group-hover:translate-x-1 transition-transform">→</span>
+            <span className="ml-1 group-hover:translate-x-1 transition-transform">
+              →
+            </span>
           </button>
         </div>
       </section>
-      
+
       {/* Add CSS for app screenshots */}
       <style>{`
         .app-screenshot-card {
@@ -310,7 +397,7 @@ const Index: React.FC = () => {
           transform: translateY(-20px) scale(1.05);
           z-index: 20;
         }
-        
+
         .app-screenshot-container {
           position: relative;
           border-radius: 28px;
@@ -323,6 +410,22 @@ const Index: React.FC = () => {
           backdrop-filter: blur(10px);
         }
         
+        .dark.app-screenshot-container {
+          position: relative;
+          border-radius: 28px;
+          overflow: hidden;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15), 0 0 6px rgba(0, 0, 0, 0.05);
+          transform-style: preserve-3d;
+          transition: transform 0.6s ease;
+          height: 580px;
+          background: linear-gradient(145deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%);
+          backdrop-filter: blur(10px);
+        }
+        
+        .dark .app-screenshot-container {
+          background: linear-gradient(145deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.1) 100%);
+        }
+
         .dark .app-screenshot-container {
           background: linear-gradient(145deg, rgba(30,41,59,0.4) 0%, rgba(30,41,59,0.1) 100%);
         }
@@ -338,17 +441,17 @@ const Index: React.FC = () => {
           width: 100%;
           height: 100%;
           border-radius: 28px;
-          background-color: #1a1a1a;
+          background-color: #ffffff;
           padding: 12px 8px;
-          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.05);
+          box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.05);
           display: flex;
           flex-direction: column;
           overflow: hidden;
         }
         
         .dark .phone-frame {
-          background-color: #121212;
-          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+          background-color: #1a1a1a;
+          box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.05);
         }
         
         /* Notch styling */

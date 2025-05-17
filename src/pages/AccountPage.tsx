@@ -189,7 +189,7 @@ const AccountPage: React.FC = () => {
                   {recentAnalyses.map((analysis) => (
                     <div
                       key={analysis.id}
-                      className="p-4 border rounded-lg hover:bg-gray-50 cursor-pointer"
+                      className="p-4 border rounded-lg cursor-pointer"
                       onClick={() => navigate(`/output-history?id=${analysis.id}`)}
                     >
                       <div className="flex justify-between items-start">
