@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, FileText, Upload, FileCheck, AlertCircle, PlusCircle, RefreshCw, BookOpen, ArrowRight, AlertTriangle } from 'lucide-react';
 import Tesseract from 'tesseract.js';
+import Preloader from '@/components/Preloader';
 import Navbar from '@/components/Navbar';
 import EnhancedFooter from '@/components/EnhancedFooter';
 import CustomInput from '@/components/Input';
@@ -25,7 +26,8 @@ interface AnalysisResult {
   summary: string;
 }
 
-const GEMINI_API_KEY = 'AIzaSyCXzK2PYIxfs0uGqHL_HJpV3DQdsN0NL3E';
+// API key should be in environment variables for security
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || 'YOUR_API_KEY';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1/models/gemini-1.0-pro:generateContent';
 
 const ReportAnalysis: React.FC = () => {
@@ -38,6 +40,15 @@ const ReportAnalysis: React.FC = () => {
   const [fileType, setFileType] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<string>("upload");
   const [processingStage, setProcessingStage] = useState<string>("");
+  const [pageLoading, setPageLoading] = useState(true);
+  
+  // Simulate initial page loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setPageLoading(false);
+    }, 1800);
+    return () => clearTimeout(timer);
+  }, []);
 
   const generateLocalSummary = (text: string): string => {
     let summary = "Medical Report Analysis:\n\n";
@@ -323,6 +334,7 @@ Please provide a clear summary of the above medical report.`
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100/50 to-white dark:from-gray-900 dark:via-gray-800/60 dark:to-gray-900">
+      {pageLoading && <Preloader message="Loading Medical Report Analyzer..." />}
       <Navbar />
       
       <main className="container mx-auto px-4 pt-24 pb-16">

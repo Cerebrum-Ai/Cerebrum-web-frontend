@@ -7,6 +7,9 @@ import { ThemeProvider } from "./components/theme/ThemeProvider";
 import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import {DoctorProtectedRoute} from "./components/DoctorProtectedRoute";
+import { Suspense, lazy, useState, useEffect } from "react";
+import Preloader from "./components/Preloader";
+import ChatbotButton from "./components/ChatbotButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import SignIn from "./pages/SignIn";
@@ -32,15 +35,28 @@ import ReportAnalysis from "./pages/ReportAnalysis";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
+const App = () => {
+  const [loading, setLoading] = useState(true);
+
+  // Simulate initial app loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <AuthProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            {loading && <Preloader message="Initializing Cerebrum.ai..." />}
+            <BrowserRouter>
+              <Suspense fallback={<Preloader message="Loading components..." />}>
+                <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
@@ -124,11 +140,15 @@ const App = () => (
               
               <Route path="*" element={<NotFound />} />
             </Routes>
+              </Suspense>
+              {/* Add ChatbotButton outside of Routes so it appears on all pages */}
+              <ChatbotButton />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
