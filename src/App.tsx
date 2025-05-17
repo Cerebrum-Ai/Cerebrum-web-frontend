@@ -27,6 +27,7 @@ import HelpCenter from "./pages/HelpCenter";
 import Documentation from "./pages/Documentation";
 import CaseStudies from "./pages/CaseStudies";
 import HealthcareBlog from "./pages/HealthcareBlog";
+import AuthCallback from "./pages/AuthCallback";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route
                 path="/dashboard"
                 element={

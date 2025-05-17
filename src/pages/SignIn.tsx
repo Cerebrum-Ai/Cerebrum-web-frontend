@@ -143,6 +143,34 @@ const SignIn: React.FC = () => {
     }
   };
 
+  const handleGoogleSignIn = async () => {
+    try {
+      setError("");
+      setIsLoading(true);
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+
+      if (error) {
+        console.error("Google sign-in error:", error);
+        setError(error.message);
+        setIsLoading(false);
+        return;
+      }
+
+      // The redirect will happen automatically
+      console.log("Google sign-in initiated:", data);
+    } catch (err) {
+      console.error("Unexpected error during Google sign in:", err);
+      setError("An unexpected error occurred. Please try again.");
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div>
       <svg
@@ -268,16 +296,29 @@ const SignIn: React.FC = () => {
                     autoComplete="current-password"
                   />
                 </li>
-                <li style={{ "--i": 0 } as React.CSSProperties}>
-                  <button
-                    type="submit"
-                    className="submit-btn"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Signing in..." : "Submit"}
-                  </button>
-                </li>
               </ul>
+              <div className="button-container">
+                <button
+                  type="submit"
+                  className="submit-btn"
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Signing in..." : "Submit"}
+                </button>
+                <button
+                  type="button"
+                  className="google-btn"
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                >
+                  <img
+                    src="https://www.google.com/favicon.ico"
+                    alt="Google"
+                    className="google-icon"
+                  />
+                  Sign in with Google
+                </button>
+              </div>
               {error && <div className="error-message">{error}</div>}
             </form>
             <div className="user-type-toggle">
@@ -576,6 +617,55 @@ const StyledWrapper = styled.div`
 
   .toggle-btn.active {
     background: #4db8b3;
+  }
+
+  .google-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    color: #757575;
+    font-weight: 500;
+    font-size: 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 10px 0;
+    transition: background 0.2s;
+    margin-top: 10px;
+    transform: none !important;
+    position: relative;
+    z-index: 1;
+
+    &:hover {
+      background: #f5f5f5;
+      transform: none !important;
+    }
+
+    &:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    &::before,
+    &::after {
+      display: none !important;
+    }
+  }
+
+  .google-icon {
+    width: 18px;
+    height: 18px;
+  }
+
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    margin-top: 20px;
   }
 `;
 
