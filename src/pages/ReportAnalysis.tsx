@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, FileText } from 'lucide-react';
+import { Loader2, FileText, Upload, FileCheck, AlertCircle, PlusCircle, RefreshCw, BookOpen, ArrowRight, AlertTriangle } from 'lucide-react';
 import Tesseract from 'tesseract.js';
 import Navbar from '@/components/Navbar';
 import EnhancedFooter from '@/components/EnhancedFooter';
@@ -13,7 +13,11 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 
 interface AnalysisResult {
   text: string;
@@ -32,6 +36,8 @@ const ReportAnalysis: React.FC = () => {
   const [message, setMessage] = useState("");
   const [fileUrl, setFileUrl] = useState("");
   const [fileType, setFileType] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<string>("upload");
+  const [processingStage, setProcessingStage] = useState<string>("");
 
   const generateLocalSummary = (text: string): string => {
     let summary = "Medical Report Analysis:\n\n";
@@ -126,7 +132,12 @@ Please provide a clear summary of the above medical report.`
       setIsProcessing(true);
       setFileUrl(url);
       setFileType(type);
+      setProcessingStage("initializing");
 
+      // Switch to results tab when processing starts
+      setActiveTab("results");
+      
+      setProcessingStage("extracting");
       const { data: { text, confidence } } = await Tesseract.recognize(
         url,
         'eng',
@@ -148,69 +159,219 @@ Please provide a clear summary of the above medical report.`
         .replace(/(\d)\.(\d)/g, '$1.$2')
         .replace(/(\d),(\d)/g, '$1,$2');
 
+      setProcessingStage("analyzing");
       const summary = await generateSummary(cleanedText);
 
       const confidencePercentage = Math.min(Math.max(confidence * 100, 0), 100);
 
-      setResult({
-        text: cleanedText,
-        confidence: confidencePercentage,
-        summary
-      });
+      setProcessingStage("finishing");
+      
+      setTimeout(() => {
+        setResult({
+          text: cleanedText,
+          confidence: confidencePercentage,
+          summary
+        });
+        setProcessingStage("");
+      }, 500);
 
       toast({
-        title: "Success",
-        description: "Report analyzed successfully!",
+        title: "Analysis Complete",
+        description: "Medical report has been successfully analyzed.",
       });
 
     } catch (error) {
       console.error('Error processing report:', error);
       toast({
         variant: "destructive",
-        title: "Error",
-        description: "Failed to process the report. Please try again.",
+        title: "Analysis Failed",
+        description: "Unable to process the report. Please try another image.",
       });
+      setActiveTab("upload");
     } finally {
       setIsProcessing(false);
     }
   };
 
+  const resetAnalysis = () => {
+    setResult(null);
+    setFileUrl("");
+    setFileType(null);
+    setMessage("");
+    setActiveTab("upload");
+  };
+
+  const getConfidenceColor = (confidence: number) => {
+    if (confidence >= 80) return "bg-green-500";
+    if (confidence >= 60) return "bg-yellow-500";
+    return "bg-red-500";
+  };
+
+  const renderProcessingState = () => {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 h-full">
+        <div className="flex flex-col items-center justify-center space-y-6">
+          <div className="relative">
+            <RefreshCw className="h-16 w-16 animate-spin text-[#62d5d0]" />
+          </div>
+          
+          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            {processingStage === "initializing" && "Preparing Analysis"}
+            {processingStage === "extracting" && "Extracting Text"}
+            {processingStage === "analyzing" && "Analyzing Report Content"}
+            {processingStage === "finishing" && "Finalizing Results"}
+          </h3>
+          
+          <Progress value={
+            processingStage === "initializing" ? 20 :
+            processingStage === "extracting" ? 50 :
+            processingStage === "analyzing" ? 75 : 90
+          } className="w-full max-w-md" />
+          
+          <p className="text-gray-600 dark:text-gray-400 text-center max-w-md">
+            {processingStage === "initializing" && "Setting up OCR engines and preparing analysis tools..."}
+            {processingStage === "extracting" && "Converting image to text. This may take a moment for complex reports..."}
+            {processingStage === "analyzing" && "Applying medical knowledge to understand report contents..."}
+            {processingStage === "finishing" && "Compiling results and preparing your analysis..."}
+          </p>
+        </div>
+      </div>
+    );
+  };
+
+  const renderProcessedFindings = () => {
+    if (!result) return null;
+    
+    // Try to extract key insights from the summary
+    const keyFindings: string[] = [];
+    const lines = result.summary.split('\n');
+    
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed.startsWith('-') || trimmed.startsWith('*')) {
+        keyFindings.push(trimmed.substring(1).trim());
+      }
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Summary panel with key findings */}
+        <Card>
+          <CardHeader className="bg-gradient-to-r from-[#62d5d0]/10 to-transparent">
+            <CardTitle className="flex items-center">
+              <BookOpen className="mr-2 h-5 w-5 text-[#62d5d0]" />
+              Report Analysis
+            </CardTitle>
+            <CardDescription>
+              AI-generated interpretation of your medical report
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              <div className="bg-gray-50 dark:bg-gray-900/50 rounded-lg p-4">
+                <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Executive Summary</h3>
+                <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+                  {result.summary}
+                </p>
+              </div>
+              
+              {keyFindings.length > 0 && (
+                <div className="mt-4">
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Key Findings</h3>
+                  <ul className="list-disc list-inside space-y-1">
+                    {keyFindings.map((finding, index) => (
+                      <li key={index} className="text-gray-700 dark:text-gray-300">
+                        {finding}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center">
+                  <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
+                    Report Clarity Score:
+                  </span>
+                  <div className="flex items-center">
+                    <Progress 
+                      value={result.confidence} 
+                      className={`w-24 h-2 ${getConfidenceColor(result.confidence)}`} 
+                    />
+                    <span className="ml-2 text-sm font-medium">
+                      {Math.round(result.confidence)}%
+                    </span>
+                  </div>
+                </div>
+                
+                {result.confidence < 70 && (
+                  <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200">
+                    <AlertTriangle className="h-3 w-3 mr-1" />
+                    Low confidence - review carefully
+                  </Badge>
+                )}
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="bg-gradient-to-r from-transparent to-[#62d5d0]/10 text-sm text-gray-500">
+            This is an AI-assisted analysis. Always consult with a medical professional.
+          </CardFooter>
+        </Card>
+      </div>
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-gray-100/50 to-white dark:from-gray-900 dark:via-gray-800/60 dark:to-gray-900">
       <Navbar />
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-8 text-gray-900 dark:text-white">
-            Medical Report Analysis
-          </h1>
+      <main className="container mx-auto px-4 pt-24 pb-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <h1 className="text-3xl md:text-4xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-700 dark:from-white dark:to-gray-300">
+              Medical Report Analyzer
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Upload your medical reports and get instant AI-powered analysis. Our system extracts key information 
+              and provides clear explanations to help you better understand your health data.
+            </p>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Upload Section */}
-            <div className="space-y-6">
-              <Card className="w-full">
-                <CardHeader>
-                  <CardTitle>Upload Medical Report</CardTitle>
-                  <CardDescription>
-                    Upload an image of your medical report for analysis
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <CustomInput
-                    onSubmit={handleFileUpload}
-                    isLoading={isProcessing}
-                    message={message}
-                    setMessage={setMessage}
-                    fileUrl={fileUrl}
-                    setFileUrl={setFileUrl}
-                    fileType={fileType}
-                    setFileType={setFileType}
-                    keystrokes={[]}
-                    setKeystrokes={() => {}}
-                    handleKeyDown={() => {}}
-                    handleKeyUp={() => {}}
-                  />
-                  <div className="flex justify-center">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-8">
+              <TabsTrigger value="upload">Upload</TabsTrigger>
+              <TabsTrigger value="results">Results</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="upload" className="p-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Upload Panel */}
+                <Card className="w-full shadow-md">
+                  <CardHeader className="bg-gradient-to-r from-[#62d5d0]/10 to-transparent">
+                    <CardTitle className="flex items-center">
+                      <Upload className="mr-2 h-5 w-5 text-[#62d5d0]" />
+                      Upload Medical Report
+                    </CardTitle>
+                    <CardDescription>
+                      Upload an image of your medical report for AI analysis
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6 pt-6">
+                    <CustomInput
+                      onSubmit={handleFileUpload}
+                      isLoading={isProcessing}
+                      message={message}
+                      setMessage={setMessage}
+                      fileUrl={fileUrl}
+                      setFileUrl={setFileUrl}
+                      fileType={fileType}
+                      setFileType={setFileType}
+                      keystrokes={[]}
+                      setKeystrokes={() => {}}
+                      handleKeyDown={() => {}}
+                      handleKeyUp={() => {}}
+                    />
+                    
                     <Button
                       onClick={() => handleFileUpload(message, fileUrl || "", fileType || "")}
                       disabled={isProcessing || (!message.trim() && !fileUrl)}
@@ -222,67 +383,135 @@ Please provide a clear summary of the above medical report.`
                           Processing...
                         </>
                       ) : (
-                        "Analyze Report"
+                        <>
+                          <FileCheck className="mr-2 h-5 w-5" />
+                          Analyze Report
+                        </>
                       )}
                     </Button>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                  <CardFooter className="bg-gray-50 dark:bg-gray-800/50 border-t px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
+                    <div className="flex items-center">
+                      <AlertCircle className="h-4 w-4 mr-2 text-amber-500" />
+                      For best results, ensure the report image is clear and well-lit
+                    </div>
+                  </CardFooter>
+                </Card>
 
-              {fileUrl && (
-                <div className="rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-                  <img
-                    src={fileUrl}
-                    alt="Uploaded report"
-                    className="w-full h-auto"
-                  />
-                </div>
-              )}
-            </div>
-
-            {/* Results Section */}
-            <div className="space-y-6">
-              {isProcessing ? (
-                <div className="flex flex-col items-center justify-center p-8 border rounded-lg">
-                  <Loader2 className="h-8 w-8 animate-spin text-[#62d5d0]" />
-                  <p className="mt-4 text-gray-600 dark:text-gray-400">
-                    Processing your report...
-                  </p>
-                </div>
-              ) : result ? (
+                {/* Info Panel */}
                 <div className="space-y-6">
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                      Analysis Summary
-                    </h2>
-                    <p className="text-gray-600 dark:text-gray-400 whitespace-pre-line">
-                      {result.summary}
-                    </p>
-                    <div className="mt-4 text-sm text-gray-500">
-                      Confidence: {Math.round(result.confidence)}%
-                    </div>
-                  </div>
-
-                  <div className="bg-white dark:bg-gray-800 rounded-lg p-6 shadow-sm">
-                    <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-                      Extracted Text
-                    </h2>
-                    <div className="max-h-96 overflow-y-auto">
-                      <pre className="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
-                        {result.text}
-                      </pre>
-                    </div>
-                  </div>
+                  <Card className="shadow-md">
+                    <CardHeader>
+                      <CardTitle>How It Works</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="flex">
+                        <div className="flex-shrink-0 flex h-10 w-10 rounded-full bg-[#62d5d0]/10 items-center justify-center">
+                          <span className="text-[#62d5d0] font-medium">1</span>
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Upload Report</h3>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Upload a clear image of your medical report document
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex">
+                        <div className="flex-shrink-0 flex h-10 w-10 rounded-full bg-[#62d5d0]/10 items-center justify-center">
+                          <span className="text-[#62d5d0] font-medium">2</span>
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Text Extraction</h3>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Advanced OCR technology extracts text from your report
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex">
+                        <div className="flex-shrink-0 flex h-10 w-10 rounded-full bg-[#62d5d0]/10 items-center justify-center">
+                          <span className="text-[#62d5d0] font-medium">3</span>
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">AI Analysis</h3>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Our AI interprets medical terminology and identifies key findings
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex">
+                        <div className="flex-shrink-0 flex h-10 w-10 rounded-full bg-[#62d5d0]/10 items-center justify-center">
+                          <span className="text-[#62d5d0] font-medium">4</span>
+                        </div>
+                        <div className="ml-4">
+                          <h3 className="text-sm font-medium text-gray-900 dark:text-gray-100">Get Results</h3>
+                          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Receive a clear summary and explanation of your medical report
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                
+                  <Card className="shadow-md bg-gradient-to-r from-[#62d5d0]/5 to-white dark:from-[#62d5d0]/10 dark:to-gray-800">
+                    <CardHeader>
+                      <CardTitle>Supported Report Types</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-2 gap-2">
+                        <Badge variant="secondary" className="justify-center py-1">Blood Tests</Badge>
+                        <Badge variant="secondary" className="justify-center py-1">Pathology</Badge>
+                        <Badge variant="secondary" className="justify-center py-1">Radiology</Badge>
+                        <Badge variant="secondary" className="justify-center py-1">Lab Results</Badge>
+                        <Badge variant="secondary" className="justify-center py-1">Physical Exams</Badge>
+                        <Badge variant="secondary" className="justify-center py-1">Discharge Summaries</Badge>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <p className="text-xs text-gray-500">
+                        Note: Analysis accuracy varies based on image clarity and report complexity.
+                      </p>
+                    </CardFooter>
+                  </Card>
                 </div>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="results" className="p-1">
+              {isProcessing ? (
+                renderProcessingState()
+              ) : result ? (
+                renderProcessedFindings()
               ) : (
-                <div className="flex flex-col items-center justify-center p-8 border rounded-lg bg-gray-50 dark:bg-gray-800">
-                  <FileText className="h-12 w-12 text-gray-400" />
-                  <p className="mt-4 text-gray-600 dark:text-gray-400">
-                    Upload a medical report to see the analysis
+                <div className="flex flex-col items-center justify-center py-16 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                  <FileText className="h-16 w-16 text-gray-300 dark:text-gray-600 mb-4" />
+                  <h3 className="text-xl font-medium text-gray-700 dark:text-gray-300">No Analysis Yet</h3>
+                  <p className="text-gray-500 dark:text-gray-400 mt-2 mb-6 text-center max-w-md">
+                    Upload a medical report image from the Upload tab to see your analysis results here
                   </p>
+                  <Button 
+                    variant="outline" 
+                    onClick={() => setActiveTab("upload")}
+                    className="flex items-center"
+                  >
+                    <ArrowRight className="mr-2 h-4 w-4" />
+                    Go to Upload
+                  </Button>
                 </div>
               )}
-            </div>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="mt-12 text-center text-sm text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="mb-2">
+              <strong>Disclaimer:</strong> This tool is designed to assist in understanding medical reports 
+              but is not a replacement for professional medical advice.
+            </p>
+            <p>
+              Always consult with a healthcare provider to properly interpret medical reports and make health decisions.
+            </p>
           </div>
         </div>
       </main>
@@ -292,4 +521,4 @@ Please provide a clear summary of the above medical report.`
   );
 };
 
-export default ReportAnalysis; 
+export default ReportAnalysis;
