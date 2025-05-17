@@ -186,6 +186,34 @@ const OutputPage: React.FC = () => {
     navigate("/dashboard");
   };
 
+  // Helper function to format initial diagnosis into bullet points
+  const formatInitialDiagnosis = (diagnosis: string): React.ReactNode => {
+    if (!diagnosis) return null;
+    
+    // Split the text by sentences or sections
+    const sections = diagnosis
+      .split(/(?<=\.|\!|\?)\s+/)
+      .filter(section => section.trim().length > 0);
+    
+    // Check if we should render as bullet points
+    if (sections.length <= 1) {
+      return <p>{diagnosis}</p>; // If it's just one sentence, render as paragraph
+    }
+    
+    return (
+      <div className="space-y-2">
+        <div className="mb-2">
+          <p className="font-medium text-gray-700 dark:text-gray-300">Key Findings:</p>
+        </div>
+        <ul className="list-disc pl-5 space-y-1.5">
+          {sections.map((section, index) => (
+            <li key={index} className="text-gray-800 dark:text-gray-200">{section.trim()}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-fuchsia-100 via-blue-50/60 to-white dark:from-[#34205e]/50 dark:via-background/60 dark:to-background">
       <AnalysisHistorySidebar
@@ -248,7 +276,7 @@ const OutputPage: React.FC = () => {
                                 Initial Diagnosis
                               </h3>
                               <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl text-gray-800 dark:text-gray-200">
-                                {apiResponse.analysis.initial_diagnosis}
+                                {formatInitialDiagnosis(apiResponse.analysis.initial_diagnosis || "")}
                               </div>
                             </div>
 
