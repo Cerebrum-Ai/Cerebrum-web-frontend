@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { supabaseAdmin } from "@/lib/supabase";
-import { Paperclip, Loader2, Image, Headphones } from "lucide-react";
+import { Paperclip, Loader2, Image, Headphones, HelpCircle } from "lucide-react";
 
 interface CustomInputProps {
   onSubmit: (msg: string, url: string, type: string) => void | Promise<void>;
@@ -36,6 +36,7 @@ const Input: React.FC<CustomInputProps> = ({
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showTooltip, setShowTooltip] = useState(false);
 
   // Handle file selection and upload
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -160,6 +161,37 @@ const Input: React.FC<CustomInputProps> = ({
               onKeyUp={handleKeyUp}
               aria-label="Enter your medical symptoms"
             />
+            <div className="helpIconWrapper">
+              <div 
+                className="help-button"
+                onMouseEnter={() => setShowTooltip(true)}
+                onMouseLeave={() => setShowTooltip(false)}
+                onClick={() => setShowTooltip(!showTooltip)}
+              >
+                <div className="question-mark">?</div>
+                {showTooltip && (
+                  <div className="sample-tooltip">
+                    <div className="flex justify-between items-center mb-2">
+                      <h3 className="font-medium text-black">✅ Sample Prompt to Explain Symptoms to an AI:</h3>
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowTooltip(false);
+                        }}
+                        className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      "Hi, I'm a 34-year-old male. For the past 3 days, I've been experiencing a persistent headache that's mostly on the right side of my head. It's a dull ache that sometimes becomes sharp, especially when I bend down or cough. I've also felt a bit nauseous and light-sensitive. I don't have a fever, and I haven't had any recent injuries. I'm not on any medication except for occasional ibuprofen. I have a history of sinus infections, but this feels a bit different. Could this be a migraine or something else?"
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         
@@ -255,6 +287,56 @@ const StyledWrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-right: 8px;
+  }
+
+  .helpIconWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 8px;
+    position: relative;
+  }
+
+  .help-button {
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #62d5d0;
+    transition: all 0.2s ease;
+    position: relative;
+    
+    &:hover {
+      background-color: #4a9c98;
+    }
+  }
+
+  .question-mark {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .sample-tooltip {
+    position: absolute;
+    top: 30px;
+    right: 0;
+    width: 430px;
+    z-index: 10;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+  }
+
+  .dark .sample-tooltip {
+    background-color: #1e293b;
+    border: 1px solid #334155;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 
   #file {
