@@ -8,7 +8,6 @@ import { AuthProvider } from "./context/AuthContext";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import {DoctorProtectedRoute} from "./components/DoctorProtectedRoute";
 import { Suspense, lazy, useState, useEffect } from "react";
-import Preloader from "./components/Preloader";
 import ChatbotButton from "./components/ChatbotButton";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -33,16 +32,18 @@ import HealthcareBlog from "./pages/HealthcareBlog";
 import AuthCallback from "./pages/AuthCallback";
 import ReportAnalysis from "./pages/ReportAnalysis";
 
+// Removed Preloader import
+
 const queryClient = new QueryClient();
 
 const App = () => {
   const [loading, setLoading] = useState(true);
 
-  // Simulate initial app loading
   useEffect(() => {
+    // Simulate initial loading
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2500);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -53,9 +54,19 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            {loading && <Preloader message="Initializing Cerebrum.ai..." />}
+            {loading && (
+              <div className="fixed inset-0 bg-white dark:bg-gray-900 z-50 flex flex-col items-center justify-center">
+                <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">Initializing Cerebrum.ai...</p>
+              </div>
+            )}
             <BrowserRouter>
-              <Suspense fallback={<Preloader message="Loading components..." />}>
+              <Suspense fallback={
+                <div className="flex items-center justify-center min-h-screen">
+                  <div className="w-8 h-8 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                  <p className="ml-3">Loading components...</p>
+                </div>
+              }>
                 <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/signin" element={<SignIn />} />
