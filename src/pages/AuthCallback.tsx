@@ -15,7 +15,7 @@ const AuthCallback = () => {
           navigate('/signin');
           return;
         }
-
+ 
         if (session) {
           // Check if user is a doctor
           const { data: doctorData } = await supabase
