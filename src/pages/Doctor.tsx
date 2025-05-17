@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardFooter,
 } from "@/components/ui/card";
+import FlowConditions from "@/components/FlowConditions";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -133,6 +134,10 @@ interface AnalysisRecord {
     physical_activity?: string;
     occupation?: string;
     stress_level?: string;
+    pregnancy_status?: string;
+    sleep_hours?: number;
+    diet_type?: string;
+    hobbies?: string;
   };
 }
 
@@ -1394,6 +1399,16 @@ const Doctor = () => {
                                   {selectedAnalysis.user_profiles.weight ? selectedAnalysis.user_profiles.weight + " kg" : "?"}
                                 </p>
                               </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Pregnancy Status
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.pregnancy_status === "pregnant" ? "Pregnant" : 
+                                   selectedAnalysis.user_profiles.pregnancy_status === "not-pregnant" ? "Not Pregnant" : "Not specified"}
+                                </p>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1446,7 +1461,7 @@ const Doctor = () => {
                         <div className="space-y-4 md:col-span-2">
                           <div>
                             <h3 className="text-sm font-medium text-[#62d5d0] mb-3">Lifestyle Information</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                               <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                                   Smoking Status
@@ -1476,6 +1491,24 @@ const Doctor = () => {
                               
                               <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
                                 <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Sleep Hours
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.sleep_hours ? selectedAnalysis.user_profiles.sleep_hours + " hours" : "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Diet Type
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.diet_type || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
                                   Occupation
                                 </p>
                                 <p className="text-base">
@@ -1489,6 +1522,15 @@ const Doctor = () => {
                                 </p>
                                 <p className="text-base">
                                   {selectedAnalysis.user_profiles.stress_level || "Not provided"}
+                                </p>
+                              </div>
+                              
+                              <div className="p-3 bg-white dark:bg-gray-700/50 rounded-xl">
+                                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">
+                                  Hobbies/Interests
+                                </p>
+                                <p className="text-base">
+                                  {selectedAnalysis.user_profiles.hobbies || "Not provided"}
                                 </p>
                               </div>
                             </div>
@@ -1510,10 +1552,14 @@ const Doctor = () => {
               
               <TabsContent value="flow">
                 <div className="p-2 rounded-xl">
-                  <div className="flex items-center justify-center h-48">
-                    <Network size={40} className="text-[#62d5d0]/40" />
-                    <p className="ml-3 text-gray-500">Flow visualization is not available in this view</p>
-                  </div>
+                  {selectedAnalysis?.analysis_data ? (
+                    <FlowConditions apiResponse={selectedAnalysis.analysis_data} />
+                  ) : (
+                    <div className="flex items-center justify-center h-48">
+                      <Network size={40} className="text-[#62d5d0]/40" />
+                      <p className="ml-3 text-gray-500">No data available to visualize</p>
+                    </div>
+                  )}
                 </div>
               </TabsContent>
             </Tabs>
