@@ -28,6 +28,7 @@ import Documentation from "./pages/Documentation";
 import CaseStudies from "./pages/CaseStudies";
 import HealthcareBlog from "./pages/HealthcareBlog";
 import AuthCallback from "./pages/AuthCallback";
+import ReportAnalysis from "./pages/ReportAnalysis";
 
 const queryClient = new QueryClient();
 
@@ -99,6 +100,14 @@ const App = () => (
                     <DoctorProtectedRoute>
                     <Doctor />
                     </DoctorProtectedRoute>
+                }
+              />
+              <Route
+                path="/report-analysis"
+                element={
+                  <ProtectedRoute>
+                    <ReportAnalysis />
+                  </ProtectedRoute>
                 }
               />
               {/* Legal Pages */}

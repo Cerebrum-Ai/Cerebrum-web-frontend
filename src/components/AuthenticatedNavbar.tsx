@@ -19,6 +19,7 @@ import {
   LogOut,
   Bell,
   Stethoscope,
+  FileText,
 } from "lucide-react";
 
 const AuthenticatedNavbar: React.FC = () => {
@@ -91,6 +92,15 @@ const AuthenticatedNavbar: React.FC = () => {
             >
               <History size={18} className="mr-2" />
               History
+            </Button>
+
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate("/report-analysis")} 
+              className="text-gray-600 dark:text-gray-200 hover:text-[#62d5d0] hover:bg-transparent"
+            >
+              <FileText size={18} className="mr-2" />
+              Report Analysis
             </Button>
             
             {localStorage.getItem("userRole") === "doctor" && (
