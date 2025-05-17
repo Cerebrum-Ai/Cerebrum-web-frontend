@@ -21,8 +21,14 @@ interface AnalysisHistory {
   id: string;
   date: Date;
   condition: string;
-  severity: "Mild" | "Moderate" | "Severe";
-  status: "Completed" | "In Progress" | "Needs Review";
+  severity: "Mild" | "Moderate" | "Severe" | undefined;
+  status:
+    | "Completed"
+    | "In Progress"
+    | "Needs Review"
+    | "Doctor Review Complete"
+    | "Pending Doctor Review"
+    | "Doctor Review Requested";
   doctorName?: string;
   raw: any;
 }
@@ -142,15 +148,26 @@ const OutputPage: React.FC = () => {
         return;
       }
       setAnalysisHistory(
-        (data || []).map((item: any) => ({
-          id: item.id,
-          date: new Date(item.created_at),
-          condition: item.analysis_data?.analysis?.final_analysis || "Unknown",
-          severity: item.analysis_data?.analysis?.severity || "Moderate",
-          status: "Completed", // Adjust if you store status
-          doctorName: item.analysis_data?.doctorName || "",
-          raw: item,
-        }))
+        (data || []).map((item: any) => {
+          const rawStatus = item.analysis_data?.status;
+          let statusLabel: AnalysisHistory["status"] = "Completed";
+          if (rawStatus === "pending") statusLabel = "Pending Doctor Review";
+          else if (rawStatus === "complete" || rawStatus === "completed")
+            statusLabel = "Doctor Review Complete";
+          else if (item.analysis_data?.doctor_id && !rawStatus)
+            statusLabel = "Doctor Review Requested";
+          else if (!rawStatus) statusLabel = "Completed";
+          return {
+            id: item.id,
+            date: new Date(item.created_at),
+            condition:
+              item.analysis_data?.analysis?.final_analysis || "Unknown",
+            status: statusLabel,
+            doctorName: item.analysis_data?.doctorName || "",
+            raw: item,
+            severity: undefined,
+          };
+        })
       );
     };
     fetchHistory();
@@ -635,6 +652,75 @@ const OutputPage: React.FC = () => {
                       >
                         <Download className="h-4 w-4" />
                         Save Results
+                      </Button>
+                      <Button
+                        variant="default"
+                        className="flex items-center gap-1 bg-[#62d5d0]/90 hover:bg-[#62d5d0] text-white"
+                        disabled={(() => {
+                          if (
+                            apiResponse?.status === "Pending Doctor Review" ||
+                            apiResponse?.status === "Doctor Review Requested"
+                          )
+                            return true;
+                          const analysis: any = apiResponse?.analysis;
+                          if (analysis && typeof analysis === "object") {
+                            if (
+                              "doctor_id" in analysis &&
+                              (!("status" in analysis) ||
+                                analysis.status === "pending")
+                            )
+                              return true;
+                          }
+                          return false;
+                        })()}
+                        onClick={() => {
+                          if (
+                            !(() => {
+                              if (
+                                apiResponse?.status ===
+                                  "Pending Doctor Review" ||
+                                apiResponse?.status ===
+                                  "Doctor Review Requested"
+                              )
+                                return true;
+                              const analysis: any = apiResponse?.analysis;
+                              if (analysis && typeof analysis === "object") {
+                                if (
+                                  "doctor_id" in analysis &&
+                                  (!("status" in analysis) ||
+                                    analysis.status === "pending")
+                                )
+                                  return true;
+                              }
+                              return false;
+                            })()
+                          ) {
+                            navigate(
+                              `/doctor-response?analysisId=${
+                                createdAnalysisId || analysisId
+                              }`
+                            );
+                          }
+                        }}
+                        title={(() => {
+                          if (
+                            apiResponse?.status === "Pending Doctor Review" ||
+                            apiResponse?.status === "Doctor Review Requested"
+                          )
+                            return "Doctor review pending";
+                          const analysis: any = apiResponse?.analysis;
+                          if (analysis && typeof analysis === "object") {
+                            if (
+                              "doctor_id" in analysis &&
+                              (!("status" in analysis) ||
+                                analysis.status === "pending")
+                            )
+                              return "Doctor review pending";
+                          }
+                          return "Show Doctor Analysis";
+                        })()}
+                      >
+                        Show Doctor Analysis
                       </Button>
                     </div>
                   </CardFooter>
